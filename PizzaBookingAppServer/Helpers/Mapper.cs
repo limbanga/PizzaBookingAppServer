@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using PizzaBookingAppServer.Entities;
+using PizzaBookingViewModel;
 
 namespace PizzaBookingAppServer.Helpers
 {
@@ -6,7 +8,7 @@ namespace PizzaBookingAppServer.Helpers
 	{
         public Mapper()
         {
-//            CreateMap<>;
+            CreateMap<Employee, SignUpViewModel>().ReverseMap();
         }
     }
 }

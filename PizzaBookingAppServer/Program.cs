@@ -10,6 +10,18 @@ builder.Services.AddAutoMapper(typeof(Program));
 
 // Add services to the container.
 builder.Services.AddTransient<ILoginStatusRepository, LoginStatusRepository>();
+builder.Services.AddTransient<IEmployeePermissonRepository, EmployeePermissonRepository>();
+builder.Services.AddTransient<ICategoryRepository, CategoryRepository>();
+builder.Services.AddTransient<ICustomerRepository, CustomerRepository>();
+builder.Services.AddTransient<IEmployeeTypeRepository, EmployeeTypeRepository>();
+builder.Services.AddTransient<IImageProductRepository, ImageProductRepository>();
+builder.Services.AddTransient<IHasPermissionRepository, HasPermissionRepository>();
+builder.Services.AddTransient<IIncludePermissionRepository, IncludePermissionRepository>();
+builder.Services.AddTransient<IOrderRepository, OrderRepository>();
+builder.Services.AddTransient<IOrderLineRepository, OrderLineRepository>();
+builder.Services.AddTransient<IProductRepository, ProductRepository>();
+builder.Services.AddTransient<IEmployeeRepository, EmployeeRepository>();
+
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

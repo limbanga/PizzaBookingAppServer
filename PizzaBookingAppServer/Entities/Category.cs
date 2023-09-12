@@ -1,4 +1,6 @@
-﻿namespace PizzaBookingAppServer.Entities
+﻿using AutoMapper.Configuration.Annotations;
+
+namespace PizzaBookingAppServer.Entities
 {
 	public class Category : TimeRecord
 	{

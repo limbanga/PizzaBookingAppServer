@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34003.232
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PizzaBookingAppServer", "PizzaBookingAppServer\PizzaBookingAppServer.csproj", "{098DB7CD-72F1-4F58-B947-194E995BA291}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PizzaBookingAppServer", "PizzaBookingAppServer\PizzaBookingAppServer.csproj", "{098DB7CD-72F1-4F58-B947-194E995BA291}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PizzaBookingViewModel", "PizzaBookingViewModel\PizzaBookingViewModel.csproj", "{633C0650-AA46-40C6-ABEC-8C15CD3F15DD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{098DB7CD-72F1-4F58-B947-194E995BA291}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{098DB7CD-72F1-4F58-B947-194E995BA291}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{098DB7CD-72F1-4F58-B947-194E995BA291}.Release|Any CPU.Build.0 = Release|Any CPU
+		{633C0650-AA46-40C6-ABEC-8C15CD3F15DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{633C0650-AA46-40C6-ABEC-8C15CD3F15DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{633C0650-AA46-40C6-ABEC-8C15CD3F15DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{633C0650-AA46-40C6-ABEC-8C15CD3F15DD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

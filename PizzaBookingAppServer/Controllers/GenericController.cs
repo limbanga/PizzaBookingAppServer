@@ -12,7 +12,7 @@ namespace PizzaBookingAppServer.Controllers
 	{
 		private readonly AppContext _context;
 		private readonly IGenericRepository<T> _repo;
-		private readonly IMapper _mapper;
+		protected readonly IMapper _mapper;
 		protected GenericController(
 			AppContext context,
 			IGenericRepository<T> tRepo,
