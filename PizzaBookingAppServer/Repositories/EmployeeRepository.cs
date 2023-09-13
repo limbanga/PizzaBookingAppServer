@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using PizzaBookingAppServer.Entities;
 
 namespace PizzaBookingAppServer.Repositories
@@ -9,12 +10,28 @@ namespace PizzaBookingAppServer.Repositories
 			: base(context)
 		{ }
 
-		public async Task CreateSuperUserAsync(Employee model, string password)
+		public async Task CreateUserAsync(Employee model, string password)
 		{
 			IPasswordHasher<Employee> passwordHasher = new PasswordHasher<Employee>();
 			model.HashedPassword = passwordHasher.HashPassword(model, password);
-			model.FirstName = "Super_user_created";
+			model.Email = model.LoginName;
 			await CreateAsync(model);
 		}
+
+		public async Task<Employee?> LoginAsync(string loginName, string password)
+		{
+			IPasswordHasher<Employee> passwordHasher = new PasswordHasher<Employee>();
+			var employee = await _dbSet.FirstOrDefaultAsync(x => x.LoginName == loginName);
+			if (employee == null)
+			{
+				return null;
+			}
+			var result = passwordHasher.VerifyHashedPassword(employee, employee.HashedPassword, password);
+            if (result != PasswordVerificationResult.Success)
+            {
+				return null;
+			}
+			return employee;
+        }
 	}
 }

@@ -1,0 +1,44 @@
+﻿@page "/start-app"
+@layout EmptyLayout
+<PageTitle>Start up your app</PageTitle>
+<style>
+	body {
+		min-width: 100vw;
+		min-height: 100vh;
+		background-image: url("/images/backgrounds/bg-technical.jpg");
+	}
+</style>
+
+<div class="row p-2" id="start-up-page">
+	<div class="offset-md-4 col-md-4 mt-5 card p-2 p-md-4">
+		<h2 class="text-center">Start app</h2>
+		<p class="text-muted">
+			Lorem ipsum dolor sit amet, consectetur
+			adipiscing elit, sed do eiusmod tempor
+			incididunt ut labore et dolore magna aliqua.
+			Ut enim ad minim veniam, quis nostrud exercitation 
+		</p>
+		<h4>Dummy text</h4>
+		<p class="text-muted">
+			Lorem ipsum dolor sit amet, consectetur
+			adipiscing elit,
+		</p>
+		<h4>How silly I am?</h4>
+		<p class="text-muted">
+			Lorem ipsum dolor sit amet, consectetur
+			adipiscing elit, sed do eiusmod tempor
+			<div class="text-end">
+				<a href="#" class="text-black-50 text-decoration-none">For more information</a>
+			</div>
+		</p>
+
+		<a class="btn btn-outline-success" href="/create-admin">
+			<img src="/images/icons/rocket.png" width="24" height="24" class="me-2"/>
+			Start your app now !
+		</a>
+	</div>
+</div>
+
+@code {
+
+}

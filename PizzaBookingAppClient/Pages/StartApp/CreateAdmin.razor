@@ -1,0 +1,52 @@
+﻿@page "/create-admin"
+@layout EmptyLayout
+<PageTitle>Create Admin account</PageTitle>
+
+<h3>Create Admin account</h3>
+<div class="row p-4">
+	
+	<div class="col-sm-8 offset-sm-2 col-lg-6 offset-lg-3 card p-3">
+		<h1 class="text-center">Sign up Admin</h1>
+		<form class="w-100">
+
+			<div class="d-lg-flex justify-content-lg-start mt-lg-3 gap-2">
+				<div class="form-floating mt-3 mt-lg-0 w-100">
+					<input type="text" class="form-control" placeholder="Enter your name..." id="abc" />
+					<label for="abc">First name</label>
+				</div>
+
+				<div class="form-floating mt-3 mt-lg-0 w-100">
+					<input type="text" class="form-control" placeholder="Enter your name..." id="abc" />
+					<label for="abc">Last name</label>
+				</div>
+			</div>
+
+			<div class="form-floating mt-3">
+				<input type="text" class="form-control" placeholder="Enter your name..." id="abc"/>
+				<label for="abc">Username</label>
+			</div>
+
+			<div class="form-floating mt-3">
+				<input type="password" class="form-control" id="floatingPassword" placeholder="Password">
+				<label for="floatingPassword">Password</label>
+			</div>
+
+			<div class="form-floating mt-3">
+				<input type="password" class="form-control" id="floatingPassword" placeholder="Password">
+				<label for="floatingPassword">Phone number</label>
+			</div>
+
+			<div class="form-floating mt-3">
+				<input type="password" class="form-control" id="floatingPassword" placeholder="Password">
+				<label for="floatingPassword">Address</label>
+			</div>
+			<div class="text-end mt-3">
+				<button class="btn btn-success">Sign up</button>
+			</div>
+		</form>
+	</div>
+</div>
+
+@code {
+
+}

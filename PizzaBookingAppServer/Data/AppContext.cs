@@ -14,6 +14,17 @@ public class AppContext : DbContext
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
 		base.OnModelCreating(modelBuilder);
+		// Employee
+		modelBuilder.Entity<Employee>()
+			.HasIndex(e => e.LoginName)
+			.IsUnique();
+		modelBuilder.Entity<Employee>()
+			.HasIndex(e => e.Email)
+			.IsUnique();
+		modelBuilder.Entity<Employee>()
+			.HasIndex(e => e.PhoneNumber)
+			.IsUnique();
+
 	}
 
 	public DbSet<PizzaBookingAppServer.Entities.Category> Category { get; set; } = default!;

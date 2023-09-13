@@ -4,6 +4,7 @@ namespace PizzaBookingAppServer.Repositories
 {
 	public interface IEmployeeRepository : IGenericRepository<Employee>
 	{
-		Task CreateSuperUserAsync(Employee model, string password);
+		Task CreateUserAsync(Employee model, string password);
+		Task<Employee?> LoginAsync(string loginName, string password);
 	}
 }
