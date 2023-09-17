@@ -11,4 +11,12 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.10" PrivateAssets="all" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\PizzaBookingViewModel\PizzaBookingViewModel.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Components\" />
+  </ItemGroup>
+
 </Project>

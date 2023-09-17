@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PizzaBookingAppServer", "Pi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PizzaBookingViewModel", "PizzaBookingViewModel\PizzaBookingViewModel.csproj", "{633C0650-AA46-40C6-ABEC-8C15CD3F15DD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PizzaBookingAppClient", "PizzaBookingAppClient\PizzaBookingAppClient.csproj", "{8C8A806E-94A4-45D8-B5F9-430FCD3C15E2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PizzaBookingAppClient", "PizzaBookingAppClient\PizzaBookingAppClient.csproj", "{8C8A806E-94A4-45D8-B5F9-430FCD3C15E2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
