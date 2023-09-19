@@ -1,0 +1,62 @@
+﻿@inject ICategoryService _categoryService
+<!--
+/////////////////////////////////////////////
+    INJECT ONLY ONE FOR EACH PAGE
+/////////////////////////////////////////////
+-->
+<div class="modal fade" id="__update_category_modal"
+     data-bs-backdrop="static" data-bs-keyboard="false"
+     tabindex="-1" aria-labelledby="__update_category_modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5">Add new category</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <EditForm OnSubmit="HandleUpdateCategory" Model="@Category">
+                <div class="modal-body">
+
+                    <div class="form-floating mb-3">
+                        <InputNumber class="form-control" placeholder=" " @bind-Value="@Category.Id" readonly/>
+                        <label>Category Id</label>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <InputText class="form-control" placeholder=" " @bind-Value="@Category.Name" />
+                        <label>Category name</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                    <button type="submit"
+                            class="btn btn-primary btn-sm"
+                            data-bs-dismiss="modal">
+                        Save
+                    </button>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public required CategoryViewModel Category { get; set; }
+    [Parameter]
+    public required EventCallback<Task> DoAfterClose { get; set; }
+
+    private async Task HandleUpdateCategory()
+    {
+        throw new NotImplementedException();
+        // try
+        // {
+        //     await _categoryService.CreateAsync(Category);
+        //     Console.WriteLine("Update category successfully");
+        // }
+        // catch (ConnectException)
+        // {
+        //     Console.WriteLine("Can't connect server");
+        // }
+    }
+
+}

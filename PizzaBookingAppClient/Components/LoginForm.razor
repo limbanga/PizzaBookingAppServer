@@ -1,0 +1,57 @@
+﻿@inject IAuthService _AuthService
+@inject NavigationManager _NavigationManager
+@inject ILocalStorageService _localStorageService
+@inject AuthenticationStateProvider _AuthStateProvider
+
+<h3 class="text-center">Login</h3>
+<EditForm Model="loginViewModel" OnSubmit="HandleLogin">
+	<DataAnnotationsValidator />
+
+	<div class="form-floating mt-3 w-100">
+		<InputText type="text" class="form-control" placeholder=" " @bind-Value="loginViewModel.LoginName" />
+		<label for="">Email</label>
+		<ValidationMessage For="@(() => loginViewModel.LoginName)" />
+	</div>
+
+	<div class="form-floating mt-3 w-100">
+		<InputText type="password" class="form-control" placeholder=" " @bind-Value="loginViewModel.Password" />
+		<label for="">Password</label>
+		<ValidationMessage For="@(() => loginViewModel.Password)" />
+	</div>
+
+	<div class="text-end mt-3">
+		<button class="btn btn-success" type="submit">Login</button>
+	</div>
+</EditForm>
+
+
+@code {
+	LoginViewModel loginViewModel = new LoginViewModel();
+
+	// protected override async Task OnInitializedAsync()
+	// {
+
+	// }
+
+	private async void HandleLogin()
+	{
+		try
+		{
+			var isLoginSucceed = await _AuthService.LoginAsync(loginViewModel);
+			if (!isLoginSucceed)
+			{
+				Console.WriteLine("Login failed!");
+				return;
+			}
+			_NavigationManager.NavigateTo("/admin/index");
+		}
+		catch (ConnectException)
+		{
+			Console.WriteLine("Failed to connect server.");
+		}
+		catch (Exception)
+		{
+			throw;
+		}
+	}
+}

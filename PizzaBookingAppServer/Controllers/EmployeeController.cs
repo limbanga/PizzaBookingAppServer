@@ -97,7 +97,6 @@ namespace PizzaBookingAppServer.Controllers
 			return base.Get(id);
 		}
 
-		[Authorize(Policy = IdentityData.AdminUserPolicy	)]
 		public override Task<ActionResult<List<Employee>>> GetAll()
 		{
 			return base.GetAll();

@@ -1,0 +1,18 @@
+﻿@inject IAuthService _authService
+<AuthorizeView>
+    <Authorized>
+        <NavLink href="/profile">Hi, @UserName</NavLink>
+    </Authorized>
+    <NotAuthorized>
+        <NavLink href="/login">Login</NavLink>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    private string UserName { get; set; } = null!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        UserName = await _authService.GetClaimValue("email");
+    }
+}

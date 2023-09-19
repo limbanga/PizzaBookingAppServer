@@ -1,0 +1,28 @@
+﻿<tr>
+    <th scope="row">@Category.Id</th>
+    <td>@Category.Name</td>
+    <td>12</td>
+    <td>@Category.UpdatedAt.ToLocalTime().ToString("HH:mm:ss dd-MM-yyyy")</td>
+    <td>@Category.CreatedAt.ToLocalTime().ToString("HH:mm:ss dd-MM-yyyy")</td>
+    <td>
+        <div class="btn-group" role="group" aria-label="Basic example">
+            <button class="btn btn-primary btn-sm" 
+                    data-bs-toggle="modal"
+                    data-bs-target="#__update_category_modal"
+                    @onclick="@(() => DoBeforeShowModal.InvokeAsync(@Category))">
+                <i class="fa-regular fa-pen-to-square"></i>
+            </button>
+            <button class="btn btn-danger btn-sm">
+                <i class="fa-regular fa-trash-can"></i>
+            </button>
+        </div>
+    </td>
+</tr>
+
+@code {
+    [Parameter]
+    public required CategoryViewModel Category { get; set; }
+
+    [Parameter]
+    public required EventCallback<CategoryViewModel> DoBeforeShowModal { get; set; }
+}

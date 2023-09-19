@@ -27,7 +27,42 @@ public class AppContext : DbContext
 
 	}
 
-	public DbSet<PizzaBookingAppServer.Entities.Category> Category { get; set; } = default!;
+    private void AddTimestamps()
+    {
+        var entities = ChangeTracker.Entries()
+            .Where(x => x.Entity is TimeRecord && (x.State == EntityState.Added || x.State == EntityState.Modified));
+
+        foreach (var entity in entities)
+        {
+            var now = DateTime.UtcNow; // current datetime
+
+            if (entity.State == EntityState.Added)
+            {
+                ((TimeRecord)entity.Entity).CreatedAt = now;
+            }
+            ((TimeRecord)entity.Entity).UpdatedAt = now;
+        }
+    }
+
+    public override int SaveChanges(bool acceptAllChangesOnSuccess)
+    {
+        AddTimestamps();
+        return base.SaveChanges(acceptAllChangesOnSuccess);
+    }
+
+    public async override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        AddTimestamps();
+        return await base.SaveChangesAsync(cancellationToken);
+    }
+
+    public async override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
+    {
+        AddTimestamps();
+        return await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+    }
+
+    public DbSet<PizzaBookingAppServer.Entities.Category> Category { get; set; } = default!;
 	public DbSet<PizzaBookingAppServer.Entities.Customer> Customer { get; set; } = default!;
 	public DbSet<PizzaBookingAppServer.Entities.Employee> Employee { get; set; } = default!;
 	public DbSet<PizzaBookingAppServer.Entities.EmployeePermission> EmployeePermission { get; set; } = default!;

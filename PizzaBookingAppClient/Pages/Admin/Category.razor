@@ -1,0 +1,102 @@
+﻿@page "/admin/category"
+@inject ICategoryService _categoryService
+<PageTitle>Admin DashBoard</PageTitle>
+
+<div class="row">
+
+    <div class="d-flex justify-content-between align-items-end">
+	    <h3>Category</h3>
+        <!-- Button trigger modal -->
+        <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#__add_category_modal" @onclick="SetCategoryToAdd">
+            <i class="fa-solid fa-plus"></i>
+            New category
+        </button>
+    </div>
+
+	<div class="w-100"> 
+        @if (categories == null)
+        {
+            <div class="text-center">
+                <Loader />
+            </div>
+        }
+        else
+        {
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Count</th>
+                        <th scope="col">Update At</th>
+                        <th scope="col">Create At</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var category in categories)
+                    {
+                        <CategoryRow Category="@category" DoBeforeShowModal="SetCategoryToUpdate" />
+                    }
+                </tbody>
+            </table>
+        }
+	</div>
+</div>
+
+<!--
+///////////////////////////////////////////////////////
+    THE PLACE TO SET THE MODAL
+///////////////////////////////////////////////////////
+-->
+<!-- Add Modal -->
+<AddCategoryModal Category="categoryViewModel"
+                  DoAfterClose="LoadCategories" />
+
+<!-- Update Modal -->
+<UpdateCategoryModal Category="categoryViewModel"
+                     DoAfterClose="LoadCategories" />
+
+
+
+@code {
+    private List<CategoryViewModel>? categories;
+    private CategoryViewModel categoryViewModel = new CategoryViewModel();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadCategories();
+    }
+
+    private async Task LoadCategories()
+    {
+        categories = await GetCategories();
+    }
+
+    private async Task<List<CategoryViewModel>?> GetCategories()
+    {
+        try
+        {
+            return await _categoryService.GetAllAsync();
+        }
+        catch (ConnectException)
+        {
+            Console.WriteLine("Fetch data failed");
+            return null;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    private void SetCategoryToAdd()
+    {
+        categoryViewModel = new CategoryViewModel();
+    }
+
+    private void SetCategoryToUpdate(CategoryViewModel category)
+    {
+        categoryViewModel = category;
+    }
+}
