@@ -1,0 +1,57 @@
+﻿@page "/admin/product"
+<PageTitle>Product</PageTitle>
+
+
+<div class="row">
+
+    <div class="d-flex justify-content-between align-items-end">
+        <h3>Product</h3>
+        <!-- Button trigger modal -->
+        <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#__add_product_modal" >
+            <i class="fa-solid fa-plus"></i>
+            New product
+        </button>
+    </div>
+
+    <div class="w-100">
+        @if (products == null)
+        {
+            <div class="text-center">
+                <Loader />
+            </div>
+        }
+        else
+        {
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Count</th>
+                        <th scope="col">Update At</th>
+                        <th scope="col">Create At</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <h1>Empty</h1>
+                </tbody>
+            </table>
+        }
+    </div>
+</div>
+
+<!--
+///////////////////////////////////////////////////////
+    THE PLACE TO SET THE MODAL
+///////////////////////////////////////////////////////
+-->
+
+
+@code {
+    List<ProductViewModel>? products;
+
+    protected override async Task OnInitializedAsync()
+    {
+    }
+}

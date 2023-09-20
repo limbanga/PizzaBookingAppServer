@@ -20,17 +20,8 @@
 
 .nav-item {
     font-size: 0.9rem;
-    padding-bottom: 0.5rem;
     position: relative;
 }
-
-    .nav-item:first-of-type {
-        padding-top: 1rem;
-    }
-
-    .nav-item:last-of-type {
-        padding-bottom: 1rem;
-    }
 
     .nav-item ::deep a {
         color: black;

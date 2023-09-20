@@ -40,5 +40,25 @@ namespace PizzaBookingAppClient.Services
                 throw new ConnectException();
             }
         }
+
+        public async Task UpdateAsync(CategoryViewModel model)
+        {
+            var respone = await _httpClient.PutAsJsonAsync<CategoryViewModel>("/Category/Update", model);
+
+            if (respone == null || !respone.IsSuccessStatusCode)
+            {
+                throw new ConnectException();
+            }
+        }
+
+        public async Task DeleteAsync(int Id)
+        {
+            var respone = await _httpClient.DeleteAsync($"Category/Delete/{ Id }");
+
+            if (respone == null || !respone.IsSuccessStatusCode)
+            {
+                throw new ConnectException();
+            }
+        }
     }
 }

@@ -26,8 +26,7 @@
                     <button 
                         type="submit"
                         class="btn btn-primary btn-sm"
-                        data-bs-dismiss="modal"
-                        @onclick="@(() => DoAfterClose.InvokeAsync())">
+                        data-bs-dismiss="modal">
                         Save
                     </button>
                 </div>
@@ -40,13 +39,15 @@
     [Parameter]
     public required CategoryViewModel Category { get; set; }
     [Parameter]
-    public required EventCallback<Task> DoAfterClose { get; set; }
+    public required EventCallback<Task> SaveButtonHandler { get; set; }
 
     private async Task HandleAddCategory()
     {
         try
         {
             await _categoryService.CreateAsync(Category);
+            Console.WriteLine("Added category sucessfully!");
+            await SaveButtonHandler.InvokeAsync();
         }
         catch (ConnectException)
         {

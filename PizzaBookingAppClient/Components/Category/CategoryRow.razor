@@ -9,10 +9,13 @@
             <button class="btn btn-primary btn-sm" 
                     data-bs-toggle="modal"
                     data-bs-target="#__update_category_modal"
-                    @onclick="@(() => DoBeforeShowModal.InvokeAsync(@Category))">
+                    @onclick="@(() => UpdateButtonHandler.InvokeAsync(@Category))">
                 <i class="fa-regular fa-pen-to-square"></i>
             </button>
-            <button class="btn btn-danger btn-sm">
+            <button class="btn btn-danger btn-sm"
+                    data-bs-toggle="modal"
+                    data-bs-target="#__confirm_delete_modal"
+                    @onclick="@(() => DeleteButtonHandler.InvokeAsync(@Category))">
                 <i class="fa-regular fa-trash-can"></i>
             </button>
         </div>
@@ -22,7 +25,9 @@
 @code {
     [Parameter]
     public required CategoryViewModel Category { get; set; }
-
     [Parameter]
-    public required EventCallback<CategoryViewModel> DoBeforeShowModal { get; set; }
+    public required EventCallback<CategoryViewModel> UpdateButtonHandler { get; set; }
+    [Parameter]
+    public required EventCallback<CategoryViewModel> DeleteButtonHandler { get; set; }
+
 }

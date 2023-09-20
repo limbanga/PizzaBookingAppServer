@@ -7,6 +7,8 @@ namespace PizzaBookingAppClient.Services
     {
         Task<List<CategoryViewModel>> GetAllAsync();
         Task CreateAsync(CategoryViewModel model);
+        Task UpdateAsync(CategoryViewModel model);
+        Task DeleteAsync(int Id);
 
     }
 }

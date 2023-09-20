@@ -14,6 +14,8 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <EditForm OnSubmit="HandleUpdateCategory" Model="@Category">
+                <DataAnnotationsValidator />
+
                 <div class="modal-body">
 
                     <div class="form-floating mb-3">
@@ -24,6 +26,7 @@
                     <div class="form-floating mb-3">
                         <InputText class="form-control" placeholder=" " @bind-Value="@Category.Name" />
                         <label>Category name</label>
+                        <ValidationMessage For="@(() => Category.Name)" />
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -43,20 +46,20 @@
     [Parameter]
     public required CategoryViewModel Category { get; set; }
     [Parameter]
-    public required EventCallback<Task> DoAfterClose { get; set; }
+    public required EventCallback<Task> SaveButtonHandler { get; set; }
 
     private async Task HandleUpdateCategory()
     {
-        throw new NotImplementedException();
-        // try
-        // {
-        //     await _categoryService.CreateAsync(Category);
-        //     Console.WriteLine("Update category successfully");
-        // }
-        // catch (ConnectException)
-        // {
-        //     Console.WriteLine("Can't connect server");
-        // }
+        try
+        {
+            await _categoryService.UpdateAsync(Category);
+            Console.WriteLine("Update category successfully");
+            await SaveButtonHandler.InvokeAsync();
+        }
+        catch (ConnectException)
+        {
+            Console.WriteLine("Can't connect server");
+        }
     }
 
 }

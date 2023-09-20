@@ -1,6 +1,6 @@
 ﻿@page "/admin/category"
 @inject ICategoryService _categoryService
-<PageTitle>Admin DashBoard</PageTitle>
+<PageTitle>Category</PageTitle>
 
 <div class="row">
 
@@ -36,7 +36,9 @@
                 <tbody>
                     @foreach (var category in categories)
                     {
-                        <CategoryRow Category="@category" DoBeforeShowModal="SetCategoryToUpdate" />
+                        <CategoryRow Category="@category" 
+                            UpdateButtonHandler="SetCategoryToUpdateOrDelete"
+                            DeleteButtonHandler="SetCategoryToUpdateOrDelete" />
                     }
                 </tbody>
             </table>
@@ -51,12 +53,17 @@
 -->
 <!-- Add Modal -->
 <AddCategoryModal Category="categoryViewModel"
-                  DoAfterClose="LoadCategories" />
+                  SaveButtonHandler="LoadCategories"/>
 
 <!-- Update Modal -->
 <UpdateCategoryModal Category="categoryViewModel"
-                     DoAfterClose="LoadCategories" />
-
+                     SaveButtonHandler="LoadCategories" />
+<!-- Delete Modal -->
+<ConfirmDeleteModal 
+    ModalTitle="Are you sure to delete this item"
+    BodyText="@($"Do you want to delete {@categoryViewModel.Name}?")" 
+    IdToDelete="@categoryViewModel.Id"
+    ConfirmButtonHandler="DeleteCategory" />
 
 
 @code {
@@ -71,6 +78,7 @@
     private async Task LoadCategories()
     {
         categories = await GetCategories();
+        Console.WriteLine("LoadCategories success!");
     }
 
     private async Task<List<CategoryViewModel>?> GetCategories()
@@ -82,7 +90,7 @@
         catch (ConnectException)
         {
             Console.WriteLine("Fetch data failed");
-            return null;
+            return new List<CategoryViewModel>();
         }
         catch (Exception)
         {
@@ -90,12 +98,28 @@
         }
     }
 
+    private async Task DeleteCategory(int IdToDelete)
+    {
+        try
+        {
+            Console.WriteLine("DeleteCategory is called " + IdToDelete);
+            await _categoryService.DeleteAsync(IdToDelete);
+            await LoadCategories();
+        }
+        catch (Exception)
+        {
+            
+            throw;
+        }
+
+    }
+
     private void SetCategoryToAdd()
     {
         categoryViewModel = new CategoryViewModel();
     }
 
-    private void SetCategoryToUpdate(CategoryViewModel category)
+    private void SetCategoryToUpdateOrDelete(CategoryViewModel category)
     {
         categoryViewModel = category;
     }
