@@ -1,8 +1,15 @@
 ﻿<div class="top-row ps-3 navbar text-black bg-white">
     <div class="container-fluid">
-        <a class="navbar-brand text-black" href="">PizzaBookingAppClient</a>
+        <a class="navbar-brand text-black" href="/">
+            <h3 class="text-black d-inline">
+                Pixel
+            </h3>
+            <h3 class="text-warning d-inline">
+                Pizza
+            </h3>  
+        </a>
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
-            <img src="/images/icons/menu-icon.png" width="24" height="24"/>
+            <img src="/images/icons/menu-icon.png" width="24" height="24" />
         </button>
     </div>
 </div>
@@ -11,10 +18,10 @@
     <nav class="flex-column">
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="/admin/index" Match="NavLinkMatch.All">
-                <img src="/images/icons/dashboard.png" width="20" height="20" class="me-2"/> 
+                <img src="/images/icons/dashboard.png" width="20" height="20" class="me-2" />
                 DashBoard
             </NavLink>
-        </div>      
+        </div>
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="/admin/category">
                 <span class="fa-solid fa-tags me-2"></span> Category

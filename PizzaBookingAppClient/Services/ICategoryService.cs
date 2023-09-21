@@ -9,6 +9,5 @@ namespace PizzaBookingAppClient.Services
         Task CreateAsync(CategoryViewModel model);
         Task UpdateAsync(CategoryViewModel model);
         Task DeleteAsync(int Id);
-
     }
 }

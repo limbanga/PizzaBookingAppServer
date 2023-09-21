@@ -45,13 +45,12 @@ namespace PizzaBookingAppServer.Controllers
 		{
 			try
 			{
-				await _repo.CreateAsync(model);
-				return Ok();
+				T t = await _repo.CreateAsync(model);
+				return Ok(t);
 			}
-			catch (Exception)
+			catch (Exception e)
 			{
-
-				return Problem($"Can't create {typeof(T).Name}");
+				return Problem($"Can't create {typeof(T).Name}: {e.Message}");
 			}
 		}
 

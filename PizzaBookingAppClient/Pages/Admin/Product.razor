@@ -1,6 +1,7 @@
 ﻿@page "/admin/product"
-<PageTitle>Product</PageTitle>
+@inject IProductService _productService
 
+<PageTitle>Product</PageTitle>
 
 <div class="row">
 
@@ -27,14 +28,44 @@
                     <tr>
                         <th scope="col">#</th>
                         <th scope="col">Name</th>
-                        <th scope="col">Count</th>
+                        <th scope="col">Image</th>
+                        <th scope="col">Price</th>
                         <th scope="col">Update At</th>
                         <th scope="col">Create At</th>
                         <th scope="col">Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <h1>Empty</h1>
+                    @foreach (var product in products)
+                    {
+                        <tr>
+                            <th scope="row">@product.Id</th>
+                            <td>@product.Name</td>
+                            <td class="text-start">
+                                <img 
+                                    src="@($"uploads/products/{@product.ImagePath}")" 
+                                    alt="Anh nen san pham" 
+                                    style="height: 150px;"/>
+                            </td>
+                            <td>@product.Price</td>
+                            <td>@product.UpdatedAt.ToLocalTime().ToString("HH:mm:ss dd-MM-yyyy")</td>
+                            <td>@product.CreatedAt.ToLocalTime().ToString("HH:mm:ss dd-MM-yyyy")</td>
+                            <td>
+                                <div class="btn-group" role="group" aria-label="Basic example">
+                                    <button class="btn btn-primary btn-sm"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#__update_category_modal">
+                                        <i class="fa-regular fa-pen-to-square"></i>
+                                    </button>
+                                    <button class="btn btn-danger btn-sm"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#__confirm_delete_modal">
+                                        <i class="fa-regular fa-trash-can"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    }
                 </tbody>
             </table>
         }
@@ -47,11 +78,37 @@
 ///////////////////////////////////////////////////////
 -->
 
+<AddProductModal 
+    Product="productViewModel"/>
 
 @code {
-    List<ProductViewModel>? products;
+    private List<ProductViewModel>? products { get; set; }
+    private ProductViewModel productViewModel { get; set; } = new ProductViewModel();
 
     protected override async Task OnInitializedAsync()
     {
+        await LoadProducts();
+    }
+
+    private async Task LoadProducts()
+    {
+        products = await GetProducts();
+    }
+
+    private async Task<List<ProductViewModel>?> GetProducts()
+    {
+        try
+        {
+            return await _productService.GetAllAsync();
+        }
+        catch (ConnectException)
+        {
+            Console.WriteLine("Fetch data failed");
+            return new List<ProductViewModel>();
+        }
+        catch (Exception)
+        {
+            throw;
+        }
     }
 }

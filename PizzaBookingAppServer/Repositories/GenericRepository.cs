@@ -12,10 +12,11 @@ namespace PizzaBookingAppServer.Repositories
 			_context = context;
 			_dbSet = context.Set<T>();	
 		}
-		public async Task CreateAsync(T entity)
+		public async Task<T> CreateAsync(T entity)
 		{
 			await _dbSet.AddAsync(entity);
 			await _context.SaveChangesAsync();
+			return entity;
 		}
 
 		public async Task DeleteAsync(int id)
@@ -54,5 +55,6 @@ namespace PizzaBookingAppServer.Repositories
 		{
 			await _context.SaveChangesAsync();
 		}
-	}
+
+    }
 }
