@@ -1,7 +1,8 @@
 ﻿@using System.Net.Http.Headers;
+@using Microsoft.JSInterop;
 @inject IProductService _productService
 @inject HttpClient _httpClient
-
+@inject IJSRuntime _jsRuntime
 <!--
 /////////////////////////////////////////////
     INJECT ONLY ONE FOR EACH PAGE
@@ -37,7 +38,7 @@
                     <div class="mb-3">
                         <label class="mb-1" for="img-file">Images</label>
                         <InputFile type="file" id="img-file" class="form-control" placeholder=" "
-                            OnChange="OnFileSelected" accept="image/*" name="product_image" />
+                            OnChange="OnFileSelected" accept="image/*" name="product_image"/>
                     </div>
 
                     <div class="">
@@ -75,10 +76,7 @@
     public required EventCallback<Task> SaveButtonHandler { get; set; }
 
     private IBrowserFile browserFile { get; set; } = null!;
-    private StreamContent fileContent { get; set; } = null!;
-    private string fileName { get; set; } = null!;
-    private string imgUrl = string.Empty;
-    private string imageType { get; set; } = null!;
+    private string imgUrl { get; set; } = null!;
 
     private async Task HandleAddProduct()
     {
@@ -98,25 +96,21 @@
 
     private async Task OnFileSelected(InputFileChangeEventArgs e)
     {
-        // maxSize support is 10Mb
-        long maxFileSize = 10 * 1024 * 1024;
-        fileContent = new StreamContent(e.File.OpenReadStream(maxFileSize));
-        fileName = e.File.Name;
-        var fileSize = new byte[e.File.Size];
-        await e.File.OpenReadStream().ReadAsync(fileSize);
-        imageType = e.File.ContentType;
-        imgUrl = $"data:{imageType};base64,{Convert.ToBase64String(fileSize)}";
-        Console.WriteLine(imgUrl);
-        Console.WriteLine(imageType);
-        this.StateHasChanged();
+        browserFile = e.File;
+        imgUrl = await _jsRuntime.InvokeAsync<string>("createTempUrl", "img-file");
     }
 
     private async Task<string> HandleUploadFile()
     {
+        // get file from input
+        StreamContent fileContent = new StreamContent(browserFile.OpenReadStream(long.MaxValue));
+        string fileName = browserFile.Name;
+
         var content = new MultipartFormDataContent();
         content.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data");
         content.Add(fileContent, "file", fileName);
         Console.WriteLine("Upload image ok!");
         return await _productService.UploadProductImage(content);
     }
+
 }
