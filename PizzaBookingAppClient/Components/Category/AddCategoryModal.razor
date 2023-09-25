@@ -1,10 +1,5 @@
 ﻿@inject ICategoryService _categoryService
 
-<!--
-/////////////////////////////////////////////
-    INJECT ONLY ONE FOR EACH PAGE
-/////////////////////////////////////////////
--->
 <div class="modal fade" id="__add_category_modal" 
     data-bs-backdrop="static" data-bs-keyboard="false"
      tabindex="-1" aria-labelledby="__add_category_modal" aria-hidden="true">
@@ -15,12 +10,15 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <EditForm OnSubmit="HandleAddCategory" Model="Category">
+                <DataAnnotationsValidator />
                 <div class="modal-body">
                     <div class="form-floating mb-3">
                         <InputText class="form-control" placeholder=" " @bind-Value="@Category.Name" />
                         <label>Category name</label>
+                        <ValidationMessage For="@(() => Category.Name)" />
                     </div>
                 </div>
+
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
                     <button 

@@ -60,5 +60,18 @@ namespace PizzaBookingAppClient.Services
                 throw new ConnectException();
             }
         }
+
+        public async Task<CategoryViewModel?> GetAsync(int Id)
+        {
+            var respone = await _httpClient.GetAsync($"Category/Get/{Id}");
+
+            if (respone == null || !respone.IsSuccessStatusCode)
+            {
+                throw new ConnectException();
+            }
+
+            CategoryViewModel? result = await respone.Content.ReadFromJsonAsync<CategoryViewModel?>();
+            return result;
+        }
     }
 }

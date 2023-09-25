@@ -17,53 +17,67 @@
                 <h1 class="modal-title fs-5">Add new product</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <EditForm OnSubmit="HandleAddProduct" Model="Product">
+            <EditForm OnValidSubmit="HandleAddProduct" Model="Product">
+                <DataAnnotationsValidator />
                 <div class="modal-body">
 
                     <div class="form-floating mb-3">
                         <InputText class="form-control" placeholder=" " @bind-Value="@Product.Name" />
                         <label>Product name</label>
+                        <ValidationMessage For="@(() => Product.Name)" />
                     </div>
 
                     <div class="form-floating mb-3">
                         <InputTextArea class="form-control" placeholder=" " @bind-Value="@Product.Description" />
                         <label>Desciption</label>
+                        <ValidationMessage For="@(() => Product.Description)" />
                     </div>
 
                     <div class="form-floating mb-3">
                         <InputNumber class="form-control" placeholder=" " @bind-Value="@Product.Price" />
                         <label>Price</label>
+                        <ValidationMessage For="@(() => Product.Price)" />
                     </div>
 
                     <div class="mb-3">
                         <label class="mb-1" for="img-file">Images</label>
                         <InputFile type="file" id="img-file" class="form-control" placeholder=" "
-                            OnChange="OnFileSelected" accept="image/*" name="product_image"/>
+                            OnChange="OnFileSelected" accept="image/*" name="product_image" required />
+                        @if (_fileErrorMessage != null)
+                        {
+                            <div class="validation-message">
+                                @_fileErrorMessage
+                            </div>
+                        }
                     </div>
 
                     <div class="">
                         <label>Image priview</label>
                         <div class="text-center border rounded p-2 object-fit-contain">
-                            @if (string.IsNullOrEmpty(@imgUrl))
+                            @if (string.IsNullOrEmpty(_imgUrl))
                             {
                                 <small class="text-muted">Please choose an image of product.</small>
                             }
                             else
                             {    
-                                <img src="@imgUrl" alt="preview" class="mw-100"/>
+                                <img src="@_imgUrl" alt="preview" class="mw-100"/>
                             }
                         </div>
                     </div>
+
                 </div>
+
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
                     <button 
                         type="submit"
                         class="btn btn-primary btn-sm"
-                        data-bs-dismiss="modal">
+                        data-bs-dismiss="@(_isFormValid ? "modal" : null)"
+                        @onclick="CheckEmptyFile">
                         Save
                     </button>
                 </div>
+
             </EditForm>
         </div>
     </div>
@@ -75,8 +89,10 @@
     [Parameter]
     public required EventCallback<Task> SaveButtonHandler { get; set; }
 
-    private IBrowserFile browserFile { get; set; } = null!;
-    private string imgUrl { get; set; } = null!;
+    private IBrowserFile _browserFile { get; set; } = null!;
+    private string? _fileErrorMessage { get; set; }
+    private string _imgUrl { get; set; } = null!;
+    private bool _isFormValid { get; set; } = false;
 
     private async Task HandleAddProduct()
     {
@@ -96,15 +112,19 @@
 
     private async Task OnFileSelected(InputFileChangeEventArgs e)
     {
-        browserFile = e.File;
-        imgUrl = await _jsRuntime.InvokeAsync<string>("createTempUrl", "img-file");
+        _browserFile = e.File;
+        if (_browserFile != null)
+        {
+            _imgUrl = await _jsRuntime.InvokeAsync<string>("createTempUrl", "img-file");
+        }
+        CheckEmptyFile();
     }
 
     private async Task<string> HandleUploadFile()
     {
         // get file from input
-        StreamContent fileContent = new StreamContent(browserFile.OpenReadStream(long.MaxValue));
-        string fileName = browserFile.Name;
+        StreamContent fileContent = new StreamContent(_browserFile.OpenReadStream(long.MaxValue));
+        string fileName = _browserFile.Name;
 
         var content = new MultipartFormDataContent();
         content.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data");
@@ -113,4 +133,16 @@
         return await _productService.UploadProductImage(content);
     }
 
+    private void CheckEmptyFile()
+    {
+        if (_browserFile == null)
+        {
+            _fileErrorMessage = "Please choose an image of product.";
+        }
+        else
+        {
+            _fileErrorMessage = null;
+        }
+        StateHasChanged();
+    }
 }
