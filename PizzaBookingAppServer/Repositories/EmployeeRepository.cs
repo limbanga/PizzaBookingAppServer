@@ -1,10 +1,16 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using PizzaBookingAppServer.Entities;
+using PizzaBookingShared.Entities;
 
-namespace PizzaBookingAppServer.Repositories
+namespace PizzaBookingShared.Repositories
 {
-	public class EmployeeRepository : GenericRepository<Employee>, IEmployeeRepository
+    public interface IEmployeeRepository : IGenericRepository<Employee>
+    {
+        Task CreateUserAsync(Employee model, string password);
+        Task<Employee?> LoginAsync(string loginName, string password);
+    }
+
+    public class EmployeeRepository : GenericRepository<Employee>, IEmployeeRepository
 	{
 		public EmployeeRepository(AppContext context) 
 			: base(context)

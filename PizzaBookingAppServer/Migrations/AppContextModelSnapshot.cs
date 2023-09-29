@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace PizzaBookingAppServer.Migrations
+namespace PizzaBookingShared.Migrations
 {
     [DbContext(typeof(AppContext))]
     partial class AppContextModelSnapshot : ModelSnapshot
@@ -21,7 +21,7 @@ namespace PizzaBookingAppServer.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("PizzaBookingAppServer.Entities.Category", b =>
+            modelBuilder.Entity("PizzaBookingShared.Entities.Category", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -44,7 +44,7 @@ namespace PizzaBookingAppServer.Migrations
                     b.ToTable("Category");
                 });
 
-            modelBuilder.Entity("PizzaBookingAppServer.Entities.Customer", b =>
+            modelBuilder.Entity("PizzaBookingShared.Entities.Customer", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -77,15 +77,15 @@ namespace PizzaBookingAppServer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("Locked")
+                        .HasColumnType("bit");
+
                     b.Property<int>("LoginFailedCount")
                         .HasColumnType("int");
 
                     b.Property<string>("LoginName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("LoginStatusId")
-                        .HasColumnType("int");
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
@@ -96,12 +96,10 @@ namespace PizzaBookingAppServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("LoginStatusId");
-
                     b.ToTable("Customer");
                 });
 
-            modelBuilder.Entity("PizzaBookingAppServer.Entities.Employee", b =>
+            modelBuilder.Entity("PizzaBookingShared.Entities.Employee", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -117,7 +115,7 @@ namespace PizzaBookingAppServer.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -131,105 +129,42 @@ namespace PizzaBookingAppServer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("Locked")
+                        .HasColumnType("bit");
+
                     b.Property<int>("LoginFailedCount")
                         .HasColumnType("int");
 
                     b.Property<string>("LoginName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("LoginStatusId")
-                        .HasColumnType("int");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<int?>("TypeId")
-                        .HasColumnType("int");
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("LoginStatusId");
+                    b.HasIndex("Email")
+                        .IsUnique();
 
-                    b.HasIndex("TypeId");
+                    b.HasIndex("LoginName")
+                        .IsUnique();
+
+                    b.HasIndex("PhoneNumber")
+                        .IsUnique();
 
                     b.ToTable("Employee");
                 });
 
-            modelBuilder.Entity("PizzaBookingAppServer.Entities.EmployeePermission", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("EmployeePermission");
-                });
-
-            modelBuilder.Entity("PizzaBookingAppServer.Entities.EmployeeType", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("EmployeeType");
-                });
-
-            modelBuilder.Entity("PizzaBookingAppServer.Entities.HasPermission", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("EmployeeId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("PermissionId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EmployeeId");
-
-                    b.HasIndex("PermissionId");
-
-                    b.ToTable("HasPermission");
-                });
-
-            modelBuilder.Entity("PizzaBookingAppServer.Entities.ImageProduct", b =>
+            modelBuilder.Entity("PizzaBookingShared.Entities.ImageProduct", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -260,53 +195,7 @@ namespace PizzaBookingAppServer.Migrations
                     b.ToTable("ImageProduct");
                 });
 
-            modelBuilder.Entity("PizzaBookingAppServer.Entities.IncludePermisson", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("EmployeeTypeId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("PermissionId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EmployeeTypeId");
-
-                    b.HasIndex("PermissionId");
-
-                    b.ToTable("IncludePermisson");
-                });
-
-            modelBuilder.Entity("PizzaBookingAppServer.Entities.LoginStatus", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("LoginStatus");
-                });
-
-            modelBuilder.Entity("PizzaBookingAppServer.Entities.Order", b =>
+            modelBuilder.Entity("PizzaBookingShared.Entities.Order", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -335,7 +224,7 @@ namespace PizzaBookingAppServer.Migrations
                     b.ToTable("Order");
                 });
 
-            modelBuilder.Entity("PizzaBookingAppServer.Entities.OrderLine", b =>
+            modelBuilder.Entity("PizzaBookingShared.Entities.OrderLine", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -361,7 +250,7 @@ namespace PizzaBookingAppServer.Migrations
                     b.ToTable("OrderLine");
                 });
 
-            modelBuilder.Entity("PizzaBookingAppServer.Entities.Product", b =>
+            modelBuilder.Entity("PizzaBookingShared.Entities.Product", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -398,76 +287,22 @@ namespace PizzaBookingAppServer.Migrations
                     b.ToTable("Product");
                 });
 
-            modelBuilder.Entity("PizzaBookingAppServer.Entities.Customer", b =>
+            modelBuilder.Entity("PizzaBookingShared.Entities.ImageProduct", b =>
                 {
-                    b.HasOne("PizzaBookingAppServer.Entities.LoginStatus", "LoginStatus")
-                        .WithMany()
-                        .HasForeignKey("LoginStatusId");
-
-                    b.Navigation("LoginStatus");
-                });
-
-            modelBuilder.Entity("PizzaBookingAppServer.Entities.Employee", b =>
-                {
-                    b.HasOne("PizzaBookingAppServer.Entities.LoginStatus", "LoginStatus")
-                        .WithMany()
-                        .HasForeignKey("LoginStatusId");
-
-                    b.HasOne("PizzaBookingAppServer.Entities.EmployeeType", "Type")
-                        .WithMany()
-                        .HasForeignKey("TypeId");
-
-                    b.Navigation("LoginStatus");
-
-                    b.Navigation("Type");
-                });
-
-            modelBuilder.Entity("PizzaBookingAppServer.Entities.HasPermission", b =>
-                {
-                    b.HasOne("PizzaBookingAppServer.Entities.Employee", "Employee")
-                        .WithMany()
-                        .HasForeignKey("EmployeeId");
-
-                    b.HasOne("PizzaBookingAppServer.Entities.EmployeePermission", "Permission")
-                        .WithMany("HasPermissions")
-                        .HasForeignKey("PermissionId");
-
-                    b.Navigation("Employee");
-
-                    b.Navigation("Permission");
-                });
-
-            modelBuilder.Entity("PizzaBookingAppServer.Entities.ImageProduct", b =>
-                {
-                    b.HasOne("PizzaBookingAppServer.Entities.Product", "Product")
+                    b.HasOne("PizzaBookingShared.Entities.Product", "Product")
                         .WithMany("ImageProducts")
                         .HasForeignKey("ProductId");
 
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("PizzaBookingAppServer.Entities.IncludePermisson", b =>
+            modelBuilder.Entity("PizzaBookingShared.Entities.Order", b =>
                 {
-                    b.HasOne("PizzaBookingAppServer.Entities.EmployeeType", "EmployeeType")
-                        .WithMany("IncludePermissons")
-                        .HasForeignKey("EmployeeTypeId");
-
-                    b.HasOne("PizzaBookingAppServer.Entities.EmployeePermission", "Permission")
-                        .WithMany("IncludePermissons")
-                        .HasForeignKey("PermissionId");
-
-                    b.Navigation("EmployeeType");
-
-                    b.Navigation("Permission");
-                });
-
-            modelBuilder.Entity("PizzaBookingAppServer.Entities.Order", b =>
-                {
-                    b.HasOne("PizzaBookingAppServer.Entities.Customer", "Customer")
+                    b.HasOne("PizzaBookingShared.Entities.Customer", "Customer")
                         .WithMany()
                         .HasForeignKey("CustomerId");
 
-                    b.HasOne("PizzaBookingAppServer.Entities.Employee", "Employee")
+                    b.HasOne("PizzaBookingShared.Entities.Employee", "Employee")
                         .WithMany()
                         .HasForeignKey("EmployeeId");
 
@@ -476,13 +311,13 @@ namespace PizzaBookingAppServer.Migrations
                     b.Navigation("Employee");
                 });
 
-            modelBuilder.Entity("PizzaBookingAppServer.Entities.OrderLine", b =>
+            modelBuilder.Entity("PizzaBookingShared.Entities.OrderLine", b =>
                 {
-                    b.HasOne("PizzaBookingAppServer.Entities.Order", "Order")
+                    b.HasOne("PizzaBookingShared.Entities.Order", "Order")
                         .WithMany()
                         .HasForeignKey("OrderId");
 
-                    b.HasOne("PizzaBookingAppServer.Entities.Product", "Product")
+                    b.HasOne("PizzaBookingShared.Entities.Product", "Product")
                         .WithMany()
                         .HasForeignKey("ProductId");
 
@@ -491,33 +326,21 @@ namespace PizzaBookingAppServer.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("PizzaBookingAppServer.Entities.Product", b =>
+            modelBuilder.Entity("PizzaBookingShared.Entities.Product", b =>
                 {
-                    b.HasOne("PizzaBookingAppServer.Entities.Category", "Category")
+                    b.HasOne("PizzaBookingShared.Entities.Category", "Category")
                         .WithMany("Products")
                         .HasForeignKey("CategoryId");
 
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("PizzaBookingAppServer.Entities.Category", b =>
+            modelBuilder.Entity("PizzaBookingShared.Entities.Category", b =>
                 {
                     b.Navigation("Products");
                 });
 
-            modelBuilder.Entity("PizzaBookingAppServer.Entities.EmployeePermission", b =>
-                {
-                    b.Navigation("HasPermissions");
-
-                    b.Navigation("IncludePermissons");
-                });
-
-            modelBuilder.Entity("PizzaBookingAppServer.Entities.EmployeeType", b =>
-                {
-                    b.Navigation("IncludePermissons");
-                });
-
-            modelBuilder.Entity("PizzaBookingAppServer.Entities.Product", b =>
+            modelBuilder.Entity("PizzaBookingShared.Entities.Product", b =>
                 {
                     b.Navigation("ImageProducts");
                 });

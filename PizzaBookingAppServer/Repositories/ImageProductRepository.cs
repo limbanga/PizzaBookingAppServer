@@ -1,8 +1,12 @@
-﻿using PizzaBookingAppServer.Entities;
+﻿using PizzaBookingShared.Entities;
 
-namespace PizzaBookingAppServer.Repositories
+namespace PizzaBookingShared.Repositories
 {
-	public class ImageProductRepository : GenericRepository<ImageProduct>, IImageProductRepository
+    public interface IImageProductRepository : IGenericRepository<ImageProduct>
+    {
+    }
+
+    public class ImageProductRepository : GenericRepository<ImageProduct>, IImageProductRepository
 	{
 		public ImageProductRepository(AppContext context) : base(context)
 		{

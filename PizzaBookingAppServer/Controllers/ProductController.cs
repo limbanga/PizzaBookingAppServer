@@ -2,11 +2,12 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using PizzaBookingAppServer.Entities;
-using PizzaBookingAppServer.Helpers;
-using PizzaBookingAppServer.Repositories;
+using PizzaBookingShared.Entities;
+using PizzaBookingShared.Helpers;
+using PizzaBookingShared.Repositories;
+using PizzaBookingShared;
 
-namespace PizzaBookingAppServer.Controllers
+namespace PizzaBookingShared.Controllers
 {
 	[ApiController]
 	public class ProductController : GenericController<Product>
@@ -22,9 +23,12 @@ namespace PizzaBookingAppServer.Controllers
             _productRepo = productRepo;
         }
 
-        public override Task<ActionResult> Create(Product model)
+        [HttpGet("{categoryId}")]
+
+        public async Task<Int32> CountByCategory(int categoryId)
         {
-            return base.Create(model);
+            int result = await _productRepo.CountByCategory(categoryId);
+            return result;
         }
 
         [HttpPost]

@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using PizzaBookingAppServer.Entities;
-using PizzaBookingAppServer.Repositories;
+using PizzaBookingShared.Entities;
+using PizzaBookingShared.Repositories;
 
-namespace PizzaBookingAppServer.Controllers
+namespace PizzaBookingShared.Controllers
 {
 	[Route("[controller]/[action]")]
 	[ApiController]
@@ -26,7 +26,7 @@ namespace PizzaBookingAppServer.Controllers
 		[HttpGet("{id}")]
 		public virtual async Task<ActionResult<T>> Get(int id)
 		{
-			var model = await _repo.FindByIdAsync(id);
+			var model = await _repo.GetAsync(id);
 			if (model is null)
 			{
 				return NotFound();
@@ -41,16 +41,16 @@ namespace PizzaBookingAppServer.Controllers
 		}
 
 		[HttpPost]
-		public virtual async Task<ActionResult> Create(T model)
+		public virtual async Task<ActionResult<T>> Create(T model)
 		{
 			try
 			{
-				T t = await _repo.CreateAsync(model);
-				return Ok(t);
+				await _repo.CreateAsync(model);
+				return Ok(model);
 			}
-			catch (Exception e)
+			catch (Exception ex)
 			{
-				return Problem($"Can't create {typeof(T).Name}: {e.Message}");
+				return Problem($"Can't create {typeof(T).Name}: { ex.Message }");
 			}
 		}
 
@@ -60,12 +60,11 @@ namespace PizzaBookingAppServer.Controllers
 			try
 			{
 				await _repo.UpdateAsync(model);
-				return Ok();
+                return Ok(model);
 			}
-			catch (Exception)
+			catch (Exception ex)
 			{
-
-				return Problem($"Can't update {typeof(T).Name}");
+				return Problem($"Can't update {typeof(T).Name}: { ex.Message }");
 			}
 		}
 
@@ -74,12 +73,12 @@ namespace PizzaBookingAppServer.Controllers
 		{
 			try
 			{
-				await _repo.DeleteAsync(id);
-				return Ok();
+                T t = await _repo.DeleteAsync(id);
+                return Ok(t);
 			}
-			catch (Exception)
+			catch (Exception ex)
 			{
-				return Problem($"Can't delete {typeof(T).Name}");
+				return Problem($"Can't delete {typeof(T).Name}: { ex.Message }");
 			}
 		}
 	}

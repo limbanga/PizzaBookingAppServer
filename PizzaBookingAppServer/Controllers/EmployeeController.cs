@@ -4,21 +4,20 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using PizzaBookingAppServer.Entities;
-using PizzaBookingAppServer.Identity;
-using PizzaBookingAppServer.Repositories;
-using PizzaBookingViewModel;
+using PizzaBookingShared.Entities;
+using PizzaBookingShared.Identity;
+using PizzaBookingShared.Repositories;
+using PizzaBookingShared.ViewModel;
 using System.Configuration;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace PizzaBookingAppServer.Controllers
+namespace PizzaBookingShared.Controllers
 {
-	[ApiController]
+    [ApiController]
 	public class EmployeeController : GenericController<Employee>
 	{
-		private readonly IEmployeeTypeRepository employeeTypeRepo;
 		private readonly IEmployeeRepository repo;
 		private readonly IConfiguration _configuration;
 
@@ -26,17 +25,15 @@ namespace PizzaBookingAppServer.Controllers
 			AppContext context,
 			IEmployeeRepository tRepo,
 			IMapper mapper,
-			IEmployeeTypeRepository employeeTypeRepo,
 			IConfiguration configuration)
 			: base(context, tRepo, mapper)
 		{
 			repo = tRepo;
-			this.employeeTypeRepo = employeeTypeRepo;
 			_configuration = configuration;
 		}
 
 		[HttpPost]
-		public async Task<ActionResult> Create(SignUpViewModel model)
+		public async Task<ActionResult> SignUp(SignUpViewModel model)
 		{
 			Employee employee = _mapper.Map<Employee>(model);
 			await repo.CreateUserAsync(employee, model.Password);
@@ -79,33 +76,5 @@ namespace PizzaBookingAppServer.Controllers
 
 			return new LoginRespone() { AccessToken = token };
 		}
-
-		#region hiden
-		[NonAction]
-		public override Task<ActionResult> Create(Employee model)
-		{
-			return base.Create(model);
-		}
-
-		public override Task<ActionResult> Delete(int id)
-		{
-			return base.Delete(id);
-		}
-
-		public override Task<ActionResult<Employee>> Get(int id)
-		{
-			return base.Get(id);
-		}
-
-		public override Task<ActionResult<List<Employee>>> GetAll()
-		{
-			return base.GetAll();
-		}
-
-		public override Task<ActionResult> Update(Employee model)
-		{
-			return base.Update(model);
-		}
-		#endregion
 	}
 }

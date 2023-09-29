@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 
-namespace PizzaBookingAppServer.Helpers
+namespace PizzaBookingShared.Helpers
 {
     public static class Uploader
     {

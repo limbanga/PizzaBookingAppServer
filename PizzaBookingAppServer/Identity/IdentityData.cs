@@ -1,4 +1,4 @@
-﻿namespace PizzaBookingAppServer.Identity
+﻿namespace PizzaBookingShared.Identity
 {
 	public class IdentityData
 	{

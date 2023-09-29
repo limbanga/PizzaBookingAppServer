@@ -1,8 +1,12 @@
-﻿using PizzaBookingAppServer.Entities;
+﻿using PizzaBookingShared.Entities;
 
-namespace PizzaBookingAppServer.Repositories
+namespace PizzaBookingShared.Repositories
 {
-	public class OrderLineRepository : GenericRepository<OrderLine>, IOrderLineRepository
+    public interface IOrderLineRepository : IGenericRepository<OrderLine>
+    {
+    }
+
+    public class OrderLineRepository : GenericRepository<OrderLine>, IOrderLineRepository
 	{
 		public OrderLineRepository(AppContext context) 
 			: base(context)

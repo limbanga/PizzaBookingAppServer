@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace PizzaBookingAppServer.Migrations
+namespace PizzaBookingShared.Migrations
 {
     [DbContext(typeof(AppContext))]
     [Migration("20230911154725_Initial")]

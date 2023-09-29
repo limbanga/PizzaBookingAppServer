@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
-using PizzaBookingAppServer.Entities;
-using PizzaBookingViewModel;
+using PizzaBookingShared.Entities;
+using PizzaBookingShared.ViewModel;
 
-namespace PizzaBookingAppServer.Helpers
+namespace PizzaBookingShared.Helpers
 {
-	public class Mapper : Profile
+    public class Mapper : Profile
 	{
         public Mapper()
         {

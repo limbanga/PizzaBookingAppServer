@@ -1,10 +1,11 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using PizzaBookingAppServer.Entities;
-using PizzaBookingAppServer.Repositories;
+using PizzaBookingShared.Entities;
+using PizzaBookingShared.Repositories;
+using PizzaBookingShared;
 
-namespace PizzaBookingAppServer.Controllers
+namespace PizzaBookingShared.Controllers
 {
 	[ApiController]
 	public class OrderController : GenericController<Order>

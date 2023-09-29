@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\PizzaBookingViewModel\PizzaBookingViewModel.csproj" />
+    <ProjectReference Include="..\PizzaBookingViewModel\PizzaBookingShared.csproj" />
   </ItemGroup>
 
 </Project>

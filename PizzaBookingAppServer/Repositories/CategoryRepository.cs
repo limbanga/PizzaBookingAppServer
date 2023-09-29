@@ -1,8 +1,12 @@
-﻿using PizzaBookingAppServer.Entities;
+﻿using PizzaBookingShared.Entities;
 
-namespace PizzaBookingAppServer.Repositories
+namespace PizzaBookingShared.Repositories
 {
-	public class CategoryRepository : GenericRepository<Category>, ICategoryRepository
+    public interface ICategoryRepository : IGenericRepository<Category>
+    {
+    }
+
+    public class CategoryRepository : GenericRepository<Category>, ICategoryRepository
 	{
 		public CategoryRepository(AppContext context) : base(context)
 		{

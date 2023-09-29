@@ -1,9 +1,14 @@
-﻿using PizzaBookingAppServer.Entities;
+﻿using PizzaBookingShared.Entities;
 
-namespace PizzaBookingAppServer.Repositories
+namespace PizzaBookingShared.Repositories
 {
-	public class CustomerRepository : GenericRepository<Customer>, ICustomerRepository
+    public interface ICustomerRepository : IGenericRepository<Customer>
+    {
+    }
+
+    public class CustomerRepository : GenericRepository<Customer>, ICustomerRepository
 	{
+
 		public CustomerRepository(AppContext context) : base(context)
 		{
 		}
