@@ -1,7 +1,93 @@
 ﻿@page "/"
+@inject IDialogService DialogService
 
 <PageTitle>Index</PageTitle>
 
-<MudText Typo="Typo.h3" GutterBottom="true">Hello, world!</MudText>
-<MudText Class="mb-8">Welcome to your new app, powered by MudBlazor!</MudText>
-<MudAlert Severity="Severity.Normal">You can find documentation and examples on our website here: <MudLink Href="https://mudblazor.com" Typo="Typo.body2" Color="Color.Inherit"><b>www.mudblazor.com</b></MudLink></MudAlert>
+<MudCarousel Class="mud-width-full" Style="height:400px;" ShowArrows="true" ShowBullets="true"
+             EnableSwipeGesture="@true" AutoCycle="true" TData="object">
+    <MudCarouselItem Transition="@Transition.Slide" Color="@Color.Primary">
+        <div class="d-flex" style="height:100%">
+            <MudImage Src="https://www.pizzaexpress.vn/wp-content/uploads/2022/02/Banner-Pizza-Web-18_9_2021-v2.png" 
+            Alt="slide" ObjectFit="ObjectFit.Contain" Class="rounded-lg"  />
+        </div>
+    </MudCarouselItem>
+    <MudCarouselItem Transition="@Transition.Slide" Color="@Color.Primary">
+        <div class="d-flex" style="height:100%">
+            <MudImage Src="https://www.pizzaexpress.vn/wp-content/uploads/2020/12/Giam20-muabanhvami.jpg"
+                      Alt="slide" ObjectFit="ObjectFit.Contain" Class="rounded-lg" />
+        </div>
+    </MudCarouselItem>
+    <MudCarouselItem Transition="@Transition.Slide" Color="@Color.Primary">
+        <div class="d-flex" style="height:100%">
+            <MudImage Src="https://www.pizzaexpress.vn/wp-content/uploads/2020/12/test.jpg"
+                      Alt="slide" ObjectFit="ObjectFit.Contain" Class="rounded-lg" />
+        </div>
+    </MudCarouselItem>
+</MudCarousel>
+
+@if (products == null)
+{
+    <LoaderPizza/>
+}
+else
+{
+    <MudGrid Justify="Justify.Center" Class="mt-8">
+        @foreach (var product in products)
+        {
+            <MudItem xs="6" sm="4" md="3">
+                <MudPaper @onclick="(()=> navToProductDetail(product.Id))"
+                    Class="border-solid border-1 mud-border-primary" 
+                    Style="background: var(--mud-palette-background);">
+                    <div class="d-flex justify-center" style="height: 200px;">
+
+                        <MudImage Src="@(string.IsNullOrEmpty(product.ImagePath )?
+                                    "https://www.pizzaexpress.vn/wp-content/uploads/2019/12/P1rs1.jpg":
+                                    "upload/" + product.ImagePath)"
+                                  Alt="Image about product"
+                                  Class="rounded-t-lg"
+                                  ObjectFit="ObjectFit.Cover"
+                                  Style="width: 100%;"/>
+                    </div>
+
+                    <MudText Typo="Typo.h5"
+                             Align="Align.Center"
+                             Color="Color.Primary"
+                             Class="py-2">@product.Name</MudText>
+
+                    <MudText Typo="Typo.h6"
+                             Align="Align.Center"
+                             Class="py-2"
+                             Color="Color.Error">
+                             @(String.Format(System.Globalization.CultureInfo.GetCultureInfo("vi-VN"), "{0:N0} vnd  ",
+                             product.Price))
+                         </MudText>
+
+                    <MudItem Class="d-flex align-center justify-center py-2">
+                        <MudRating ReadOnly="true" SelectedValue="2" />
+                        <MudText Typo="Typo.caption">64 lượt</MudText>
+                    </MudItem>
+
+                    <MudButton Variant="Variant.Filled"
+                               StartIcon="@Icons.Material.Filled.ShoppingCart"
+                               FullWidth="true"
+                               Color="Color.Error">Add to cart</MudButton>
+
+                </MudPaper>
+            </MudItem>
+        }
+    </MudGrid>
+}
+
+
+@code {
+    private List<Product>? products;
+
+    protected override async Task OnInitializedAsync()
+    {
+        products = await _httpService.GetAll<Product>("/Product/GetAll");
+    }
+
+    private void navToProductDetail(int id) {
+        _navigationManager.NavigateTo($"/product/{id}");
+    }
+}

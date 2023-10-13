@@ -1,34 +1,122 @@
 ﻿@inherits LayoutComponentBase
 
-<MudThemeProvider />
+<MudThemeProvider @ref="@_mudThemeProvider" @bind-IsDarkMode="@isDarkTheme" Theme="_currentTheme" />
 <MudDialogProvider />
 <MudSnackbarProvider />
 
+
 <MudLayout>
+    
     <MudAppBar Elevation="0">
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@(() => DrawerToggle())" />
+        
+        <MudItem Class="d-flex" @onclick="navToHomePage">
+            <MudText Typo="Typo.h4" Style="color: white;">Pixel</MudText>
+            <MudText Typo="Typo.h4" Color="Color.Warning">Pizza</MudText>
+        </MudItem>
+
         <MudSpacer />
-        <MudIconButton Icon="@Icons.Custom.Brands.MudBlazor" Color="Color.Inherit" Link="https://mudblazor.com/" Target="_blank" />
-        <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Link="https://github.com/MudBlazor/MudBlazor/" Target="_blank" />
+
+        <MudBadge Content="3" Overlap="true" Class="mx-6 my-4" Color="@(isDarkTheme? Color.Error: Color.Dark)">
+            <MudIcon
+                Icon="@Icons.Material.Filled.ShoppingCart" 
+                Color="Color.Primary"
+                @onclick="ToggleCartDrawer" />
+        </MudBadge>
+
+        <MudTooltip Text="@(isDarkTheme ? "Change to light": "Change to dark")">
+            <MudToggleIconButton @bind-Toggled="@isDarkTheme"
+                                 Icon="@Icons.Material.Filled.WbSunny" Color="@Color.Warning" Title="Off"
+                                 ToggledIcon="@Icons.Material.Filled.DarkMode" ToggledColor="@Color.Info" ToggledTitle="On" />
+        </MudTooltip>
+
     </MudAppBar>
-    <MudDrawer @bind-Open="_drawerOpen" Elevation="1">
+
+    <MudDrawer @bind-Open="_drawerOpen" Elevation="1" Variant="@DrawerVariant.Temporary" Width="300px">
         <MudDrawerHeader>
-            <MudText Typo="Typo.h6">Main layout</MudText>
+            <MudText Typo="Typo.h6">Category</MudText>
         </MudDrawerHeader>
-        <NavMenu />
+        <NavCategoryMenu />
     </MudDrawer>
+
+    <MudDrawer @bind-Open="@_drawerOpenCart" Anchor="Anchor.End" Elevation="100" Variant="@DrawerVariant.Temporary" Width="500px"
+               Style="background: var(--mud-palette-background);">
+        <MudDrawerHeader>
+            <MudText Typo="Typo.h5" Color="Color.Primary">Your cart</MudText>
+        </MudDrawerHeader>
+        <CartList/>
+    </MudDrawer>
+
     <MudMainContent>
-        <MudContainer MaxWidth="MaxWidth.Large" Class="">
+        <MudContainer MaxWidth="MaxWidth.Large" Fixed="true" >
             @Body
         </MudContainer>
     </MudMainContent>
+
+    <div style="z-index: 2000; position: fixed; right: 35px; top: 40vh;"
+         class=" @(_drawerOpenCart? "invisible": "visible")">
+        <MudBadge Content="3" Overlap="true">
+            <MudFab Color="Color.Tertiary"
+                    StartIcon="@Icons.Material.Filled.ShoppingCart"
+                    OnClick="ToggleCartDrawer" />
+        </MudBadge>
+    </div>
+
+
 </MudLayout>
 
 @code {
-    bool _drawerOpen = true;
+    private bool _drawerOpenCart = false;
+    private void ToggleCartDrawer()
+    {
+        _drawerOpenCart = !_drawerOpenCart;
+    }
 
-    void DrawerToggle()
+    private bool _drawerOpen = false;
+
+    private void DrawerToggle()
     {
         _drawerOpen = !_drawerOpen;
+    }
+
+    private bool isDarkTheme { get; set; } = true;
+
+    private MudThemeProvider _mudThemeProvider = null!;
+
+    private readonly MudTheme _currentTheme = new()
+        {
+            Palette = new Palette
+            {
+                Primary = "#000000",
+                Secondary = "#161616",
+                Info = "#64a7e2",
+                Success = "#2ECC40",
+                Warning = "#FFC107",
+                AppbarBackground = "#ff0000",
+                Background = "#ffffff"
+
+            },
+            PaletteDark = new Palette
+            {
+                Primary = "#ffffff",
+                Secondary = "#161616",
+                Info = "#a4c2dd",
+                Success = "#2ECC40",
+                Warning = "#fff000",
+                AppbarBackground = "#121212",
+                Background = "#161616"
+            }
+    };
+
+
+    private void ThemeToggle()
+    {
+        isDarkTheme = !isDarkTheme;
+        StateHasChanged();
+    }
+
+    private void navToHomePage()
+    {
+        _navigationManager.NavigateTo("/");
     }
 }

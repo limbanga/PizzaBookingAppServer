@@ -1,15 +1,24 @@
 ﻿@inherits LayoutComponentBase
 
-<MudThemeProvider />
+<MudThemeProvider @ref="@_mudThemeProvider" @bind-IsDarkMode="@_isDarkMode" Theme="_currentTheme" />
 <MudDialogProvider />
 <MudSnackbarProvider />
 
 <MudLayout>
     <MudAppBar Elevation="0">
+
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+        
         <MudSpacer />
-        <MudIconButton Icon="@Icons.Custom.Brands.MudBlazor" Color="Color.Inherit" Link="https://mudblazor.com/" Target="_blank" />
-        <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Link="https://github.com/MudBlazor/MudBlazor/" Target="_blank" />
+
+        <MudTooltip Text="Change Theme">
+            <MudIconButton Icon="@( _isDarkMode? Icons.Material.Filled.Nightlight : @Icons.Material.Filled.LightMode)"
+                           Color="@( _isDarkMode? Color.Primary : Color.Warning)" 
+                           OnClick="@((e) => ThemeToggle())" />
+        </MudTooltip>
+
+        <MudIconButton Icon="@Icons.Custom.Brands.GitHub"  OnClick="@((e) => ThemeToggle())" />
+
     </MudAppBar>
     <MudDrawer @bind-Open="_drawerOpen" Elevation="1">
         <MudDrawerHeader>
@@ -18,7 +27,7 @@
         <AdminNavMenu />
     </MudDrawer>
     <MudMainContent>
-        <MudContainer MaxWidth="MaxWidth.Large" Class="">
+        <MudContainer MaxWidth="MaxWidth.Large">
             @Body
         </MudContainer>
     </MudMainContent>
@@ -30,5 +39,53 @@
     void DrawerToggle()
     {
         _drawerOpen = !_drawerOpen;
+    }
+
+    private bool _isDarkMode;
+    private MudThemeProvider _mudThemeProvider = null!;
+
+    private readonly MudTheme _currentTheme = new()
+        {
+            Palette = new Palette
+            {
+                Primary = "#0A7BCF",
+                Secondary = "#4CAF50",
+                Info = "#64a7e2",
+                Success = "#2ECC40",
+                Warning = "#FFC107",
+                Error = "#FF0000",
+                AppbarBackground = "#212121",
+                TextPrimary = "#0A7BCF",
+                TextSecondary = "#4CAF50",
+                // more color properties
+            },
+            PaletteDark = new Palette
+            {
+                Primary = "#6585e0",
+                Secondary = "#607D8B",
+                Info = "#a4c2dd",
+                Success = "#2ECC40",
+                Warning = "#fff000",
+                Error = "#de2000",
+                AppbarBackground = "#121212",
+                TextPrimary = "#0A7BCF",
+                TextSecondary = "#BDBDBD",
+                // more color properties
+            }
+    };
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _isDarkMode = await _mudThemeProvider.GetSystemPreference();
+            StateHasChanged();
+        }
+    }
+
+    void ThemeToggle()
+    {
+        _isDarkMode = !_isDarkMode;
+        StateHasChanged();
     }
 }

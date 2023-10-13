@@ -7,6 +7,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Blazored.LocalStorage" Version="4.4.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.7" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.7" PrivateAssets="all" />
 		<PackageReference Include="MudBlazor" Version="6.0.13" />
@@ -14,6 +15,15 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\PizzaBookingViewModel\PizzaBookingShared.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Update="Pages\Admin\Product\Create.razor">
+	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+	  </Content>
+	  <Content Update="Pages\Admin\Product\Index.razor">
+	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+	  </Content>
 	</ItemGroup>
 	
 	

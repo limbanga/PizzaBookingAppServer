@@ -2,8 +2,12 @@
 @using PizzaBookingShared.Entities
 @using PizzaBookingAppClient.Shared
 
-<PageTitle>category</PageTitle>
+<PageTitle>Admin - Category</PageTitle>
 <MudText Typo="Typo.h3" GutterBottom="true"> Category </MudText>
+
+<MudItem Class="d-flex justify-end">
+    <MudButton Variant="Variant.Filled" Href="/admin/category/create" Color="@Color.Success">Create now!</MudButton>
+</MudItem>
 
 @if (categories == null)
 {
@@ -11,7 +15,8 @@
 }
 else if (categories.Count == 0)
 {
-    <MudText Typo="Typo.h4" GutterBottom="true"> Category is empty.
+    <MudText Typo="Typo.h4" GutterBottom="true">
+        Category is empty.
         <MudLink Href="/admin/category/create">Create now!</MudLink>
     </MudText>
 }

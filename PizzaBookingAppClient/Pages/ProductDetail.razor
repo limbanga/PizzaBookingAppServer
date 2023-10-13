@@ -1,0 +1,91 @@
+﻿@page "/product/{Id:int}"
+<PageTitle> Product detail </PageTitle>
+
+@if (product == null)
+{
+    <LoaderPizza/>
+}
+else
+{
+    <MudGrid>
+        <MudItem xs="12" md="6">
+            <MudPaper Class="d-flex align-center justify-center mud-width-full mud-height-full pa-8"
+                      Style="background: var(--mud-palette-background);">
+                <MudImage Src="@("upload/" + product.ImagePath)" Alt="image of product" Fluid="true" />
+            </MudPaper>
+        </MudItem>
+
+        <MudItem xs="12" md="6">
+            <MudPaper Class="d-flex align-center justify-center mud-width-full mud-height-full pa-8"
+                      Style="background: var(--mud-palette-background);">
+                <MudItem Class="mud-width-full pa-4">
+                    <MudText Typo="Typo.h4"
+                             Color="Color.Primary"
+                             Align="Align.Center">@product.Name</MudText>
+
+                    <MudItem Class="d-flex justify-space-between align-center">
+                        <MudItem Class="d-flex align-center gap-4">
+                            <MudRating ReadOnly="true" SelectedValue="2" Size="Size.Small" />
+                            <MudText Typo="Typo.caption" Color="Color.Primary">24 reviews</MudText>
+                        </MudItem>
+
+                        <MudItem Class="d-flex align-center">
+                            <MudIcon Icon="@Icons.Material.Filled.Favorite" Color="Color.Error" />
+                            <MudText Typo="Typo.caption" Color="Color.Error">32 solds this month</MudText>
+                        </MudItem>
+                    </MudItem>
+
+                    <MudButtonGroup OverrideStyles="false" Class="my-4">
+                        <MudButton Color="Color.Primary"
+                                   Variant="@isSizeSelected("S")"
+                                   OnClick="@(() => ProductSize = "S")">S</MudButton>
+                        <MudButton Color="Color.Primary"
+                                   Variant="@isSizeSelected("M")"
+                                   OnClick="@(() => ProductSize = "M")">M</MudButton>
+                        <MudButton Color="Color.Primary"
+                                   Variant="@isSizeSelected("L")"
+                                   OnClick="@(() => ProductSize = "L")">L</MudButton>
+                    </MudButtonGroup>
+
+                    <MudNumericField @bind-Value="quantity"
+                                     Label="Please choose quantity"
+                                     Min="1"
+                                     Max="100"
+                                     Variant="Variant.Filled"
+                                     Style="background: var(--mud-palette-background);
+                                            color: var(--mud-palette-primary);" />
+
+                    <MudText Typo="Typo.h5" Color="Color.Error" Class="my-4">@((product.Price * quantity).ToString("N0")) vnd</MudText>
+
+                    <MudItem Class="d-flex justify-space-evenly gap-4 my-4">
+                        <MudButton Variant="Variant.Filled" Color="Color.Error" FullWidth="true">Buy now</MudButton>
+                        <MudButton Variant="Variant.Outlined" Color="Color.Primary" FullWidth="true">Add to card</MudButton>
+                    </MudItem>
+
+                </MudItem>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+}
+
+
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+    private Product product { get; set; } = null!;
+
+    private string ProductSize { get; set; } = "S";
+    private int quantity { get; set; } = 1;
+
+    protected override async Task OnInitializedAsync()
+    {
+        product = await _httpService.Get<Product>("/Product/Get", Id);
+    }
+
+    private Variant isSizeSelected(string s)
+    {
+        return s.Equals(ProductSize) ? Variant.Outlined: Variant.Text;
+    }
+
+}

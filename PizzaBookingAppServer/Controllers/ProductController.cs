@@ -23,8 +23,13 @@ namespace PizzaBookingShared.Controllers
             _productRepo = productRepo;
         }
 
-        [HttpGet("{categoryId}")]
+        [HttpGet]
+        public async Task<List<Product>> GetAllWithCategory()
+        {
+            return await _productRepo.GetAllWithCategoryAsync();
+        }
 
+        [HttpGet("{categoryId}")]
         public async Task<Int32> CountByCategory(int categoryId)
         {
             int result = await _productRepo.CountByCategory(categoryId);
