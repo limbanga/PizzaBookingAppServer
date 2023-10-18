@@ -44,7 +44,7 @@
         <MudDrawerHeader>
             <MudText Typo="Typo.h5" Color="Color.Primary">Your cart</MudText>
         </MudDrawerHeader>
-        <CartList/>
+        <CartList OrderLines="orderLines" LoadCart="LoadCart" />
     </MudDrawer>
 
     <MudMainContent>
@@ -67,9 +67,25 @@
 
 @code {
     private bool _drawerOpenCart = false;
-    private void ToggleCartDrawer()
+    private List<OrderLine> orderLines { get; set; } = null!;
+
+    private async Task ToggleCartDrawer()
     {
         _drawerOpenCart = !_drawerOpenCart;
+        await LoadCart();
+    }
+
+    private async Task LoadCart()
+    {
+        orderLines = await _cartService.Get();
+        foreach (var orderLine in orderLines)
+        {
+            if (orderLine.ProductId != null)
+            {
+                orderLine.Product =
+                    await _httpService.Get<Product>("/Product/Get", (int)orderLine.ProductId);
+            }
+        }
     }
 
     private bool _drawerOpen = false;

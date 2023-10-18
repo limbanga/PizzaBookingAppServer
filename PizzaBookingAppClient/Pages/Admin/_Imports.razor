@@ -9,10 +9,11 @@
 @using MudBlazor
 @using PizzaBookingAppClient
 @using PizzaBookingAppClient.Shared
-@using PizzaBookingAppClient.Services;
+@using PizzaBookingAppClient.Shared.Admin
+@using PizzaBookingAppClient.Services
 
 @inject HttpService _httpService
-@inject ISnackbar Snackbar
-@inject IJSRuntime jSRuntime
+@inject ISnackbar _snackbar
+@inject IJSRuntime _jSRuntime
 
 @layout AdminLayout

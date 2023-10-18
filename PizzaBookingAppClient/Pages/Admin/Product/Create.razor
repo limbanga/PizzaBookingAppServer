@@ -141,7 +141,7 @@
     private async Task OnFileChange(InputFileChangeEventArgs e)
     {
         browserFile = e.File;
-        imageTempPath = await jSRuntime.InvokeAsync<string>("getTempURL", "__upload_image_product");
+        imageTempPath = await _jSRuntime.InvokeAsync<string>("getTempURL", "__upload_image_product");
         StateHasChanged();
     }
 
@@ -165,7 +165,7 @@
 
         product.ImagePath = await _httpService.PostFile(browserFile);
         await _httpService.Create<Product>("Product/Create", product);
-        Snackbar.Add("Add category success", Severity.Success);
+        _snackbar.Add("Add category success", Severity.Success);
         StateHasChanged();
     }
 
@@ -176,7 +176,7 @@
             product.ImagePath = await _httpService.PostFile(browserFile);
         }
         await _httpService.Update<Product>("Product/Update", product);
-        Snackbar.Add("Update product success", Severity.Success);
+        _snackbar.Add("Update product success", Severity.Success);
         StateHasChanged();
     }
 }

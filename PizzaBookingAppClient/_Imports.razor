@@ -9,7 +9,7 @@
 @using Blazored.LocalStorage
 @using MudBlazor
 @using PizzaBookingAppClient
-@using PizzaBookingAppClient.Shared
+@using PizzaBookingAppClient.Shared.Customer
 @using PizzaBookingAppClient.Components
 @using PizzaBookingAppClient.Services
 @using PizzaBookingShared.Entities
@@ -20,3 +20,4 @@
 @inject IJSRuntime _jSRuntime
 @inject NavigationManager _navigationManager
 @inject ILocalStorageService _localStorageService
+@inject ICartService _cartService

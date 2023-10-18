@@ -15,6 +15,9 @@ namespace PizzaBookingShared.Entities
         [Column(TypeName = "VARCHAR")]
         [StringLength(32)]
         public string Icon { get; set; } = null!;
+        [Column(TypeName = "VARCHAR")]
+        [StringLength(10)]
+        public string IconColor { get; set; } = null!;
         [JsonIgnore]
 		public List<Product>? Products { get; set; }
 		[NotMapped]

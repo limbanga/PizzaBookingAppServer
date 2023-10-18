@@ -1,5 +1,5 @@
 ﻿@page "/product/{Id:int}"
-<PageTitle> Product detail </PageTitle>
+<PageTitle> @(product == null? "Loading": product.Name)</PageTitle>
 
 @if (product == null)
 {
@@ -19,9 +19,10 @@ else
             <MudPaper Class="d-flex align-center justify-center mud-width-full mud-height-full pa-8"
                       Style="background: var(--mud-palette-background);">
                 <MudItem Class="mud-width-full pa-4">
-                    <MudText Typo="Typo.h4"
+                    <MudText Typo="Typo.h3"
                              Color="Color.Primary"
-                             Align="Align.Center">@product.Name</MudText>
+                             Class="my-4"
+                             Align="Align.Start">@product.Name</MudText>
 
                     <MudItem Class="d-flex justify-space-between align-center">
                         <MudItem Class="d-flex align-center gap-4">
@@ -57,9 +58,11 @@ else
 
                     <MudText Typo="Typo.h5" Color="Color.Error" Class="my-4">@((product.Price * quantity).ToString("N0")) vnd</MudText>
 
-                    <MudItem Class="d-flex justify-space-evenly gap-4 my-4">
-                        <MudButton Variant="Variant.Filled" Color="Color.Error" FullWidth="true">Buy now</MudButton>
-                        <MudButton Variant="Variant.Outlined" Color="Color.Primary" FullWidth="true">Add to card</MudButton>
+                    <MudItem Class="d-flex my-4">
+                        <MudButton Variant="Variant.Filled" 
+                                Color="Color.Error" 
+                                FullWidth="true" 
+                                OnClick="OnAddToCart">Add to card</MudButton>
                     </MudItem>
 
                 </MudItem>
@@ -86,6 +89,18 @@ else
     private Variant isSizeSelected(string s)
     {
         return s.Equals(ProductSize) ? Variant.Outlined: Variant.Text;
+    }
+
+    private async Task OnAddToCart()
+    {
+        OrderLine orderLine = new OrderLine
+            {
+                ProductId = product.Id,
+                Quantity = quantity
+            };
+
+        await _cartService.Add(orderLine);
+        _snackbar.Add("Add to cart successfully.", Severity.Success);
     }
 
 }

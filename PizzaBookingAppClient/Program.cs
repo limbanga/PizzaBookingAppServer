@@ -12,6 +12,8 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7266/") });
 builder.Services.AddMudServices();
 builder.Services.AddTransient<HttpService>();
+builder.Services.AddTransient<ICartService, CartService>();
+
 builder.Services.AddBlazoredLocalStorage();
 
 

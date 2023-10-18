@@ -36,7 +36,7 @@ else
             <MudTd DataLabel="Count">@context.Count</MudTd>
         </RowTemplate>
         <PagerContent>
-            <MudTablePager PageSizeOptions="new int[]{50, 100}" />
+            <MudTablePager PageSizeOptions="new int[]{ 2, 10, 50, 100}" />
         </PagerContent>
     </MudTable>
 }
@@ -57,6 +57,9 @@ else
 
     private void RowClickEvent(TableRowClickEventArgs<Category> row)
     {
+        // nav to update
+        _navigationManager.NavigateTo($"/admin/category/update/{row.Item.Id}");
         Console.WriteLine(row.Item.Name);
     }
+
 }

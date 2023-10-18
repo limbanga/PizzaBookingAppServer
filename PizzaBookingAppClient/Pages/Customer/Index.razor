@@ -1,5 +1,4 @@
 ﻿@page "/"
-@inject IDialogService DialogService
 
 <PageTitle>Index</PageTitle>
 
@@ -41,7 +40,7 @@ else
                     <div class="d-flex justify-center" style="height: 200px;">
 
                         <MudImage Src="@(string.IsNullOrEmpty(product.ImagePath )?
-                                    "https://www.pizzaexpress.vn/wp-content/uploads/2019/12/P1rs1.jpg":
+                                    "/public/images/nothing.png":
                                     "upload/" + product.ImagePath)"
                                   Alt="Image about product"
                                   Class="rounded-t-lg"
@@ -70,7 +69,8 @@ else
                     <MudButton Variant="Variant.Filled"
                                StartIcon="@Icons.Material.Filled.ShoppingCart"
                                FullWidth="true"
-                               Color="Color.Error">Add to cart</MudButton>
+                               Color="Color.Error"
+                               OnClick="(() => OnAddToCart(product.Id))">Add to cart</MudButton>
 
                 </MudPaper>
             </MudItem>
@@ -89,5 +89,18 @@ else
 
     private void navToProductDetail(int id) {
         _navigationManager.NavigateTo($"/product/{id}");
+    }
+
+    private async Task OnAddToCart(int productId)
+    {
+        OrderLine orderLine = new OrderLine
+            {
+                ProductId = productId,
+                Quantity = 1
+            };
+
+        await _cartService.Add(orderLine);
+        _snackbar.Add("Add product to cart successfully", Severity.Success);
+        StateHasChanged();
     }
 }

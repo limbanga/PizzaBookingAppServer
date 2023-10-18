@@ -1,4 +1,6 @@
 ﻿@page "/admin/category/create"
+@page "/admin/category/update/{Id:int}"
+
 @using PizzaBookingShared.Entities
 @using PizzaBookingAppClient.Shared
 
@@ -20,11 +22,18 @@
 
                     <MudTextField Label="Category icon" HelperText="Font awessome"
                     @bind-Value="category.Icon" For="@(() => category.Icon)" />
+
+                    <MudColorPicker Label="Icon color" ColorPickerView="ColorPickerView.Spectrum" @bind-Text="category.IconColor" />
                     
                 </MudCardContent>
 
                 <MudCardActions>
-                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Success" Class="ml-auto">Create</MudButton>
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Success" Class="ml-auto">
+                        @(Id == null?
+                            "Create":
+                            "Update"
+                        )
+                    </MudButton>
                 </MudCardActions>
             </MudCard>
         </MudItem>
@@ -32,16 +41,13 @@
         <MudItem xs="12" sm="5">
             <MudPaper Class="pa-4 mud-height-full">
                 <MudText Typo="Typo.subtitle2">Validation Summary</MudText>
-                @if (success)
-                {
+
                     <MudText Color="Color.Success">Success</MudText>
-                }
-                else
-                {
+                
                     <MudText Color="@Color.Error">
                         <ValidationSummary />
                     </MudText>
-                }
+
             </MudPaper>
         </MudItem>
         <MudItem xs="12">
@@ -53,15 +59,41 @@
 </EditForm>
 
 @code {
+    [Parameter]
+    public int? Id { get; set; } = null!;
+
     private Category category = new Category();
-    private bool success;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Id != null)
+        {
+            category = await _httpService.Get<Category>("/Category/Get", (int) Id);
+        }
+    }
 
     private async void OnValidSubmit(EditContext context)
     {
-        success = true;
-        await _httpService.Create<Category>("Category/Create", category);
-        Snackbar.Add("Add category success", Severity.Success);
-
+        if (Id == null)
+        {
+            await PostAddCategory();
+        }
+        else
+        {
+            await PutUpdateCategory();
+        }
         StateHasChanged();
+    }
+
+    private async Task PostAddCategory()
+    {
+        await _httpService.Create<Category>("Category/Create", category);
+        _snackbar.Add("Add category success", Severity.Success);
+    }
+
+    private async Task PutUpdateCategory()
+    {
+        await _httpService.Update<Category>("Category/Update", category);
+        _snackbar.Add("Add update success", Severity.Success);
     }
 }
