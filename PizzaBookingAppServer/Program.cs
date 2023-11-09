@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using PizzaBookingAppServer.Repositories;
 using PizzaBookingShared.Identity;
 using PizzaBookingShared.Repositories;
 using System.Configuration;
@@ -23,6 +24,8 @@ builder.Services.AddTransient<IOrderRepository, OrderRepository>();
 builder.Services.AddTransient<IOrderLineRepository, OrderLineRepository>();
 builder.Services.AddTransient<IProductRepository, ProductRepository>();
 builder.Services.AddTransient<IEmployeeRepository, EmployeeRepository>();
+builder.Services.AddTransient<IAuthRepository, AuthRepository>();
+
 
 
 builder.Services.AddControllers();

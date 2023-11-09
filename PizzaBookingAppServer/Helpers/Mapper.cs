@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using PizzaBookingShared.Entities;
-using PizzaBookingShared.ViewModel;
 
 namespace PizzaBookingShared.Helpers
 {
@@ -8,7 +7,7 @@ namespace PizzaBookingShared.Helpers
 	{
         public Mapper()
         {
-            CreateMap<Employee, SignUpViewModel>().ReverseMap();
+         //   CreateMap<Employee, SignUpViewModel>().ReverseMap();
         }
     }
 }

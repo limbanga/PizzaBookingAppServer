@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using PizzaBookingAppServer.AppExceptions;
 using PizzaBookingShared.Entities;
 
 namespace PizzaBookingShared.Repositories
@@ -26,17 +27,19 @@ namespace PizzaBookingShared.Repositories
 
 		public async Task<Employee?> LoginAsync(string loginName, string password)
 		{
-			IPasswordHasher<Employee> passwordHasher = new PasswordHasher<Employee>();
 			var employee = await _dbSet.FirstOrDefaultAsync(x => x.LoginName == loginName);
 			if (employee == null)
 			{
-				return null;
+				throw new AuthException();
 			}
-			var result = passwordHasher.VerifyHashedPassword(employee, employee.HashedPassword, password);
+
+            IPasswordHasher<Employee> passwordHasher = new PasswordHasher<Employee>();
+            var result = passwordHasher.VerifyHashedPassword(employee, employee.HashedPassword, password);
             if (result != PasswordVerificationResult.Success)
             {
-				return null;
+                throw new AuthException();
 			}
+
 			return employee;
         }
 	}

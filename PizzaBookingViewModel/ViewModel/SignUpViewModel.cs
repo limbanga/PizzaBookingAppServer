@@ -27,5 +27,7 @@ namespace PizzaBookingShared.ViewModel
 
         [Compare("Password")]
         public string RePassword { get; set; } = null!;
+
+        public string Role { get; set; } = null!;
     }
 }

@@ -2,6 +2,6 @@
 {
 	public class Employee : User
 	{
-		public string Role { get; set; } = null!;
+		public string? Role { get; set; } = null!;
     }
 }

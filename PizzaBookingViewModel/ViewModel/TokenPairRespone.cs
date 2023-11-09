@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace PizzaBookingShared.ViewModel
 {
-    public class LoginRespone
+    public class TokenPairRespone
     {
         public string? AccessToken { get; set; }
+        public string? RefreshToken { get; set; }
+
     }
 }

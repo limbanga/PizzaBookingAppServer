@@ -1,0 +1,137 @@
+﻿@page "/checkout"
+
+@* Kiếm font chữ thế vào *@
+<MudText Typo="Typo.h3" Style="text-align: center; color: red;" Class="pa-4">
+    Enjoy your meal!
+</MudText>
+
+
+<MudPaper Class="mud-width-full"
+            Style="background: var(--mud-palette-secondary)">
+
+    <MudTable 
+        Items="@Elements.Take(4)" 
+        Hover="true" 
+        Breakpoint="Breakpoint.Sm"
+        Loading="@_loading" 
+        LoadingProgressColor="Color.Error"
+        Style="background: var(--mud-palette-secondary)">
+
+        <HeaderContent>
+            <MudTh>Product</MudTh>
+            <MudTh>Image</MudTh>
+            <MudTh>Price</MudTh>
+            <MudTh>Quantity</MudTh>
+            <MudTh>Total</MudTh>
+        </HeaderContent>
+
+        <RowTemplate >
+            <MudTd 
+                Style="color: var(--mud-palette-text-secondary);" 
+                DataLabel="Product">@context.Product?.Name</MudTd>
+
+            <MudTd 
+                Style="color: var(--mud-palette-text-secondary);" 
+                DataLabel="Product">
+                @* Show image here *@
+                <MudImage 
+                    Src="@context.Product?.ImagePath"
+                    Height="100"
+                    Width="200"
+                    ObjectFit="ObjectFit.Cover"/>
+
+            </MudTd>
+
+            <MudTd 
+                Style="color: var(--mud-palette-text-secondary);" 
+                DataLabel="Price">@context.Product?.Price</MudTd>
+
+            <MudTd 
+                Style="color: var(--mud-palette-text-secondary);" 
+                DataLabel="Quantity">
+
+                <MudButtonGroup OverrideStyles=false>
+                    <MudButton Color="Color.Error" Variant="Variant.Text">-</MudButton>
+                    <MudButton Color="Color.Primary" Variant="Variant.Outlined">@context.Quantity</MudButton>
+                    <MudButton Color="Color.Success" Variant="Variant.Text">+</MudButton>
+                </MudButtonGroup>
+
+            </MudTd>
+
+            <MudTd
+                Style="color: var(--mud-palette-text-secondary);"
+                DataLabel="Total" HideSmall="_hidePosition">@(context.Quantity * context.Product?.Price)</MudTd>
+
+        </RowTemplate>
+
+    </MudTable>
+
+    <MudSwitch @bind-Checked="_hidePosition">Hide <b>position</b> when Breakpoint=Xs</MudSwitch>
+    <MudSwitch @bind-Checked="_loading">Show Loading</MudSwitch>
+
+    <MudText 
+        Class="pe-16 pb-16"
+        Align="Align.End"
+        Typo="Typo.h5"
+        Color="Color.Error">
+        Total: $900
+    </MudText>
+
+</MudPaper>
+
+
+
+@code {
+    private bool _hidePosition;
+    private bool _loading;
+    private IEnumerable<OrderLine> Elements = new List<OrderLine>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Elements = new List<OrderLine>()
+        {
+            new OrderLine
+            {
+                Product = new Product
+                {
+                    Name = "pizza ga",
+                    Price = 123,
+                    ImagePath="https://th.bing.com/th/id/R.542410d59bdda3199ec101cc9f5b39be?rik=lAlW8iZkz2HtbA&pid=ImgRaw&r=0"
+                }  ,
+                Quantity = 1,
+            },
+
+                        new OrderLine
+            {
+                Product = new Product
+                {
+                    Name = "pizza ga",
+                    Price = 123,
+                }  ,
+                Quantity = 1,
+            },
+
+                        new OrderLine
+            {
+                Product = new Product
+                {
+                    Name = "pizza ga",
+                    Price = 123,
+                }  ,
+                Quantity = 1,
+            },
+
+                        new OrderLine
+            {
+                Product = new Product
+                {
+                    Name = "pizza ga",
+                    Price = 123,
+                }  ,
+                Quantity = 1,
+            },
+        };
+    }
+
+  
+}

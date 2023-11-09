@@ -38,12 +38,25 @@
         </MudDrawerHeader>
         <NavCategoryMenu />
     </MudDrawer>
-
+    @* Cart Drawer *@
     <MudDrawer @bind-Open="@_drawerOpenCart" Anchor="Anchor.End" Elevation="100" Variant="@DrawerVariant.Temporary" Width="500px"
                Style="background: var(--mud-palette-background);">
+
         <MudDrawerHeader>
             <MudText Typo="Typo.h5" Color="Color.Primary">Your cart</MudText>
         </MudDrawerHeader>
+
+        <div class="d-flex justify-end">
+            <MudButton
+                Class="me-8"
+                Variant="Variant.Outlined"
+                StartIcon="@Icons.Material.Filled.Payments"
+                Color="Color.Warning"
+                OnClick="navToCheckOutPage">
+                Check out now!
+            </MudButton>
+        </div>
+
         <CartList OrderLines="orderLines" LoadCart="LoadCart" />
     </MudDrawer>
 
@@ -52,7 +65,7 @@
             @Body
         </MudContainer>
     </MudMainContent>
-
+    @* Floating Action Button cart *@
     <div style="z-index: 2000; position: fixed; right: 35px; top: 40vh;"
          class=" @(_drawerOpenCart? "invisible": "visible")">
         <MudBadge Content="3" Overlap="true">
@@ -98,13 +111,21 @@
     private bool isDarkTheme { get; set; } = true;
 
     private MudThemeProvider _mudThemeProvider = null!;
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            isDarkTheme = await _mudThemeProvider.GetSystemPreference();
+            StateHasChanged();
+        }
+    }
 
     private readonly MudTheme _currentTheme = new()
         {
             Palette = new Palette
             {
                 Primary = "#000000",
-                Secondary = "#161616",
+                Secondary = "#ffffff",
                 Info = "#64a7e2",
                 Success = "#2ECC40",
                 Warning = "#FFC107",
@@ -115,12 +136,13 @@
             PaletteDark = new Palette
             {
                 Primary = "#ffffff",
-                Secondary = "#161616",
+                Secondary = "#000000",
                 Info = "#a4c2dd",
                 Success = "#2ECC40",
                 Warning = "#fff000",
                 AppbarBackground = "#121212",
-                Background = "#161616"
+                Background = "#161616",
+                TextSecondary = "#adff2f",
             }
     };
 
@@ -134,5 +156,10 @@
     private void navToHomePage()
     {
         _navigationManager.NavigateTo("/");
+    }
+
+    private void navToCheckOutPage()
+    {
+        _navigationManager.NavigateTo("/checkout");
     }
 }
