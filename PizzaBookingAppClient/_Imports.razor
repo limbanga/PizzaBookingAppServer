@@ -8,11 +8,15 @@
 @using Microsoft.JSInterop
 @using Blazored.LocalStorage
 @using MudBlazor
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Authorization
 @using PizzaBookingAppClient
 @using PizzaBookingAppClient.Shared.Customer
 @using PizzaBookingAppClient.Components
 @using PizzaBookingAppClient.Services
 @using PizzaBookingShared.Entities
+@using PizzaBookingAppClient.Exceptions
+@using PizzaBookingShared.ViewModel
 
 
 @inject HttpService _httpService
@@ -21,3 +25,4 @@
 @inject NavigationManager _navigationManager
 @inject ILocalStorageService _localStorageService
 @inject ICartService _cartService
+@inject IAuthService _authService

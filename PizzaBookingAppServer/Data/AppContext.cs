@@ -14,15 +14,12 @@ public class AppContext : DbContext
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
 		base.OnModelCreating(modelBuilder);
-		// Employee
-		modelBuilder.Entity<Employee>()
-			.HasIndex(e => e.LoginName)
+		// 
+		modelBuilder.Entity<User>()
+			.HasIndex(u => u.LoginName)
 			.IsUnique();
-		modelBuilder.Entity<Employee>()
-			.HasIndex(e => e.Email)
-			.IsUnique();
-		modelBuilder.Entity<Employee>()
-			.HasIndex(e => e.PhoneNumber)
+		modelBuilder.Entity<User>()
+			.HasIndex(u => u.PhoneNumber)
 			.IsUnique();
 
 	}
@@ -63,8 +60,7 @@ public class AppContext : DbContext
     }
 
     public DbSet<PizzaBookingShared.Entities.Category> Category { get; set; } = default!;
-	public DbSet<PizzaBookingShared.Entities.Customer> Customer { get; set; } = default!;
-	public DbSet<PizzaBookingShared.Entities.Employee> Employee { get; set; } = default!;
+	public DbSet<PizzaBookingShared.Entities.User> User { get; set; } = default!;
 	public DbSet<PizzaBookingShared.Entities.ImageProduct> ImageProduct { get; set; } = default!;
 	public DbSet<PizzaBookingShared.Entities.Order> Order { get; set; } = default!;
 	public DbSet<PizzaBookingShared.Entities.OrderLine> OrderLine { get; set; } = default!;

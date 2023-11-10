@@ -1,28 +1,9 @@
 ﻿@page "/"
+@page "/index"
 
 <PageTitle>Index</PageTitle>
 
-<MudCarousel Class="mud-width-full" Style="height:400px;" ShowArrows="true" ShowBullets="true"
-             EnableSwipeGesture="@true" AutoCycle="true" TData="object">
-    <MudCarouselItem Transition="@Transition.Slide" Color="@Color.Primary">
-        <div class="d-flex" style="height:100%">
-            <MudImage Src="https://www.pizzaexpress.vn/wp-content/uploads/2022/02/Banner-Pizza-Web-18_9_2021-v2.png" 
-            Alt="slide" ObjectFit="ObjectFit.Contain" Class="rounded-lg"  />
-        </div>
-    </MudCarouselItem>
-    <MudCarouselItem Transition="@Transition.Slide" Color="@Color.Primary">
-        <div class="d-flex" style="height:100%">
-            <MudImage Src="https://www.pizzaexpress.vn/wp-content/uploads/2020/12/Giam20-muabanhvami.jpg"
-                      Alt="slide" ObjectFit="ObjectFit.Contain" Class="rounded-lg" />
-        </div>
-    </MudCarouselItem>
-    <MudCarouselItem Transition="@Transition.Slide" Color="@Color.Primary">
-        <div class="d-flex" style="height:100%">
-            <MudImage Src="https://www.pizzaexpress.vn/wp-content/uploads/2020/12/test.jpg"
-                      Alt="slide" ObjectFit="ObjectFit.Contain" Class="rounded-lg" />
-        </div>
-    </MudCarouselItem>
-</MudCarousel>
+<Carousel/>
 
 @if (products == null)
 {

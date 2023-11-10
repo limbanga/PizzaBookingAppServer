@@ -1,14 +1,27 @@
 ﻿using Microsoft.AspNetCore.Components.Forms;
+using MudBlazor;
 using PizzaBookingShared.Entities;
+using PizzaBookingShared.ViewModel;
+using System;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using static System.Net.WebRequestMethods;
 
 namespace PizzaBookingAppClient.Services
 {
-    public class HttpService
+    public interface IHttpService
     {
-        HttpClient _client;
+        Task<T> Create<T>(string uri, T model);
+        Task<T> Update<T>(string uri, T model);
+        Task<T> Get<T>(string uri, int id);
+        Task<List<T>> GetAll<T>(string uri);
+        Task<Int32> Count(string uri);
+        Task<string> PostFile(IBrowserFile file);
+    }
+
+    public class HttpService : IHttpService
+    {
+        private readonly HttpClient _client;
         public HttpService(HttpClient client)
         {
             this._client = client;
@@ -123,6 +136,7 @@ namespace PizzaBookingAppClient.Services
 
             string newFileName = await response.Content.ReadAsStringAsync();
             return newFileName;
-        }   
+        }
+
     }
 }

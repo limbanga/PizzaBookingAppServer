@@ -25,19 +25,61 @@
         </MudBadge>
 
         <MudTooltip Text="@(isDarkTheme ? "Change to light": "Change to dark")">
-            <MudToggleIconButton @bind-Toggled="@isDarkTheme"
-                                 Icon="@Icons.Material.Filled.WbSunny" Color="@Color.Warning" Title="Off"
-                                 ToggledIcon="@Icons.Material.Filled.DarkMode" ToggledColor="@Color.Info" ToggledTitle="On" />
+            <MudToggleIconButton
+                @bind-Toggled="@isDarkTheme"
+                Size="Size.Medium"
+                Icon="@Icons.Material.Filled.WbSunny" Color="@Color.Warning" Title="Off"
+                ToggledIcon="@Icons.Material.Filled.DarkMode" ToggledColor="@Color.Info" ToggledTitle="On" />
         </MudTooltip>
+
+
+
+        <AuthorizeView>
+            <Authorized>
+                <MudAvatar @onclick="ToggleAccountDrawer"
+                           Class="px-4"
+                           Color="Color.Tertiary"
+                           Size="Size.Medium">U</MudAvatar>
+            </Authorized>
+            <NotAuthorized>
+                <MudIconButton 
+                    OnClick="@(()=> _navigationManager.NavigateTo("/login"))"
+                    Icon="@Icons.Material.Filled.Login"
+                    Color="Color.Primary"/>
+            </NotAuthorized>
+
+        </AuthorizeView>
 
     </MudAppBar>
 
+    @* Account Drawer *@
+    <MudDrawer @bind-Open="_drawerOpenAccount" Elevation="1" 
+                Anchor="Anchor.End" Variant="@DrawerVariant.Temporary" 
+                Width="300px"
+                Class="mx-4"
+                Style="background: var(--mud-palette-background);">
+
+        <MudDrawerHeader>
+            <MudText Typo="Typo.h6" Color="Color.Primary">Hi Last Name</MudText>
+        </MudDrawerHeader>
+
+        <MudButton 
+            OnClick="LogoutAsync"
+            Color="Color.Primary" 
+            Variant="Variant.Outlined">
+            Logut
+        </MudButton>
+
+    </MudDrawer>
+
+    @* Category Drawer *@
     <MudDrawer @bind-Open="_drawerOpen" Elevation="1" Variant="@DrawerVariant.Temporary" Width="300px">
         <MudDrawerHeader>
             <MudText Typo="Typo.h6">Category</MudText>
         </MudDrawerHeader>
         <NavCategoryMenu />
     </MudDrawer>
+
     @* Cart Drawer *@
     <MudDrawer @bind-Open="@_drawerOpenCart" Anchor="Anchor.End" Elevation="100" Variant="@DrawerVariant.Temporary" Width="500px"
                Style="background: var(--mud-palette-background);">
@@ -60,11 +102,13 @@
         <CartList OrderLines="orderLines" LoadCart="LoadCart" />
     </MudDrawer>
 
+    @* Body *@
     <MudMainContent>
         <MudContainer MaxWidth="MaxWidth.Large" Fixed="true" >
             @Body
         </MudContainer>
     </MudMainContent>
+
     @* Floating Action Button cart *@
     <div style="z-index: 2000; position: fixed; right: 35px; top: 40vh;"
          class=" @(_drawerOpenCart? "invisible": "visible")">
@@ -79,6 +123,20 @@
 </MudLayout>
 
 @code {
+
+    private async Task LogoutAsync()
+    {
+        await _authService.LogoutAsync();
+        _snackbar.Add("Loged out successfullt", Severity.Success);
+        _drawerOpenAccount = false;
+    }
+
+    private bool _drawerOpenAccount = false;
+    private void ToggleAccountDrawer()
+    {
+        _drawerOpenAccount = !_drawerOpenAccount;
+    }
+
     private bool _drawerOpenCart = false;
     private List<OrderLine> orderLines { get; set; } = null!;
 
