@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace PizzaBookingShared.Controllers
 {
 	[ApiController]
+	[Authorize(Policy = "admin")]
 	public class ProductController : GenericController<Product>
 	{
         private readonly IProductRepository _productRepo;
@@ -25,20 +26,22 @@ namespace PizzaBookingShared.Controllers
         }
 
         [HttpGet]
-        [Authorize(Policy = "admin")]
+        [AllowAnonymous]
         public override async Task<ActionResult<List<Product>>> GetAll()
         {
             return await base.GetAll();
         }
 
         [HttpGet]
-        public async Task<List<Product>> GetAllWithCategory()
+		[AllowAnonymous]
+		public async Task<List<Product>> GetAllWithCategory()
         {
             return await _productRepo.GetAllWithCategoryAsync();
         }
 
         [HttpGet("{categoryId}")]
-        public async Task<Int32> CountByCategory(int categoryId)
+		[AllowAnonymous]
+		public async Task<Int32> CountByCategory(int categoryId)
         {
             int result = await _productRepo.CountByCategory(categoryId);
             return result;
