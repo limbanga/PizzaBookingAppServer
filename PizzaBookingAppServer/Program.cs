@@ -3,14 +3,14 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using PizzaBookingShared.Identity;
 using PizzaBookingShared.Repositories;
 using System.Configuration;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("AppContext") ?? throw new InvalidOperationException("Connection string 'AppContext' not found.")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("AppContext") ??
+		throw new InvalidOperationException("Connection string 'AppContext' not found.")));
 builder.Services.AddAutoMapper(typeof(Program));
 
 
@@ -52,16 +52,17 @@ builder.Services.AddAuthentication(x =>
 
 builder.Services.AddAuthorization(options =>
 {
-	options.AddPolicy(IdentityData.AdminUserPolicy, p =>
+	options.AddPolicy("admin", p =>
 	{
-		p.RequireClaim(IdentityData.AdminUserClaimName, "admin");
+		p.RequireClaim("role", "admin");
 	});
 });
 
-string developPolicy = "develop";
+const string DEVELOPMENT_POLICY = "DEVELOPMENT_POLICY";
+
 builder.Services.AddCors(options =>
 {
-	options.AddPolicy(developPolicy, p => p.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+	options.AddPolicy(DEVELOPMENT_POLICY, p => p.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 });
 	
 var app = builder.Build();
@@ -72,7 +73,7 @@ if (app.Environment.IsDevelopment())
 	app.UseSwagger();
 	app.UseSwaggerUI();
 }
-app.UseCors(developPolicy);
+app.UseCors(DEVELOPMENT_POLICY);
 app.UseHttpsRedirection();
 
 app.UseAuthentication();

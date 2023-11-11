@@ -23,6 +23,13 @@ builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthProvider>();
 
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddOptions();
-builder.Services.AddAuthorizationCore();
+
+builder.Services.AddAuthorizationCore(options =>
+{
+	options.AddPolicy("admin", p =>
+	{
+		p.RequireClaim("role", "admin");
+	});
+});
 
 await builder.Build().RunAsync();

@@ -25,7 +25,7 @@ namespace PizzaBookingShared.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Policy = "admin")]
         public override async Task<ActionResult<List<Product>>> GetAll()
         {
             return await base.GetAll();

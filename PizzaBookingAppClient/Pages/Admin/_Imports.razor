@@ -13,10 +13,12 @@
 @using PizzaBookingAppClient.Services
 @using Microsoft.AspNetCore.Authorization;
 
-
 @inject HttpService _httpService
 @inject ISnackbar _snackbar
 @inject IJSRuntime _jSRuntime
-@attribute [Authorize]
 
 @layout AdminLayout
+@*
+
+@attribute [Authorize(Policy = "admin")]
+*@

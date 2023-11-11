@@ -7,7 +7,6 @@ using Microsoft.IdentityModel.Tokens;
 using NuGet.Common;
 using PizzaBookingAppServer.AppExceptions;
 using PizzaBookingShared.Entities;
-using PizzaBookingShared.Identity;
 using PizzaBookingShared.Repositories;
 using PizzaBookingShared.ViewModel;
 using System.Configuration;
