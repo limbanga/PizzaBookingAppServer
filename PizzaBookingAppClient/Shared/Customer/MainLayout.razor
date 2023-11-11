@@ -1,128 +1,150 @@
 ﻿@inherits LayoutComponentBase
 
-<MudThemeProvider @ref="@_mudThemeProvider" @bind-IsDarkMode="@isDarkTheme" Theme="_currentTheme" />
-<MudDialogProvider />
-<MudSnackbarProvider />
+<CascadingValue Value="this">
+    <MudThemeProvider @ref="@_mudThemeProvider" @bind-IsDarkMode="@isDarkTheme" Theme="_currentTheme" />
+    <MudDialogProvider />
+    <MudSnackbarProvider />
 
 
-<MudLayout>
-    
-    <MudAppBar Elevation="0">
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@(() => DrawerToggle())" />
-        
-        <MudItem Class="d-flex" @onclick="navToHomePage">
-            <MudText Typo="Typo.h4" Style="color: white;">Pixel</MudText>
-            <MudText Typo="Typo.h4" Color="Color.Warning">Pizza</MudText>
-        </MudItem>
+    <MudLayout>
 
-        <MudSpacer />
+        <MudAppBar Elevation="0">
+            <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@(() => DrawerToggle())" />
 
-        <MudBadge Content="3" Overlap="true" Class="mx-6 my-4" Color="@(isDarkTheme? Color.Error: Color.Dark)">
-            <MudIcon
-                Icon="@Icons.Material.Filled.ShoppingCart" 
-                Color="Color.Primary"
-                @onclick="ToggleCartDrawer" />
-        </MudBadge>
+            <MudItem Class="d-flex" @onclick="navToHomePage">
+                <MudText Typo="Typo.h4" Style="color: white;">Pixel</MudText>
+                <MudText Typo="Typo.h4" Color="Color.Warning">Pizza</MudText>
+            </MudItem>
 
-        <MudTooltip Text="@(isDarkTheme ? "Change to light": "Change to dark")">
-            <MudToggleIconButton
-                @bind-Toggled="@isDarkTheme"
-                Size="Size.Medium"
-                Icon="@Icons.Material.Filled.WbSunny" Color="@Color.Warning" Title="Off"
-                ToggledIcon="@Icons.Material.Filled.DarkMode" ToggledColor="@Color.Info" ToggledTitle="On" />
-        </MudTooltip>
+            <MudSpacer />
+
+            <MudBadge 
+                @onclick="ToggleCartDrawer"
+                Content="cartCount"
+                Overlap="true"
+                Class="mx-6 my-4" Color="@(isDarkTheme? Color.Error: Color.Dark)">
+
+                <MudIcon 
+                    Icon="@Icons.Material.Filled.ShoppingCart"
+                    Color="Color.Primary"
+                    @onclick="ToggleCartDrawer" />
+
+            </MudBadge>
+
+            <MudTooltip Text="@(isDarkTheme ? "Change to light": "Change to dark")">
+                <MudToggleIconButton @bind-Toggled="@isDarkTheme"
+                                     Size="Size.Medium"
+                                     Icon="@Icons.Material.Filled.WbSunny" Color="@Color.Warning" Title="Off"
+                                     ToggledIcon="@Icons.Material.Filled.DarkMode" ToggledColor="@Color.Info" ToggledTitle="On" />
+            </MudTooltip>
 
 
 
-        <AuthorizeView>
-            <Authorized>
-                <MudAvatar @onclick="ToggleAccountDrawer"
-                           Class="px-4"
-                           Color="Color.Tertiary"
-                           Size="Size.Medium">U</MudAvatar>
-            </Authorized>
-            <NotAuthorized>
-                <MudIconButton 
-                    OnClick="@(()=> _navigationManager.NavigateTo("/login"))"
-                    Icon="@Icons.Material.Filled.Login"
-                    Color="Color.Primary"/>
-            </NotAuthorized>
+            <AuthorizeView>
+                <Authorized>
+                    <MudAvatar @onclick="ToggleAccountDrawer"
+                               Class="px-4"
+                               Color="Color.Tertiary"
+                               Size="Size.Medium">U</MudAvatar>
+                </Authorized>
+                <NotAuthorized>
+                    <MudIconButton OnClick="@(()=> _navigationManager.NavigateTo("/login"))"
+                                   Icon="@Icons.Material.Filled.Login"
+                                   Color="Color.Primary" />
+                </NotAuthorized>
 
-        </AuthorizeView>
+            </AuthorizeView>
 
-    </MudAppBar>
+        </MudAppBar>
 
-    @* Account Drawer *@
-    <MudDrawer @bind-Open="_drawerOpenAccount" Elevation="1" 
-                Anchor="Anchor.End" Variant="@DrawerVariant.Temporary" 
-                Width="300px"
-                Class="mx-4"
-                Style="background: var(--mud-palette-background);">
+        @* Account Drawer *@
+        <MudDrawer @bind-Open="_drawerOpenAccount" Elevation="1"
+                   Anchor="Anchor.End" Variant="@DrawerVariant.Temporary"
+                   Width="300px"
+                   Class="mx-4"
+                   Style="background: var(--mud-palette-background);">
 
-        <MudDrawerHeader>
-            <MudText Typo="Typo.h6" Color="Color.Primary">Hi Last Name</MudText>
-        </MudDrawerHeader>
+            <MudDrawerHeader>
+                <MudText Typo="Typo.h6" Color="Color.Primary">Hi Last Name</MudText>
+            </MudDrawerHeader>
 
-        <MudButton 
-            OnClick="LogoutAsync"
-            Color="Color.Primary" 
-            Variant="Variant.Outlined">
-            Logut
-        </MudButton>
-
-    </MudDrawer>
-
-    @* Category Drawer *@
-    <MudDrawer @bind-Open="_drawerOpen" Elevation="1" Variant="@DrawerVariant.Temporary" Width="300px">
-        <MudDrawerHeader>
-            <MudText Typo="Typo.h6">Category</MudText>
-        </MudDrawerHeader>
-        <NavCategoryMenu />
-    </MudDrawer>
-
-    @* Cart Drawer *@
-    <MudDrawer @bind-Open="@_drawerOpenCart" Anchor="Anchor.End" Elevation="100" Variant="@DrawerVariant.Temporary" Width="500px"
-               Style="background: var(--mud-palette-background);">
-
-        <MudDrawerHeader>
-            <MudText Typo="Typo.h5" Color="Color.Primary">Your cart</MudText>
-        </MudDrawerHeader>
-
-        <div class="d-flex justify-end">
-            <MudButton
-                Class="me-8"
-                Variant="Variant.Outlined"
-                StartIcon="@Icons.Material.Filled.Payments"
-                Color="Color.Warning"
-                OnClick="navToCheckOutPage">
-                Check out now!
+            <MudButton OnClick="LogoutAsync"
+                       Color="Color.Primary"
+                       Variant="Variant.Outlined">
+                Logut
             </MudButton>
-        </div>
 
-        <CartList OrderLines="orderLines" LoadCart="LoadCart" />
-    </MudDrawer>
+        </MudDrawer>
 
-    @* Body *@
-    <MudMainContent>
-        <MudContainer MaxWidth="MaxWidth.Large" Fixed="true" >
-            @Body
-        </MudContainer>
-    </MudMainContent>
+        @* Category Drawer *@
+        <MudDrawer @bind-Open="_drawerOpen" Elevation="1" Variant="@DrawerVariant.Temporary" Width="300px">
+            <MudDrawerHeader>
+                <MudText Typo="Typo.h6">Category</MudText>
+            </MudDrawerHeader>
+            <NavCategoryMenu />
+        </MudDrawer>
 
-    @* Floating Action Button cart *@
-    <div style="z-index: 2000; position: fixed; right: 35px; top: 40vh;"
-         class=" @(_drawerOpenCart? "invisible": "visible")">
-        <MudBadge Content="3" Overlap="true">
-            <MudFab Color="Color.Tertiary"
-                    StartIcon="@Icons.Material.Filled.ShoppingCart"
-                    OnClick="ToggleCartDrawer" />
-        </MudBadge>
-    </div>
+        @* Cart Drawer *@
+        <MudDrawer @bind-Open="@_drawerOpenCart" Anchor="Anchor.End" Elevation="100" Variant="@DrawerVariant.Temporary" Width="500px"
+                   Style="background: var(--mud-palette-background);">
 
+            <MudDrawerHeader>
+                <MudText Typo="Typo.h5" Color="Color.Primary">Your cart</MudText>
+            </MudDrawerHeader>
 
-</MudLayout>
+            <div class="d-flex justify-end">
+                <MudButton Class="me-8"
+                           Variant="Variant.Outlined"
+                           StartIcon="@Icons.Material.Filled.Payments"
+                           Color="Color.Warning"
+                           OnClick="navToCheckOutPage">
+                    Check out now!
+                </MudButton>
+            </div>
+
+            <CartList OrderLines="orderLines" LoadCart="LoadCart" />
+        </MudDrawer>
+
+        @* Body *@
+        <MudMainContent>
+            <MudContainer MaxWidth="MaxWidth.Large" Fixed="true">
+                @Body
+            </MudContainer>
+        </MudMainContent>
+
+    </MudLayout>
+
+</CascadingValue>
 
 @code {
+    private int cartCount;
+    private bool _drawerOpenAccount = false;
+    private bool _drawerOpenCart = false;
+    private bool _drawerOpen = false;
+    private bool isDarkTheme { get; set; } = true;
+    private MudThemeProvider _mudThemeProvider = null!;
+
+    private List<OrderLine> orderLines { get; set; } = null!;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            isDarkTheme = await _mudThemeProvider.GetSystemPreference();
+            StateHasChanged();
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadCartCount();
+    }
+
+    public async Task LoadCartCount()
+    {
+        cartCount = await _cartService.CountAsync();
+        StateHasChanged();
+    }
 
     private async Task LogoutAsync()
     {
@@ -131,14 +153,10 @@
         _drawerOpenAccount = false;
     }
 
-    private bool _drawerOpenAccount = false;
     private void ToggleAccountDrawer()
     {
         _drawerOpenAccount = !_drawerOpenAccount;
     }
-
-    private bool _drawerOpenCart = false;
-    private List<OrderLine> orderLines { get; set; } = null!;
 
     private async Task ToggleCartDrawer()
     {
@@ -157,25 +175,12 @@
                     await _httpService.Get<Product>("/Product/Get", (int)orderLine.ProductId);
             }
         }
+        await LoadCartCount();
     }
-
-    private bool _drawerOpen = false;
 
     private void DrawerToggle()
     {
         _drawerOpen = !_drawerOpen;
-    }
-
-    private bool isDarkTheme { get; set; } = true;
-
-    private MudThemeProvider _mudThemeProvider = null!;
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            isDarkTheme = await _mudThemeProvider.GetSystemPreference();
-            StateHasChanged();
-        }
     }
 
     private readonly MudTheme _currentTheme = new()

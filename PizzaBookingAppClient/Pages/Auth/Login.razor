@@ -72,7 +72,6 @@
         {
             TokenPairRespone token = await _authService.LoginAsync(model);
             _snackbar.Add("Loged in successfully!", Severity.Success);
-            await _localStorageService.SetItemAsync<TokenPairRespone>("authToken", token);
             _navigationManager.NavigateTo("/");
         }
         catch (AppException ex)

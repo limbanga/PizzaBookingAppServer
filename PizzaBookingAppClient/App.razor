@@ -1,7 +1,25 @@
 <CascadingAuthenticationState>
     <Router AppAssembly="@typeof(App).Assembly">
         <Found Context="routeData">
-            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+                <Authorizing>
+                    <p>Please wait, we are authorizing you ...</p>
+                </Authorizing>  
+                <NotAuthorized>
+                    @if (
+                        context.User.Identity is null ||
+                        context.User.Identity.IsAuthenticated
+                    )
+                    {
+                        <Page403 />
+                    }
+                    else
+                    {
+                        _navigationManager.NavigateTo("/login");
+                    }
+
+                </NotAuthorized>
+            </AuthorizeRouteView>
         </Found>
         <NotFound>
             <PageTitle>Not found</PageTitle>

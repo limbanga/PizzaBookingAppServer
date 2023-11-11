@@ -61,6 +61,8 @@ else
 
 
 @code {
+    [CascadingParameter]
+    public MainLayout MainLayout { get; set; } = null!;
     private List<Product>? products;
 
     protected override async Task OnInitializedAsync()
@@ -74,14 +76,15 @@ else
 
     private async Task OnAddToCart(int productId)
     {
-        OrderLine orderLine = new OrderLine
-            {
-                ProductId = productId,
-                Quantity = 1
-            };
+        OrderLine orderLine = 
+            new OrderLine
+                {
+                    ProductId = productId,
+                    Quantity = 1
+                };
 
         await _cartService.Add(orderLine);
+        await MainLayout.LoadCartCount();
         _snackbar.Add("Add product to cart successfully", Severity.Success);
-        StateHasChanged();
     }
 }

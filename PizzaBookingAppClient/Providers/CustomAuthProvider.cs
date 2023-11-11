@@ -1,6 +1,7 @@
 ﻿using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Authorization;
 using PizzaBookingShared.ViewModel;
+using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text.Json;
 
@@ -9,21 +10,27 @@ namespace PizzaBookingAppClient.Providers
     public class CustomAuthProvider : AuthenticationStateProvider
     {
         private readonly ILocalStorageService _localStorageService;
-
-        public CustomAuthProvider(ILocalStorageService localStorageService)
+        private readonly HttpClient _httpClient;
+        public CustomAuthProvider(
+            ILocalStorageService localStorageService,
+            HttpClient httpClient)
         {
             _localStorageService = localStorageService;
+            _httpClient = httpClient;
         }
 
         public async override Task<AuthenticationState> GetAuthenticationStateAsync()
         {
             TokenPairRespone token = await _localStorageService.GetItemAsync<TokenPairRespone>("authToken");
-            if (token is null ||string.IsNullOrEmpty(token.AccessToken))
+            if (token is null || string.IsNullOrEmpty(token.AccessToken))
             {
                 return new AuthenticationState(
                             new ClaimsPrincipal(
                                 new ClaimsIdentity()));
             }
+
+            _httpClient.DefaultRequestHeaders.Authorization = 
+                new AuthenticationHeaderValue("Bearer", token.AccessToken);
 
             return new AuthenticationState(
                         new ClaimsPrincipal(

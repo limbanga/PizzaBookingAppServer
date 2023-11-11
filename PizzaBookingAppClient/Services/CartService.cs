@@ -8,20 +8,21 @@ namespace PizzaBookingAppClient.Services
         Task<List<OrderLine>> Get();
         Task Add(OrderLine orderLine);
         Task Remove(int productId);
+        Task<int> CountAsync();
         Task CheckOut();
     }
 
     public class CartService : ICartService
     {
-        ILocalStorageService _storage;
+        ILocalStorageService _localStorageService;
         public CartService(ILocalStorageService storage)
         {
-            _storage = storage;
+            _localStorageService = storage;
         }
 
         public async Task<List<OrderLine>> Get()
         {
-            var cart = await _storage.GetItemAsync<List<OrderLine>>("cart");
+            var cart = await _localStorageService.GetItemAsync<List<OrderLine>>("cart");
             if (cart == null) 
             {
                 cart = new List<OrderLine>();
@@ -45,19 +46,25 @@ namespace PizzaBookingAppClient.Services
                 temp.Quantity = orderLine.Quantity;
             }
 
-            await _storage.SetItemAsync<List<OrderLine>>("cart", cart);
+            await _localStorageService.SetItemAsync<List<OrderLine>>("cart", cart);
         }
 
         public async Task Remove(int productId)
         {
             var cart = await Get();
             cart.RemoveAll(o => o.ProductId == productId);
-            await _storage.SetItemAsync<List<OrderLine>>("cart", cart);
+            await _localStorageService.SetItemAsync<List<OrderLine>>("cart", cart);
         }
 
         public Task CheckOut()
         {
             throw new NotImplementedException();
         }
-    }
+
+		public async Task<int> CountAsync()
+		{
+            var cart = await Get();
+			return cart.Count();
+		}
+	}
 }

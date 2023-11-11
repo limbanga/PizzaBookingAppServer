@@ -74,6 +74,8 @@ else
 
 
 @code {
+    [CascadingParameter]
+    public MainLayout MainLayout { get; set; } = null!;
     [Parameter]
     public int Id { get; set; }
     private Product product { get; set; } = null!;
@@ -100,6 +102,7 @@ else
             };
 
         await _cartService.Add(orderLine);
+        await MainLayout.LoadCartCount();
         _snackbar.Add("Add to cart successfully.", Severity.Success);
     }
 

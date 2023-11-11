@@ -6,6 +6,7 @@ using PizzaBookingShared.Entities;
 using PizzaBookingShared.Helpers;
 using PizzaBookingShared.Repositories;
 using PizzaBookingShared;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PizzaBookingShared.Controllers
 {
@@ -21,6 +22,13 @@ namespace PizzaBookingShared.Controllers
             : base(context, tRepo, mapper)
         {
             _productRepo = productRepo;
+        }
+
+        [HttpGet]
+        [Authorize]
+        public override async Task<ActionResult<List<Product>>> GetAll()
+        {
+            return await base.GetAll();
         }
 
         [HttpGet]

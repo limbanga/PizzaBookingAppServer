@@ -4,6 +4,7 @@ using PizzaBookingAppClient.Exceptions;
 using PizzaBookingAppClient.Providers;
 using PizzaBookingShared.ViewModel;
 using System.Net;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Security.Claims;
 
@@ -70,7 +71,11 @@ namespace PizzaBookingAppClient.Services
             {
                 throw new Exception();
             }
-            return token;
+			
+            await _localStorageService.SetItemAsync<TokenPairRespone>("authToken", token);
+            ((CustomAuthProvider)_authenticationStateProvider).NotifyAuthState();
+
+			return token;
         }
 
         public async Task LogoutAsync()
