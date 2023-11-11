@@ -166,7 +166,7 @@
 
     private async Task LoadCart()
     {
-        orderLines = await _cartService.Get();
+        orderLines = await _cartService.GetAsync();
         foreach (var orderLine in orderLines)
         {
             if (orderLine.ProductId != null)
@@ -193,8 +193,8 @@
                 Success = "#2ECC40",
                 Warning = "#FFC107",
                 AppbarBackground = "#ff0000",
-                Background = "#ffffff"
-
+                Background = "#ffffff",
+                TextSecondary = "#1564ef",
             },
             PaletteDark = new Palette
             {

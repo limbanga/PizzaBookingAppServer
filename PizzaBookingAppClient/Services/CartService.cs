@@ -5,7 +5,7 @@ namespace PizzaBookingAppClient.Services
 {
     public interface ICartService
     {
-        Task<List<OrderLine>> Get();
+        Task<List<OrderLine>> GetAsync();
         Task Add(OrderLine orderLine);
         Task Remove(int productId);
         Task<int> CountAsync();
@@ -20,7 +20,7 @@ namespace PizzaBookingAppClient.Services
             _localStorageService = storage;
         }
 
-        public async Task<List<OrderLine>> Get()
+        public async Task<List<OrderLine>> GetAsync()
         {
             var cart = await _localStorageService.GetItemAsync<List<OrderLine>>("cart");
             if (cart == null) 
@@ -32,7 +32,7 @@ namespace PizzaBookingAppClient.Services
 
         public async Task Add(OrderLine orderLine)
         {
-            var cart = await Get();
+            var cart = await GetAsync();
 
             var temp = cart.FirstOrDefault(o => o.ProductId == orderLine.ProductId);
 
@@ -51,7 +51,7 @@ namespace PizzaBookingAppClient.Services
 
         public async Task Remove(int productId)
         {
-            var cart = await Get();
+            var cart = await GetAsync();
             cart.RemoveAll(o => o.ProductId == productId);
             await _localStorageService.SetItemAsync<List<OrderLine>>("cart", cart);
         }
@@ -63,7 +63,7 @@ namespace PizzaBookingAppClient.Services
 
 		public async Task<int> CountAsync()
 		{
-            var cart = await Get();
+            var cart = await GetAsync();
 			return cart.Count();
 		}
 	}

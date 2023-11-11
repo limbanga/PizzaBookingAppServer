@@ -1,137 +1,155 @@
 ﻿@page "/checkout"
 
+
 @* Kiếm font chữ thế vào *@
 <MudText Typo="Typo.h3" Style="text-align: center; color: red;" Class="pa-4">
     Enjoy your meal!
 </MudText>
 
+<MudGrid>
+    <MudItem xs="12" sm="8">
+        @* Table *@
+        <MudPaper Class="mud-width-full"
+                  Style="background: var(--mud-palette-secondary)">
 
-<MudPaper Class="mud-width-full"
+            <MudTable Items="@orderLines"
+                      Hover="true"
+                      Breakpoint="Breakpoint.Sm"
+                      Loading="@_showLoading"
+                      LoadingProgressColor="Color.Error"
+                      Style="background: var(--mud-palette-secondary)">
+
+                <HeaderContent>
+                    <MudTh>Product</MudTh>
+                    <MudTh>Image</MudTh>
+                    <MudTh>Price</MudTh>
+                    <MudTh>Quantity</MudTh>
+                    <MudTh>Total</MudTh>
+                </HeaderContent>
+
+                <RowTemplate>
+                    <MudTd Style="color: var(--mud-palette-text-secondary);"
+                           DataLabel="Product">@context.Product?.Name</MudTd>
+
+                    <MudTd Style="color: var(--mud-palette-text-secondary);"
+                           DataLabel="Product">
+                        @* Show image here *@
+                        <MudImage Src="@(
+                            context.Product!.ImagePath is not null ?
+                            "/upload/" + context.Product!.ImagePath:
+                            "/public/images/nothing.png"
+                                )"
+                                  Height="100"
+                                  Width="200"
+                                  ObjectFit="ObjectFit.Contain" />
+
+                    </MudTd>
+
+                    <MudTd Style="color: var(--mud-palette-text-secondary);"
+                           DataLabel="Price">$@context.Product!.Price</MudTd>
+
+                    <MudTd Style="color: var(--mud-palette-text-secondary);"
+                           DataLabel="Quantity">
+
+                        <MudButtonGroup OverrideStyles=false>
+                            <MudButton Color="Color.Error"
+                                       Variant="Variant.Filled"
+                                       OnClick="@(()=>ChangeQuantity(context, -1))">-</MudButton>
+
+                            <MudButton Color="Color.Primary" Variant="Variant.Outlined">@context.Quantity</MudButton>
+
+                            <MudButton Color="Color.Success"
+                                       Variant="Variant.Filled"
+                                       OnClick="@(()=>ChangeQuantity(context, 1))">+</MudButton>
+                        </MudButtonGroup>
+
+                    </MudTd>
+
+                    <MudTd Style="color: var(--mud-palette-text-secondary);"
+                           DataLabel="Total">
+
+                        $@(context.Quantity * context.Product?.Price)
+
+                    </MudTd>
+
+                </RowTemplate>
+
+            </MudTable>
+
+        </MudPaper>
+
+        @* Total *@
+        <MudPaper Class="mt-4 py-4"
+                  Style="background: var(--mud-palette-secondary)">
+            <MudText Class="pe-16"
+                     Align="Align.End"
+                     Typo="Typo.h5"
+                     Color="Color.Error">
+                Total: $
+            </MudText>
+        </MudPaper>
+
+    </MudItem>
+
+    <MudItem xs="12" sm="4">
+        <MudPaper 
+            Class="pa-4"
             Style="background: var(--mud-palette-secondary)">
 
-    <MudTable 
-        Items="@Elements.Take(4)" 
-        Hover="true" 
-        Breakpoint="Breakpoint.Sm"
-        Loading="@_loading" 
-        LoadingProgressColor="Color.Error"
-        Style="background: var(--mud-palette-secondary)">
+            <MudText Typo="Typo.h6" Color="Color.Primary" Align="Align.Center">Check out</MudText>
 
-        <HeaderContent>
-            <MudTh>Product</MudTh>
-            <MudTh>Image</MudTh>
-            <MudTh>Price</MudTh>
-            <MudTh>Quantity</MudTh>
-            <MudTh>Total</MudTh>
-        </HeaderContent>
+            <MudTextField @bind-Value="TextValue"
+                          Class="mt-4"
+                          Label="Phone number"
+                          Variant="Variant.Text"
+                          Margin="Margin.Dense" />
 
-        <RowTemplate >
-            <MudTd 
-                Style="color: var(--mud-palette-text-secondary);" 
-                DataLabel="Product">@context.Product?.Name</MudTd>
+            <MudTextField @bind-Value="TextValue"
+                          Class="mt-4"
+                          Label="Address"
+                          Variant="Variant.Text"
+                          Margin="Margin.Dense" />
 
-            <MudTd 
-                Style="color: var(--mud-palette-text-secondary);" 
-                DataLabel="Product">
-                @* Show image here *@
-                <MudImage 
-                    Src="@context.Product?.ImagePath"
-                    Height="100"
-                    Width="200"
-                    ObjectFit="ObjectFit.Cover"/>
+            <MudButton StartIcon="@Icons.Material.Filled.CreditScore"
+                       Class="mt-8"
+                       Color="Color.Warning"
+                       Variant="Variant.Outlined"
+                       FullWidth="true">
+                Pay
+            </MudButton>
 
-            </MudTd>
+        </MudPaper>
+    </MudItem>
+</MudGrid>
 
-            <MudTd 
-                Style="color: var(--mud-palette-text-secondary);" 
-                DataLabel="Price">@context.Product?.Price</MudTd>
-
-            <MudTd 
-                Style="color: var(--mud-palette-text-secondary);" 
-                DataLabel="Quantity">
-
-                <MudButtonGroup OverrideStyles=false>
-                    <MudButton Color="Color.Error" Variant="Variant.Text">-</MudButton>
-                    <MudButton Color="Color.Primary" Variant="Variant.Outlined">@context.Quantity</MudButton>
-                    <MudButton Color="Color.Success" Variant="Variant.Text">+</MudButton>
-                </MudButtonGroup>
-
-            </MudTd>
-
-            <MudTd
-                Style="color: var(--mud-palette-text-secondary);"
-                DataLabel="Total" HideSmall="_hidePosition">@(context.Quantity * context.Product?.Price)</MudTd>
-
-        </RowTemplate>
-
-    </MudTable>
-
-    <MudSwitch @bind-Checked="_hidePosition">Hide <b>position</b> when Breakpoint=Xs</MudSwitch>
-    <MudSwitch @bind-Checked="_loading">Show Loading</MudSwitch>
-
-    <MudText 
-        Class="pe-16 pb-16"
-        Align="Align.End"
-        Typo="Typo.h5"
-        Color="Color.Error">
-        Total: $900
-    </MudText>
-
-</MudPaper>
 
 
 
 @code {
-    private bool _hidePosition;
-    private bool _loading;
-    private IEnumerable<OrderLine> Elements = new List<OrderLine>();
+    private string TextValue;
+    private bool _showLoading => orderLines is null;
+    private IEnumerable<OrderLine>? orderLines = null;
 
     protected override async Task OnInitializedAsync()
     {
-        Elements = new List<OrderLine>()
+        orderLines = await _cartService.GetAsync();
+        foreach (var orderLine in orderLines)
         {
-            new OrderLine
+            if (orderLine.ProductId != null)
             {
-                Product = new Product
-                {
-                    Name = "pizza ga",
-                    Price = 123,
-                    ImagePath="https://th.bing.com/th/id/R.542410d59bdda3199ec101cc9f5b39be?rik=lAlW8iZkz2HtbA&pid=ImgRaw&r=0"
-                }  ,
-                Quantity = 1,
-            },
-
-                        new OrderLine
-            {
-                Product = new Product
-                {
-                    Name = "pizza ga",
-                    Price = 123,
-                }  ,
-                Quantity = 1,
-            },
-
-                        new OrderLine
-            {
-                Product = new Product
-                {
-                    Name = "pizza ga",
-                    Price = 123,
-                }  ,
-                Quantity = 1,
-            },
-
-                        new OrderLine
-            {
-                Product = new Product
-                {
-                    Name = "pizza ga",
-                    Price = 123,
-                }  ,
-                Quantity = 1,
-            },
-        };
+                orderLine.Product =
+                    await _httpService.Get<Product>("/Product/Get", (int)orderLine.ProductId);
+            }
+        }
+        StateHasChanged();
     }
 
-  
+    private void ChangeQuantity(OrderLine orderLine, int amount)
+    {
+        if (orderLine.Quantity + amount > 0)
+        {   
+            orderLine.Quantity += amount;
+        }
+    }
+
 }
