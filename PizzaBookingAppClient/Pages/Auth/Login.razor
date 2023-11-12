@@ -3,7 +3,7 @@
 @page "/login"
 
 <MudGrid Class="d-flex align-center justify-center">
-    <MudItem xs="12" md="6">
+    <MudItem xs="12" md="8">
         <MudPaper Class="d-flex align-center justify-center mud-width-full mt-8 pa-4"
                   Style="background: var(--mud-palette-secondary)">
 
@@ -15,9 +15,11 @@
                 </MudItem>
 
 
-                <MudItem xs="12" sm="6" Class="d-flex align-center justify-center flex-wrap pa-4">
-                    <EditForm Model="model" OnValidSubmit="onLogin">
+                <MudItem xs="12" sm="6" Class="d-flex align-center justify-center flex-wrap">
+                    <EditForm Model="model" OnValidSubmit="onLogin" style="width: 100%;">
+
                         <MudText Typo="Typo.h4"
+                                 Align="Align.Center"
                                  Color="Color.Primary">Login now!</MudText>
 
                         <MudTextField 
@@ -35,9 +37,25 @@
                             FullWidth=true
                             HelperText="8 characters"
                             AdornmentColor="Color.Success"
-                            InputType="InputType.Password"
+                            InputType="@(ShowPassword? InputType.Text: InputType.Password)"
                             Label="Password"
                             Variant="Variant.Text" />
+
+                        <MudItem Class="d-flex justify-space-between align-center w-100">
+
+                            <MudCheckBox @bind-Checked="@ShowPassword" Size="Size.Small" Color="Color.Primary"
+                            Class="ms-n4">
+                                <MudText Typo="Typo.caption" Color="Color.Primary">
+                                    Show password
+                                </MudText>
+                            </MudCheckBox>  
+
+                            <MudLink Href="/reset-password"
+                                     Typo="Typo.caption">
+                                Forget password?
+                            </MudLink>
+                                
+                        </MudItem>
 
                         <MudButton
                             ButtonType="ButtonType.Submit"
@@ -65,6 +83,7 @@
 
 @code {
     private LoginViewModel model = new LoginViewModel();
+    private bool ShowPassword { get; set; }
 
     private async Task onLogin()
     {
@@ -72,6 +91,12 @@
         {
             TokenPairRespone token = await _authService.LoginAsync(model);
             _snackbar.Add("Loged in successfully!", Severity.Success);
+            string role = await _authService.GetClaimValue("role");
+            if (role.Equals("admin"))
+            {
+                _navigationManager.NavigateTo("/admin");
+                return;
+            }
             _navigationManager.NavigateTo("/");
         }
         catch (AppException ex)
