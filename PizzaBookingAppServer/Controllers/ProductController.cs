@@ -53,6 +53,14 @@ namespace PizzaBookingShared.Controllers
             return result;
         }
 
+        [HttpGet("{categoryAlias}")]
+        [AllowAnonymous]
+        public async Task<List<Product>> GetAllByCategoryAlias(string categoryAlias)
+        {
+            var result = await _productRepo.GetAllByCategoryAliasAsync(categoryAlias);
+            return result;
+        }
+
         [HttpPost]
         public async Task<ActionResult<string>> UploadProductImage(IFormFile file)
         {

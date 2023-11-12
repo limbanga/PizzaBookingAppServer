@@ -5,86 +5,8 @@
 
 <Carousel/>
 
-@if (products == null)
-{
-    <LoaderPizza/>
-}
-else
-{
-    <MudGrid Justify="Justify.Center" Class="mt-8">
-        @foreach (var product in products)
-        {
-            <MudItem xs="6" sm="4" md="3">
-                <MudPaper @onclick="(()=> navToProductDetail(product.Id))"
-                    Class="border-solid border-1 mud-border-primary" 
-                    Style="background: var(--mud-palette-background);">
-                    <div class="d-flex justify-center" style="height: 200px;">
-
-                        <MudImage Src="@(string.IsNullOrEmpty(product.ImagePath )?
-                                    "/public/images/nothing.png":
-                                    "upload/" + product.ImagePath)"
-                                  Alt="Image about product"
-                                  Class="rounded-t-lg"
-                                  ObjectFit="ObjectFit.Cover"
-                                  Style="width: 100%;"/>
-                    </div>
-
-                    <MudText Typo="Typo.h5"
-                             Align="Align.Center"
-                             Color="Color.Primary"
-                             Class="py-2">@product.Name</MudText>
-
-                    <MudText Typo="Typo.h6"
-                             Align="Align.Center"
-                             Class="py-2"
-                             Color="Color.Error">
-                             @(String.Format(System.Globalization.CultureInfo.GetCultureInfo("vi-VN"), "{0:N0} vnd  ",
-                             product.Price))
-                         </MudText>
-
-                    <MudItem Class="d-flex align-center justify-center py-2">
-                        <MudRating ReadOnly="true" SelectedValue="2" />
-                        <MudText Typo="Typo.caption">64 lượt</MudText>
-                    </MudItem>
-
-                    <MudButton Variant="Variant.Filled"
-                               StartIcon="@Icons.Material.Filled.ShoppingCart"
-                               FullWidth="true"
-                               Color="Color.Error"
-                               OnClick="(() => OnAddToCart(product.Id))">Add to cart</MudButton>
-
-                </MudPaper>
-            </MudItem>
-        }
-    </MudGrid>
-}
-
+<ProductBoard/>
 
 @code {
-    [CascadingParameter]
-    public MainLayout MainLayout { get; set; } = null!;
-    private List<Product>? products;
 
-    protected override async Task OnInitializedAsync()
-    {
-        products = await _httpService.GetAll<Product>("/Product/GetAll");
-    }
-
-    private void navToProductDetail(int id) {
-        _navigationManager.NavigateTo($"/product/{id}");
-    }
-
-    private async Task OnAddToCart(int productId)
-    {
-        OrderLine orderLine = 
-            new OrderLine
-                {
-                    ProductId = productId,
-                    Quantity = 1
-                };
-
-        await _cartService.Add(orderLine);
-        await MainLayout.LoadCartCount();
-        _snackbar.Add("Add product to cart successfully", Severity.Success);
-    }
 }

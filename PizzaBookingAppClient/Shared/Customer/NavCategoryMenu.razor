@@ -1,4 +1,4 @@
-﻿<MudNavMenu>
+﻿<MudNavMenu Color="Color.Success" Bordered="true">
     @if (categories == null)
     {
         <LoaderPizza />
@@ -7,20 +7,10 @@
     {
         @foreach (var category in categories)
         {
-            <MudNavLink
-                Href="@("/category/" + category.Alias)" 
-                Match="NavLinkMatch.All" >
-
-                <div class="d-flex justify-start align-center gap-2">
-                    <MudIcon Style="@($"color: {category.IconColor ?? "yellow"};")"
-                             Icon="@(string.IsNullOrEmpty(category.Icon)?
-                        @Icons.Material.Filled.TableRows:
-                        category.Icon)" />
-
-                    <MudText Typo="Typo.h6">
-                        @category.Name
-                    </MudText>
-                </div>
+            <MudNavLink Href="@($"category/{category.Alias}")"
+                Match="NavLinkMatch.All"
+                Icon="@category.Icon">
+                @category.Name
             </MudNavLink>
         }
     }

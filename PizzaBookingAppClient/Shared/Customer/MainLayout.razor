@@ -77,11 +77,18 @@
         </MudDrawer>
 
         @* Category Drawer *@
-        <MudDrawer @bind-Open="_drawerOpen" Elevation="1" Variant="@DrawerVariant.Temporary" Width="300px">
+        <MudDrawer @bind-Open="_drawerOpen"
+                   Elevation="1"
+                   Variant="@DrawerVariant.Temporary"
+                   Width="300px"
+                   Style="background: var(--mud-palette-background);">
+        
             <MudDrawerHeader>
-                <MudText Typo="Typo.h6">Category</MudText>
+                <MudText Typo="Typo.h6" Color="Color.Primary">Category</MudText>
             </MudDrawerHeader>
+
             <NavCategoryMenu />
+        
         </MudDrawer>
 
         @* Cart Drawer *@
@@ -184,29 +191,31 @@
     }
 
     private readonly MudTheme _currentTheme = new()
+    {
+        Palette = new Palette
         {
-            Palette = new Palette
-            {
-                Primary = "#000000",
-                Secondary = "#ffffff",
-                Info = "#64a7e2",
-                Success = "#2ECC40",
-                Warning = "#FFC107",
-                AppbarBackground = "#ff0000",
-                Background = "#ffffff",
-                TextSecondary = "#1564ef",
-            },
-            PaletteDark = new Palette
-            {
-                Primary = "#ffffff",
-                Secondary = "#000000",
-                Info = "#a4c2dd",
-                Success = "#2ECC40",
-                Warning = "#fff000",
-                AppbarBackground = "#121212",
-                Background = "#161616",
-                TextSecondary = "#adff2f",
-            }
+            Primary = "#000000",
+            Secondary = "#ffffff",
+            Info = "#64a7e2",
+            Success = "#2ECC40",
+            Warning = "#FFC107",
+            AppbarBackground = "#ff0000",
+            Background = "#ffffff",
+            TextSecondary = "#1564ef",
+            HoverOpacity = .25,
+        },
+        PaletteDark = new Palette
+        {
+            Primary = "#ffffff",
+            Secondary = "#000000",
+            Info = "#a4c2dd",
+            Success = "#2ECC40",
+            Warning = "#fff000",
+            AppbarBackground = "#121212",
+            Background = "#161616",
+            TextSecondary = "#adff2f",
+            HoverOpacity = .25,
+        }
     };
 
 
