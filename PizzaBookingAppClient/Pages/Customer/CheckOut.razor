@@ -85,7 +85,7 @@
                      Align="Align.End"
                      Typo="Typo.h5"
                      Color="Color.Error">
-                Total: $
+                Total: $@TotalPrice
             </MudText>
         </MudPaper>
 
@@ -115,7 +115,7 @@
                        Color="Color.Warning"
                        Variant="Variant.Outlined"
                        FullWidth="true">
-                Pay
+                Pay $@TotalPrice
             </MudButton>
 
         </MudPaper>
@@ -126,9 +126,11 @@
 
 
 @code {
+    private const int DebounceDelay = 400; //ms
     private string TextValue;
     private bool _showLoading => orderLines is null;
-    private IEnumerable<OrderLine>? orderLines = null;
+    private List<OrderLine>? orderLines = null;
+    private double TotalPrice { get; set; } = 0;
 
     protected override async Task OnInitializedAsync()
     {
@@ -141,6 +143,7 @@
                     await _httpService.Get<Product>("/Product/Get", (int)orderLine.ProductId);
             }
         }
+        PreviewTotalPrice();
         StateHasChanged();
     }
 
@@ -150,6 +153,48 @@
         {   
             orderLine.Quantity += amount;
         }
+        PreviewTotalPrice();
+        Console.WriteLine("debound trigger");
+        Debounce(async () => await SaveCartChange(), 5000);
+    }
+
+    private void PreviewTotalPrice()
+    {
+        TotalPrice = _cartService.PreviewTotalPrice(orderLines);
+    }
+
+    private async Task SaveCartChange()
+    {
+        Console.WriteLine("Call back func start...");
+        if (orderLines is not null)
+        {  
+            await _cartService.SaveCart(orderLines);
+        }
+        Console.WriteLine("Call back done.");
+    }
+
+    private static System.Timers.Timer? debounceTimer;
+    private static void Debounce(Action action, int milliseconds)
+    {
+        if (debounceTimer != null)
+        {
+            debounceTimer.Stop();
+            debounceTimer.Dispose();
+        }
+
+        debounceTimer = new System.Timers.Timer();
+        debounceTimer.Interval = milliseconds;
+        // gắn sự  kiện sẽ thực hiện 
+        // khi đếm hết thời gian
+        debounceTimer.Elapsed += (sender, eventArgs) =>
+        {
+            Console.WriteLine("Time out! call back!");
+            action();
+            debounceTimer.Stop();
+            debounceTimer.Dispose();
+        };
+
+        debounceTimer.Start();
     }
 
 }

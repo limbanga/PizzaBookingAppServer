@@ -1,5 +1,6 @@
 ﻿using Blazored.LocalStorage;
 using PizzaBookingShared.Entities;
+using static MudBlazor.Colors;
 
 namespace PizzaBookingAppClient.Services
 {
@@ -9,7 +10,9 @@ namespace PizzaBookingAppClient.Services
         Task Add(OrderLine orderLine);
         Task Remove(int productId);
         Task<int> CountAsync();
-        Task CheckOut();
+        double PreviewTotalPrice(List<OrderLine> orderLines);
+        Task SaveCart(List<OrderLine> orderLines);
+
     }
 
     public class CartService : ICartService
@@ -56,15 +59,41 @@ namespace PizzaBookingAppClient.Services
             await _localStorageService.SetItemAsync<List<OrderLine>>("cart", cart);
         }
 
-        public Task CheckOut()
-        {
-            throw new NotImplementedException();
-        }
-
+ 
 		public async Task<int> CountAsync()
 		{
             var cart = await GetAsync();
 			return cart.Count();
 		}
-	}
+
+        public double PreviewTotalPrice(List<OrderLine> orderLines)
+        {
+
+            double total = 0;
+            foreach (var orderLine in orderLines)
+            {
+                if (orderLine.Product is not null)
+                {
+                    total += orderLine.Product.Price * orderLine.Quantity;
+                }
+            }
+
+            return  total;
+        }
+
+        public async Task SaveCart(List<OrderLine> orderLines)
+        {
+            List<OrderLine> cart = new();
+            foreach (var orderLine in orderLines)
+            {
+                cart.Add(new OrderLine
+                {
+                    ProductId = orderLine.ProductId,
+                    Quantity = orderLine.Quantity,
+                });
+            }
+
+            await _localStorageService.SetItemAsync<List<OrderLine>>("cart", cart);
+        }
+    }
 }
