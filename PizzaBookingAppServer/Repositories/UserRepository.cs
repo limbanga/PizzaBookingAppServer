@@ -14,6 +14,7 @@ namespace PizzaBookingShared.Repositories
         Task RegisterAsync(User model);
         Task<User> LoginAsync(string loginName, string password);
         string GetAccessTokenAsync(User model);
+        Task ChangePasswordAsync(int userId, string oldPassword, string newPassword);
     }
 
     public class UserRepository : IUserRepository
@@ -33,6 +34,27 @@ namespace PizzaBookingShared.Repositories
             _passwordHasher = new PasswordHasher<User>();
             _configuration = configuration;
             _context = context;
+        }
+
+        public async Task ChangePasswordAsync(int userId, string oldPassword, string newPassword)
+        {
+            User? user = await _context.User.FindAsync(userId);
+
+            if (user is null)
+            {
+                throw new AppException("User does't exist.");
+            }
+
+            // Check password is correct
+            var verifyResult = _passwordHasher.VerifyHashedPassword(user, user.HashedPassword, oldPassword);
+            if (verifyResult != PasswordVerificationResult.Success)
+            {
+                throw new AppException("Old password is incorrect.");
+            }
+
+            user.HashedPassword = _passwordHasher.HashPassword(user, newPassword);
+            _context.Update(user);
+            await _context.SaveChangesAsync();
         }
 
         public string GetAccessTokenAsync(User model)

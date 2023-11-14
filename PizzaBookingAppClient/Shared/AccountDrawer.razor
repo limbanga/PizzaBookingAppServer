@@ -1,5 +1,4 @@
-﻿@* Account Drawer *@
-<MudDrawer @bind-Open="MainLayout._drawerOpenAccount" Elevation="1"
+﻿<MudDrawer @bind-Open="MainLayout._drawerOpenAccount" Elevation="1"
            Anchor="Anchor.End" Variant="@DrawerVariant.Temporary"
            Width="300px"
            Class="pa-4"
@@ -9,6 +8,24 @@
         <MudText Typo="Typo.h6" Color="Color.Primary">Hi @role</MudText>
     </MudDrawerHeader>
 
+    <MudNavMenu Color="Color.Tertiary" Bordered=true>
+
+        <MudNavLink Href="/account/wish-list"
+                    Match="NavLinkMatch.All"
+                    IconColor="Color.Error"
+                    Icon="@Icons.Material.Filled.Favorite">Wish list</MudNavLink>
+
+        <MudNavLink Href="/account"
+                    Match="NavLinkMatch.All"
+                    IconColor="Color.Tertiary"
+                    Icon="@Icons.Material.Filled.Person">Your infor</MudNavLink>
+
+        <MudNavLink Href="/account/change-password"
+                    Match="NavLinkMatch.All"
+                    Icon="@Icons.Material.Filled.LockReset">Change password</MudNavLink>
+
+
+    </MudNavMenu>
 
 
     <MudSpacer />

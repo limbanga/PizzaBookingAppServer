@@ -14,7 +14,7 @@ namespace PizzaBookingShared.ViewModel
         public string LoginName { get; set; } = null!;
 
         [Required(ErrorMessage = "required")]
-        [StringLength(36, MinimumLength = 8)]
+        [MinLength(8, ErrorMessage = "at least {1} chacracters")]
         [DataType(DataType.Password)]
         public string Password { get; set; } = null!;
     }

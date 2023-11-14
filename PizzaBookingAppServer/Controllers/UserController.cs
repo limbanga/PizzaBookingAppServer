@@ -84,5 +84,25 @@ namespace PizzaBookingShared.Controllers
                 throw;
             }
         }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<ActionResult> ChangePassword(ChangePasswordViewModel model)
+        {
+            int userId = Convert.ToInt32(HttpContext.User.FindFirstValue("id"));
+            try
+            {
+                await _repo.ChangePasswordAsync(userId, model.OldPassword, model.NewPassword);
+                return Ok("Password has been changed.");
+            }
+            catch (AppException ex)
+            {
+                return Unauthorized(ex.Message);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }
