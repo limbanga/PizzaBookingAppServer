@@ -1,12 +1,30 @@
 ﻿@page "/"
-@page "/index"
 
-<PageTitle>Index</PageTitle>
+
+<PageTitle>PixelPizza</PageTitle>
 
 <Carousel/>
 
-<ProductBoard/>
+<MudText Typo="Typo.h1" Color="Color.Primary">
+	@Query
+</MudText>
+
+<ProductBoard products="products" />
+
 
 @code {
+	[Parameter]
+	[SupplyParameterFromQuery(Name ="q")]
+	public string Query { get; set; } = string.Empty;
+	[Parameter]
+	[SupplyParameterFromQuery(Name = "cate")]
+	public string CategoryQuery { get; set; } = string.Empty;
 
+	public List<Product>? products { get; set; } = null;
+
+	protected override async Task OnParametersSetAsync()
+	{
+		Console.WriteLine($"/Product/Fillter/?name={Query}&cate={CategoryQuery}");
+		products = await _httpService.GetAll<Product>($"/Product/Fillter/?name={Query}&cate={CategoryQuery}");
+	}
 }

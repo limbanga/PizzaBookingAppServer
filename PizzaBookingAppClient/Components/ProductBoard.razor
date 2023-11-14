@@ -58,22 +58,10 @@ else
     [Parameter]
     public List<Product>? products { get; set; } = null;
 
-    protected override async Task OnInitializedAsync()
-    {
-        if (products == null)
-        {
-            products = await _httpService.GetAll<Product>("/Product/GetAll");
-        }
-    }
-
     private async Task OnAddToCart(int productId)
     {
         OrderLine orderLine =
-            new OrderLine
-                {
-                    ProductId = productId,
-                    Quantity = 1
-                };
+            new OrderLine {ProductId = productId, Quantity = 1};
 
         await _cartService.Add(orderLine);
         await MainLayout.LoadCartCount();

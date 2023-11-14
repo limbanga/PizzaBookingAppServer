@@ -40,6 +40,16 @@ namespace PizzaBookingShared.Controllers
 
 		[HttpGet]
 		[AllowAnonymous]
+		public async Task<List<Product>> Fillter(
+            string? name,
+            [FromQuery(Name ="cate")] string? categoryAlias
+            )
+		{
+			return await _productRepo.FillterAsync(name, categoryAlias);
+		}
+
+		[HttpGet]
+		[AllowAnonymous]
 		public async Task<List<Product>> GetAllWithCategory()
         {
             return await _productRepo.GetAllWithCategoryAsync();

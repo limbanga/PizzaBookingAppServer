@@ -1,0 +1,60 @@
+﻿<MudDialog Style="max-width: 800px; min-width: 400px; width: 80vw; background: var(--mud-palette-background);"
+Class="pa-4">
+
+    <DialogContent>
+
+        <MudTextField 
+            @bind-Value="@productNameQuery"
+            Label="What do you looking for?"
+            Variant="Variant.Text"/>
+
+        <MudRadioGroup @bind-SelectedOption="@categoryQuery">
+            <div class="pa-4 d-flex justify-space-around gap-4 flex-wrap">
+                <MudRadio Option="@(string.Empty)" Color="Color.Success">All</MudRadio>
+
+                @if (categories is not null)
+                {
+                    foreach (var cate in categories)
+                    {
+                        <MudRadio Option="@(cate.Alias)" Color="Color.Error">@cate.Name</MudRadio>
+                    }
+                }
+            </div>
+        </MudRadioGroup>
+
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton OnClick="Cancel" Color="Color.Primary" Variant="Variant.Outlined">Cancel</MudButton>
+        <MudButton OnClick="Submit" Color="Color.Error" Variant="Variant.Filled">Ok</MudButton>
+    </DialogActions>
+
+</MudDialog>
+
+@code {
+
+    [CascadingParameter]
+    MudDialogInstance MudDialog { get; set; } = null!;
+    public List<Category>? categories { get; set; } = null;
+
+    public string? categoryQuery { get; set; } = string.Empty;
+    public string? productNameQuery { get; set; } = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (categories == null)
+        {
+            categories = await _httpService.GetAll<Category>("/Category/GetAll");
+        }
+    }
+
+    private void Submit()
+    {
+        _navigationManager.NavigateTo($"/?q={productNameQuery}&cate={categoryQuery}");
+    }
+
+    private void Cancel() 
+    { 
+        MudDialog.Cancel();
+    }
+}
