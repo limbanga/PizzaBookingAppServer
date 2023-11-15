@@ -12,6 +12,7 @@ namespace PizzaBookingShared.Entities
 		[JsonIgnore]
 		public Category? Category { get; set; }
 		public float Price { get; set; }
+		[JsonIgnore]
 		public List<ImageProduct>? ImageProducts { get; set; }
 	}
 }

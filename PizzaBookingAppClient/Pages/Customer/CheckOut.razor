@@ -2,7 +2,7 @@
 
 
 @* Kiếm font chữ thế vào *@
-<MudText Typo="Typo.h3" Style="text-align: center; color: red;" Class="pa-4">
+<MudText Typo="Typo.h3" Color="Color.Primary" Align="Align.Center" Class="pa-4">
     Enjoy your meal!
 </MudText>
 
@@ -98,25 +98,64 @@
 
             <MudText Typo="Typo.h6" Color="Color.Primary" Align="Align.Center">Check out</MudText>
 
-            <MudTextField @bind-Value="TextValue"
-                          Class="mt-4"
-                          Label="Phone number"
-                          Variant="Variant.Text"
-                          Margin="Margin.Dense" />
+            <EditForm Model="model" OnValidSubmit="OnConfirmPayment">
 
-            <MudTextField @bind-Value="TextValue"
-                          Class="mt-4"
-                          Label="Address"
-                          Variant="Variant.Text"
-                          Margin="Margin.Dense" />
+                <MudTextField @bind-Value="@model.PhoneNumber"
+                              Class="mt-4"
+                              Label="Phone number"
+                              Variant="Variant.Text"
+                              Margin="Margin.Dense" />
 
-            <MudButton StartIcon="@Icons.Material.Filled.CreditScore"
-                       Class="mt-8"
-                       Color="Color.Warning"
-                       Variant="Variant.Outlined"
-                       FullWidth="true">
-                Pay $@TotalPrice
-            </MudButton>
+                <MudTextField @bind-Value="model.Address"
+                              Class="mt-4"
+                              Label="Address"
+                              Variant="Variant.Text"
+                              Margin="Margin.Dense" />
+
+                <MudButton ButtonType="ButtonType.Submit"
+                           StartIcon="@(!isProcessingConfirmPayment?Icons.Material.Filled.CreditScore:"")"
+                           Disabled="isProcessingConfirmPayment"
+                           Class="mt-8"
+                           Color="Color.Warning"
+                           Variant="Variant.Outlined"
+                           FullWidth="true">
+                    @if (isProcessingConfirmPayment)
+                    {
+                        <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                        <MudText Class="ms-2" Color="Color.Warning">Processing</MudText>
+                    }
+                    else
+                    {
+                        <MudText> Pay $@TotalPrice </MudText>
+                    }
+
+                </MudButton>
+            </EditForm>
+            
+            @if (isPayClicked)
+            {
+                <MudText Typo="Typo.h6" Color="Color.Primary" Align="Align.Center">Scan qr code to pay</MudText>
+
+                <MudImage Src="/public/images/qr_code_demo.png" Fluid="true" />
+
+                <MudButton OnClick="OnScanQRcode"
+                           StartIcon="@(!isScanQRProcessing? Icons.Material.Filled.CreditScore :"")"
+                           Class="mt-8"
+                           Color="Color.Success"
+                           Variant="Variant.Filled"
+                           FullWidth="true">
+                    @if (isScanQRProcessing)
+                    {
+                        <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                        <MudText Class="ms-2">Processing</MudText>
+                    }
+                    else
+                    {
+                        <MudText>Scan</MudText>
+                    }
+                    
+                </MudButton>
+            }
 
         </MudPaper>
     </MudItem>
@@ -127,10 +166,11 @@
 
 @code {
     private const int DebounceDelay = 400; //ms
-    private string TextValue;
     private bool _showLoading => orderLines is null;
-    private List<OrderLine>? orderLines = null;
+    public Order model { get; set; } = new();
+    private List<OrderLine> orderLines = null!;
     private double TotalPrice { get; set; } = 0;
+    private bool isPayClicked = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -195,6 +235,45 @@
         };
 
         debounceTimer.Start();
+    }   
+
+    private bool isProcessingConfirmPayment = false;
+    private async Task OnConfirmPayment()
+    {
+        Console.WriteLine("OnConfirmPayment enter");
+        isProcessingConfirmPayment = true;
+        try
+        {
+            model.OrderLines = orderLines;
+            await _httpService.PostAsync<Order>("/Order/Create", model);
+            isPayClicked = true;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+        finally
+        {
+            isProcessingConfirmPayment = false;
+            Console.WriteLine("OnConfirmPayment done");
+        }
     }
 
+    private bool isScanQRProcessing = false;
+    private async Task OnScanQRcode()
+    {
+        Console.WriteLine("OnScanQRcode enter");
+        isScanQRProcessing = true;
+        await Task.Delay(1000);
+
+        // post list oderLine to server
+        // server create new order 
+        // and update order line orderId
+        // if user are loged in
+        // update order customerId
+     //----------------------------------------------------------------------------
+        isScanQRProcessing = false;
+        Console.WriteLine("OnScanQRcode done");
+        StateHasChanged();
+    }
 }
