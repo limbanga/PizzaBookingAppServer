@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using NuGet.Common;
 using PizzaBookingAppServer.AppExceptions;
+using PizzaBookingAppServer.Helpers;
 using PizzaBookingShared.Entities;
 using PizzaBookingShared.Repositories;
 using PizzaBookingShared.ViewModel;
@@ -23,15 +24,18 @@ namespace PizzaBookingShared.Controllers
 		private readonly IUserRepository _repo;
 		private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
+        private readonly IMailService _mailService;
 
         public UserController(
             IUserRepository repo,
             IConfiguration configuration,
-            IMapper mapper)
+            IMapper mapper,
+            IMailService mailService)
         {
             _repo = repo;
             _configuration = configuration;
             _mapper = mapper;
+            _mailService = mailService;
         }
 
         [HttpPost]
@@ -94,6 +98,28 @@ namespace PizzaBookingShared.Controllers
             {
                 await _repo.ChangePasswordAsync(userId, model.OldPassword, model.NewPassword);
                 return Ok("Password has been changed.");
+            }
+            catch (AppException ex)
+            {
+                return Unauthorized(ex.Message);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        [HttpPost]
+        public ActionResult ResetPassword(string email)
+        {
+            try
+            {
+                _mailService.SendMail(
+                    new string[] { email },
+                    "Reset password",
+                    "test");
+
+                return Ok("emmail was sennd!");
             }
             catch (AppException ex)
             {

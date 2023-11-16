@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using PizzaBookingAppServer.Helpers;
 using PizzaBookingShared.Repositories;
 using System.Configuration;
 using System.Text;
@@ -22,7 +23,7 @@ builder.Services.AddTransient<IOrderRepository, OrderRepository>();
 builder.Services.AddTransient<IOrderLineRepository, OrderLineRepository>();
 builder.Services.AddTransient<IProductRepository, ProductRepository>();
 builder.Services.AddTransient<IUserRepository, UserRepository>();
-
+builder.Services.AddTransient<IMailService, MailService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
