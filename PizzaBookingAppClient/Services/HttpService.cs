@@ -57,6 +57,11 @@ namespace PizzaBookingAppClient.Services
                 throw new Exception("PostAsync: Respone is null");
             }
 
+            if (respone.StatusCode.Equals(HttpStatusCode.BadRequest))
+            {
+                throw new BadRequestException($"BadRequest: {respone.Content}");
+            }
+
             if (respone.StatusCode.Equals(HttpStatusCode.Unauthorized))
             {
                 throw new UnAthorizeException($"Unauthorized: {respone.Content}");

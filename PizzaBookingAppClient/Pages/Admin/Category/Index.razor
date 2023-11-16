@@ -3,46 +3,102 @@
 @using PizzaBookingAppClient.Shared
 
 <PageTitle>Admin - Category</PageTitle>
-<MudText Typo="Typo.h3" GutterBottom="true"> Category </MudText>
+<MudText Typo="Typo.h3" GutterBottom="true" Color="Color.Primary"> Category </MudText>
 
-<MudItem Class="d-flex justify-end">
+<div class="d-flex align-center pa-4">
+
+    <div class="d-flex flex-wrap mt-4">
+        <MudSwitch @bind-Checked="@hover" Color="Color.Success">Hover</MudSwitch>
+        <MudSwitch @bind-Checked="@dense" Color="Color.Success">Dense</MudSwitch>
+        <MudSwitch @bind-Checked="@striped" Color="Color.Success">Striped</MudSwitch>
+        <MudSwitch @bind-Checked="@bordered" Color="Color.Success">Bordered</MudSwitch>
+    </div>
+
+    <MudSpacer/>
     <MudButton Variant="Variant.Filled" Href="/admin/category/create" Color="@Color.Success">Create now!</MudButton>
-</MudItem>
+</div>
 
-@if (categories == null)
-{
-    <MudProgressCircular Color="Color.Default" Indeterminate="true" />
-}
-else if (categories.Count == 0)
-{
-    <MudText Typo="Typo.h4" GutterBottom="true">
-        Category is empty.
-        <MudLink Href="/admin/category/create">Create now!</MudLink>
-    </MudText>
-}
-else
-{
-    <MudTable Items="categories" Hover="true" SortLabel="Sort By" Elevation="0" OnRowClick="RowClickEvent" T="Category">
-        <HeaderContent>
-            <MudTh><MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<Category, object>(x=>x.Name)">Name</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Category, object>(x=>x.CreatedAt.ToLocalTime())">CreatedAt</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Category, object>(x=>x.UpdatedAt.ToLocalTime())">UpdatedAt</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Category, object>(x=>x.Count)">Count</MudTableSortLabel></MudTh>
-        </HeaderContent>
-        <RowTemplate>
-            <MudTd DataLabel="Name">@context.Name</MudTd>
-            <MudTd DataLabel="CreatedAt">@context.CreatedAt</MudTd>
-            <MudTd DataLabel="UpdatedAt">@context.UpdatedAt</MudTd>
-            <MudTd DataLabel="Count">@context.Count</MudTd>
-        </RowTemplate>
-        <PagerContent>
-            <MudTablePager PageSizeOptions="new int[]{ 2, 10, 50, 100}" />
-        </PagerContent>
-    </MudTable>
-}
+
+<MudTable Items="categories"
+          SortLabel="Sort By" Elevation="0"
+          OnRowClick="RowClickEvent" T="Category"
+          Dense="@dense" Hover="@hover"
+          Bordered="@bordered" Striped="@striped"
+          Filter="new Func<Category,bool>(FilterFunc1)"
+@bind-SelectedItem="selectedItem1"
+          Style="background: var(--mud-palette-secondary);">
+
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Periodic Elements</MudText>
+        <MudSpacer />
+        <MudTextField @bind-Value="searchString1" 
+        Placeholder="Search" Adornment="Adornment.Start" 
+        AdornmentIcon="@Icons.Material.Filled.Search" 
+        IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+
+    <HeaderContent>
+        <MudTh>
+            <MudTableSortLabel Style="color: var(--mud-palette-text-secondary);"
+                               InitialDirection="SortDirection.Ascending"
+                               SortBy="new Func<Category, object>(x=>x.Name)">Name</MudTableSortLabel>
+        </MudTh>
+
+        <MudTh>
+            <MudTableSortLabel Style="color: var(--mud-palette-text-secondary);"
+                               SortBy="new Func<Category, object>(x=>x.CreatedAt.ToLocalTime())">
+                                   CreatedAt
+                               </MudTableSortLabel>
+        </MudTh>
+
+        <MudTh>
+            <MudTableSortLabel Style="color: var(--mud-palette-text-secondary);" 
+            SortBy="new Func<Category, object>(x=>x.UpdatedAt.ToLocalTime())">
+                UpdatedAt
+            </MudTableSortLabel>
+        </MudTh>
+
+        <MudTh>
+            <MudTableSortLabel Style="color: var(--mud-palette-text-secondary);" 
+            SortBy="new Func<Category, object>(x=>x.Count)">
+                Count
+            </MudTableSortLabel>
+        </MudTh>
+
+    </HeaderContent>
+
+    <RowTemplate>
+        <MudTd DataLabel="Name" Style="color: var(--mud-palette-text-secondary);">
+            @context.Name</MudTd>
+
+        <MudTd DataLabel="CreatedAt" Style="color: var(--mud-palette-text-secondary);">
+            @context.CreatedAt</MudTd>
+
+        <MudTd DataLabel="UpdatedAt" Style="color: var(--mud-palette-text-secondary);">
+            @context.UpdatedAt</MudTd>
+
+        <MudTd DataLabel="Count" Style="color: var(--mud-palette-text-secondary);">
+            @context.Count</MudTd>
+    </RowTemplate>
+
+    <PagerContent>
+
+        <MudTablePager Style="color: var(--mud-palette-text-secondary);"
+                       PageSizeOptions="new int[]{ 10, 20, 50, 100}" />
+    </PagerContent>
+
+</MudTable>
 
 
 @code {
+
+    private bool dense = false;
+    private bool hover = true;
+    private bool striped = false;
+    private bool bordered = false;
+
+    private string searchString1 = string.Empty;
+    private Category selectedItem1 = null!;
     private List<Category>? categories;
 
     protected override async Task OnInitializedAsync()
@@ -62,4 +118,17 @@ else
         Console.WriteLine(row.Item.Name);
     }
 
+    private bool FilterFunc1(Category category)
+    {
+        return FilterFunc(category, searchString1);
+    }
+
+    private bool FilterFunc(Category element, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (element.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        return false;
+    }
 }

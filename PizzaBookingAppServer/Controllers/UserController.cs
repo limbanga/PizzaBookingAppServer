@@ -110,20 +110,46 @@ namespace PizzaBookingShared.Controllers
         }
 
         [HttpPost]
-        public ActionResult ResetPassword(string email)
+        public async Task<ActionResult> ResetPassword(ResetPasswordViewModel model)
         {
+
             try
             {
+                string email = model.Email;
+
+                string newPassword = "Letmein123$";
+                var resetPasswordToken =  await _repo.GenerateResetPasswordToken(email, newPassword);
+
                 _mailService.SendMail(
                     new string[] { email },
                     "Reset password",
-                    "test");
+                    $"Your new password is: { newPassword } <br/>" +
+                    $"<a href='https://localhost:7266/reset={resetPasswordToken}'>Click here to active your account.</a>", 
+                    isBodyHtml: true);
 
-                return Ok("emmail was sennd!");
+                return Ok("Email was send!");
             }
-            catch (AppException ex)
+            catch (RequestException ex)
             {
-                return Unauthorized(ex.Message);
+                return BadRequest(ex.Message);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        [HttpGet("/reset={resetPasswordToken}")]
+        public async Task<ActionResult> ActivePassword(string resetPasswordToken)
+        {
+            try
+            {
+                await _repo.ActiveNewPasswordAsync(resetPasswordToken);
+                return Ok("New password is take effect now!");
+            }
+            catch (RequestException ex)
+            {
+                return BadRequest(ex.Message);
             }
             catch (Exception)
             {

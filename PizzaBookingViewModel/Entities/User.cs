@@ -19,7 +19,13 @@ namespace PizzaBookingShared.Entities
         [MaxLength(200)]
         public string? Addresss { get; set; }
 		public int LoginFailedCount { get; set; }
-		public bool Locked { get; set; } = false;
+        [StringLength(16)]
+        public string? NewPassword { get; set; } = null;
+        [StringLength(200)]
+		public string? ResetPasswordToken { get; set; } = null;
+        [StringLength(200)]
+        public string? ActiveAccountToken { get; set; } = null;
+        public bool Locked { get; set; } = false;
 		public string? Role { get; set; } = null!;
 	}
 }

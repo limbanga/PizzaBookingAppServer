@@ -5,6 +5,7 @@ using PizzaBookingAppServer.AppExceptions;
 using PizzaBookingShared.Entities;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace PizzaBookingShared.Repositories
@@ -15,16 +16,15 @@ namespace PizzaBookingShared.Repositories
         Task<User> LoginAsync(string loginName, string password);
         string GetAccessTokenAsync(User model);
         Task ChangePasswordAsync(int userId, string oldPassword, string newPassword);
+        Task<string> GenerateResetPasswordToken(string email, string newPassword);
+        Task ActiveNewPasswordAsync(string resetPasswordToken);
     }
 
     public class UserRepository : IUserRepository
 	{
-        const int TOKEN_LIFE_TIME_MINUTE = 60 * 24; // 1 day
-
         private readonly IPasswordHasher<User> _passwordHasher;
         private readonly AppContext _context;
         private readonly IConfiguration _configuration;
-
 
         public UserRepository(
             AppContext context, 
@@ -55,6 +55,25 @@ namespace PizzaBookingShared.Repositories
             user.HashedPassword = _passwordHasher.HashPassword(user, newPassword);
             _context.Update(user);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<string> GenerateResetPasswordToken(string email, string newPassword)
+        {
+            var model = await _context.User
+                        .Where(u => u.LoginName.Equals(email))
+                        .FirstOrDefaultAsync();
+
+            if (model is null)
+            {
+                throw new RequestException("Email doesn't exist.");
+            }
+
+            string randomToken = GenerateRandomToken();
+            model.ResetPasswordToken = randomToken;
+            model.NewPassword = newPassword;
+            _context.User.Update(model);
+            await _context.SaveChangesAsync();
+            return randomToken;
         }
 
         public string GetAccessTokenAsync(User model)
@@ -121,7 +140,10 @@ namespace PizzaBookingShared.Repositories
             await _context.SaveChangesAsync();
         }
 
-        private string WriteToken(List<Claim> claims)
+        private string WriteToken(
+            List<Claim> claims,
+            long tokenLifeTimeSecond = 60 * 60 * 24 // 1 day
+            )
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.UTF8.GetBytes(_configuration.GetValue<string>("JwtSetting:Key")!);
@@ -129,7 +151,7 @@ namespace PizzaBookingShared.Repositories
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddMinutes(TOKEN_LIFE_TIME_MINUTE),
+                Expires = DateTime.UtcNow.AddMinutes(tokenLifeTimeSecond),
                 Issuer = _configuration.GetValue<string>("JwtSetting:Issuer"),
                 Audience = _configuration.GetValue<string>("JwtSetting:Audience"),
                 SigningCredentials = new SigningCredentials(
@@ -139,6 +161,45 @@ namespace PizzaBookingShared.Repositories
             var token = tokenHandler.WriteToken(stoken);
 
             return token;
+        }
+
+        private string GenerateRandomToken(int length = 32)
+        {
+            using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
+            {
+                byte[] tokenData = new byte[length];
+                rng.GetBytes(tokenData);
+
+                StringBuilder tokenBuilder = new StringBuilder();
+                foreach (byte b in tokenData)
+                {
+                    tokenBuilder.Append($"{b:X2}");
+                }
+
+                return tokenBuilder.ToString();
+            }
+        }
+
+        public async Task ActiveNewPasswordAsync(string resetPasswordToken)
+        {
+            var model = await _context.User
+                .Where(u =>
+                 u.ResetPasswordToken != null &&
+                 u.ResetPasswordToken.Equals(resetPasswordToken))
+                .FirstOrDefaultAsync();
+
+            if (model is null)
+            {
+                throw new RequestException("resetPasswordToken does't exist.");
+            }
+
+            model.HashedPassword = _passwordHasher.HashPassword(model, model.NewPassword!);
+
+            model.NewPassword = null;
+            model.ResetPasswordToken = null;
+
+            _context.User.Update(model);
+            await _context.SaveChangesAsync();
         }
     }
 }

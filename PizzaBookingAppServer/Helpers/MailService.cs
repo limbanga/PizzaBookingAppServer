@@ -10,6 +10,17 @@ namespace PizzaBookingAppServer.Helpers
 
     public class MailService : IMailService
     {
+        private SmtpClient smtpClient;
+        public MailService()
+        {
+            smtpClient = new SmtpClient("smtp-mail.outlook.com");
+            smtpClient.Port = 587; // Port của SMTP server
+            smtpClient.Credentials = new NetworkCredential(
+                "liemdev23@outlook.com",
+                "ThisIsSecret@");
+            smtpClient.EnableSsl = true;
+        }
+
         public void SendMail(IEnumerable<string> to, string subject, string content, bool isBodyHtml = false)
         {
             MailMessage message = new MailMessage();
@@ -21,11 +32,6 @@ namespace PizzaBookingAppServer.Helpers
             message.Subject = subject;
             message.Body = content;
             message.IsBodyHtml = true;
-
-            SmtpClient smtpClient = new SmtpClient("smtp-mail.outlook.com");
-            smtpClient.Port = 587; // Port của SMTP server
-            smtpClient.Credentials = new NetworkCredential();
-            smtpClient.EnableSsl = true;
 
             smtpClient.Send(message);
         }
