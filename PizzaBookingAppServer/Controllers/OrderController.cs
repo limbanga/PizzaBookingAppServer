@@ -33,7 +33,7 @@ namespace PizzaBookingShared.Controllers
         }
 
 		[HttpPost]
-		public async Task<ActionResult> Pay(int id) 
+		public async Task<ActionResult> Pay([FromBody] int id) 
 		{
 			// kiểm tra nhận được tiền chưa từ đúng khác hàng chưa.
 			

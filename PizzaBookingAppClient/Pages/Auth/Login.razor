@@ -16,8 +16,10 @@
 
 
                 <MudItem xs="12" sm="6" Class="d-flex align-center justify-center flex-wrap">
-                    <EditForm Model="model" OnValidSubmit="onLogin" style="width: 100%;">
+                    <EditForm Model="model" OnValidSubmit="OnLogin" style="width: 100%;">
 
+                        <DataAnnotationsValidator />
+                        
                         <MudText Typo="Typo.h4"
                                  Align="Align.Center"
                                  Color="Color.Primary">Login now!</MudText>
@@ -85,7 +87,7 @@
     private LoginViewModel model = new LoginViewModel();
     private bool ShowPassword { get; set; }
 
-    private async Task onLogin()
+    private async Task OnLogin()
     {
         try
         {

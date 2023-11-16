@@ -99,14 +99,18 @@
             <MudText Typo="Typo.h6" Color="Color.Primary" Align="Align.Center">Check out</MudText>
 
             <EditForm Model="model" OnValidSubmit="OnConfirmPayment">
+                
+                <DataAnnotationsValidator />
 
                 <MudTextField @bind-Value="@model.PhoneNumber"
+                              For="@(() => model.PhoneNumber)"
                               Class="mt-4"
                               Label="Phone number"
                               Variant="Variant.Text"
                               Margin="Margin.Dense" />
 
                 <MudTextField @bind-Value="model.Address"
+                              For="@(() => model.Address)"
                               Class="mt-4"
                               Label="Address"
                               Variant="Variant.Text"
@@ -245,7 +249,12 @@
         try
         {
             model.OrderLines = orderLines;
-            await _httpService.PostAsync<Order>("/Order/Create", model);
+            var responeModel = await _httpService.PostAsync<Order, Order>("/Order/Create", model);
+            if (responeModel is null)
+            {
+                throw new Exception("responeModel is null");
+            }
+            model = responeModel;
             isPayClicked = true;
         }
         catch (Exception)
@@ -264,16 +273,29 @@
     {
         Console.WriteLine("OnScanQRcode enter");
         isScanQRProcessing = true;
-        await Task.Delay(1000);
-
-        // post list oderLine to server
-        // server create new order 
-        // and update order line orderId
-        // if user are loged in
-        // update order customerId
-     //----------------------------------------------------------------------------
-        isScanQRProcessing = false;
-        Console.WriteLine("OnScanQRcode done");
-        StateHasChanged();
+        try
+        {
+            await _httpService.PostAsync<Int32>("/Order/Pay", model.Id);
+            _snackbar.Add(
+                "Place order successfully. Your order is on the way", 
+                Severity.Success,
+                config =>
+                {
+                    config.VisibleStateDuration = 500;
+                    config.HideTransitionDuration = 3000;
+                    config.ShowTransitionDuration = 500;
+                });
+        }
+        catch (Exception)
+        {
+            _snackbar.Add("Something went wrong!", Severity.Error);
+            throw;
+        }
+        finally
+        {
+            isScanQRProcessing = false;
+            Console.WriteLine("OnScanQRcode done");
+            StateHasChanged();
+        }
     }
 }

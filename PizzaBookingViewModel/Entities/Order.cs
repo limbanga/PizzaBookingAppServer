@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace PizzaBookingShared.Entities
 {
@@ -8,8 +9,13 @@ namespace PizzaBookingShared.Entities
 		public int? CustomerId { get; set; }
 		[JsonIgnore]
 		public User? Customer { get; set; }
+		[MaxLength(20)]
 		public string? State { get; set; } = null;
-		public string PhoneNumber { get; set; } = null!;
+		[Required(ErrorMessage = "required")]
+        [MaxLength(15, ErrorMessage = "Invalid phone number")]
+        public string PhoneNumber { get; set; } = null!;
+        [Required(ErrorMessage = "required")]
+        [MaxLength(200, ErrorMessage = "Max length 200 chacracters")]
         public string Address { get; set; } = null!;
         public List<OrderLine>? OrderLines { get; set; }
 	}
