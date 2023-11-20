@@ -45,6 +45,8 @@
     public Category model { get; set; } = null!;
     [Parameter]
     public bool isUpdate { get; set; } = false;
+    [Parameter]
+    public Func<Task> ReloadFunc { get; set; } = null!;
 
     private string Title = "Add category";
 
@@ -78,6 +80,10 @@
                 await _httpService.Update<Category>("/Category/Update", model);
                 _snackbar.Add("Update category success.", Severity.Success);
                 Console.WriteLine("done update");
+                if (ReloadFunc is not null)
+                {
+                    await ReloadFunc();
+                }
                 MudDialog.Cancel();
             }
             catch (Exception ex)
@@ -93,6 +99,10 @@
                 await _httpService.Create<Category>("/Category/Create", model);
                 _snackbar.Add("Create category success.", Severity.Success);
                 Console.WriteLine("done add");
+                if (ReloadFunc is not null)
+                {
+                    await ReloadFunc();
+                }
                 MudDialog.Cancel();
             }
             catch (Exception ex)

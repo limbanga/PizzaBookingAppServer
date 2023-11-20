@@ -168,6 +168,10 @@
                 await _httpService.Update<Product>("/Product/Update", model);
                 _snackbar.Add("Update product success.", Severity.Success);
                 Console.WriteLine("done update");
+                if (ReloadFunc is not null)
+                {
+                    await ReloadFunc();
+                }
                 MudDialog.Cancel();
             }
             catch (Exception ex)
