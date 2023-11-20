@@ -5,10 +5,12 @@ using PizzaBookingShared.Entities;
 using PizzaBookingShared.Repositories;
 using PizzaBookingShared;
 using PizzaBookingAppServer.Helpers;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PizzaBookingShared.Controllers
 {
-    [ApiController]
+    [ApiController, Authorize(Roles ="admin")]
+     
     public class CategoryController : GenericController<Category>
     {
         private readonly ICategoryRepository _repo;
@@ -33,18 +35,17 @@ namespace PizzaBookingShared.Controllers
             return base.Update(model);
         }
 
-        [HttpGet("{alias}")]
-        public async Task<ActionResult<Category>> GetCategoryByAlias(string alias)
+        [AllowAnonymous]
+        public override Task<ActionResult<Category>> Get(int id)
         {
-            var result = await _repo.GetByAliasAsync(alias);
-            if (result is null)
-            {
-                return NotFound();
-            }
-            else
-            {
-                return result;
-            }
+            return base.Get(id);
         }
+
+        [AllowAnonymous]
+        public override Task<ActionResult<List<Category>>> GetAll()
+        {
+            return base.GetAll();
+        }
+
     }
 }

@@ -3,14 +3,12 @@
 <PageTitle>Admin - Order</PageTitle>
 <MudText Typo="Typo.h3" GutterBottom="true" Color="Color.Primary"> Order </MudText>
 
-<MudTable Items="products"
+<MudTable Items="orders"
           SortLabel="Sort By" Elevation="0"
           OnRowClick="RowClickEvent" T="Order"
           Dense="@dense" Hover="@hover"
           Bordered="@bordered" Striped="@striped"
-          Filter="new Func<Order,bool>(FilterFunc1)"
-@bind-SelectedItem="selectedItem"
-          >
+          Filter="new Func<Order,bool>(FilterFunc1)">
 
     <ToolBarContent>
         <MudText Typo="Typo.h6">Orders</MudText>
@@ -60,7 +58,7 @@
     <RowTemplate>
 
         <MudTd DataLabel="CustomerName">
-            @context.GetDisplayCustomerName
+            @(context.Customer is null? "Unknown": context.Customer.FirstName)
         </MudTd>
 
         <MudTd DataLabel="PhoneNumber">
@@ -96,34 +94,15 @@
     private bool bordered = false;
 
     private string searchString = string.Empty;
-    private Order selectedItem = null!;
-    private List<Order>? products;
+    private List<Order>? orders;
 
     protected override async Task OnInitializedAsync()
     {
-        var httpResponse = await _httpClient.GetAsync("/Order/GetAll");
-        if (httpResponse is null)
-        {
-            _snackbar.Add("Unknown error.", Severity.Error);
-        }
-        else if (httpResponse.StatusCode == System.Net.HttpStatusCode.Unauthorized)
-        {
-            _snackbar.Add("Unauthorized.", Severity.Error);
-        }
-        else if (!httpResponse.IsSuccessStatusCode)
-        {
-            _snackbar.Add("Fail to connect to server.", Severity.Error);
-        }
-        else
-        {
-            products = await httpResponse.Content.ReadFromJsonAsync<List<Order>>();
-        }
+        await LoadData();
     }
 
     private void RowClickEvent(TableRowClickEventArgs<Order> row)
     {
-        // nav to update
-        _navigationManager.NavigateTo($"/admin/product/update/{row.Item.Id}");
         Console.WriteLine(row.Item.Id);
     }
 
@@ -139,5 +118,19 @@
         if (element.PhoneNumber.Contains(searchString, StringComparison.OrdinalIgnoreCase))
             return true;
         return false;
+    }
+
+    private async Task LoadData()
+    {
+        try
+        {
+            orders = await _httpService.GetAll<Order>("/Order/GetAllIncludeCustomer");
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            _snackbar.Add(ex.Message, Severity.Error);
+        }
+       
     }
 }

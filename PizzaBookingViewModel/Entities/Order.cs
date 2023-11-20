@@ -7,7 +7,6 @@ namespace PizzaBookingShared.Entities
 	{
 		public int Id { get; set; }
 		public int? CustomerId { get; set; }
-		[JsonIgnore]
 		public User? Customer { get; set; }
 		[MaxLength(20)]
 		public string? State { get; set; } = null;
@@ -23,7 +22,6 @@ namespace PizzaBookingShared.Entities
         public List<OrderLine>? OrderLines { get; set; }
 
 		// function for display data
-		public string GetDisplayCustomerName => Customer is null ? "Unknown" : Customer.FirstName;
         public string GetShortAddress => Address.Length < 15 ? Address : Address.Substring(0, 15);
 
     }

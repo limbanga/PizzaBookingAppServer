@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using PizzaBookingShared.Entities;
 using PizzaBookingShared.Repositories;
 using PizzaBookingShared;
+using System.Security.Claims;
 
 namespace PizzaBookingShared.Controllers
 {
@@ -20,15 +21,22 @@ namespace PizzaBookingShared.Controllers
 			_repo = tRepo;
 		}
 
-		[NonAction]
-        public override Task<ActionResult> Update(Order model)
+		[HttpGet]
+        public async Task<ActionResult<List<Order>>> GetAllIncludeCustomer()
         {
-            return base.Update(model);
+            return await _repo.GetAllIncludeCustomerAsync();
         }
 
         public override Task<ActionResult<Order>> Create(Order model)
         {
 			// get user id if exist
+			var claimId = User.FindFirst("id");
+
+            if (claimId is not null)
+			{
+				model.CustomerId = Convert.ToInt32(claimId.Value);
+			}
+
             return base.Create(model);
         }
 
@@ -50,5 +58,11 @@ namespace PizzaBookingShared.Controllers
 			await _repo.UpdateAsync(model);
 			return Ok(model);	
 		}
+
+        [NonAction]
+        public override Task<ActionResult> Update(Order model)
+        {
+            return base.Update(model);
+        }
     }
 }
