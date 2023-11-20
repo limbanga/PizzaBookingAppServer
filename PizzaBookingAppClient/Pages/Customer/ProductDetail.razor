@@ -11,7 +11,7 @@ else
         <MudItem xs="12" md="6">
             <MudPaper Class="d-flex align-center justify-center mud-width-full mud-height-full pa-8"
                       Style="background: var(--mud-palette-background);">
-                <MudImage Src="@("upload/" + product.ImagePath)" Alt="image of product" Fluid="true" />
+                <MudImage Src="@("upload/products/" + product.ImagePath)" Alt="image of product" Fluid="true" />
             </MudPaper>
         </MudItem>
 
@@ -45,7 +45,7 @@ else
                                      Style="background: var(--mud-palette-background);
                                             color: var(--mud-palette-primary);" />
 
-                    <MudText Typo="Typo.h5" Color="Color.Error" Class="my-4">@((product.Price * quantity).ToString("N0")) vnd</MudText>
+                    <MudText Typo="Typo.h5" Color="Color.Error" Class="my-4">$ @(product.Price * quantity)</MudText>
 
                     <MudItem Class="d-flex my-4">
                         <MudButton Variant="Variant.Filled" 

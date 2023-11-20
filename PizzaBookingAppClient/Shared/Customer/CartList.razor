@@ -10,16 +10,14 @@ else
             {
                 <div Class="d-flex"
                         Style="background: var(--mud-palette-background);">
-                    <MudImage Src="@(orderLine.Product!.ImagePath != null?
-                                "/upload/"+ orderLine.Product.ImagePath:
-                                "/public/images/nothing.png")"
+                    <MudImage Src="@("/upload/products/"+ orderLine.Product?.ImagePath)"
                                 Style="width: 25%;"
                                 ObjectFit="ObjectFit.Contain"
                                 Class="rounded-lg" />
 
                     <div style="width: 75%;" class="pa-4">
                         <div class="d-flex justify-space-between align-center">
-                            <MudText Typo="Typo.h6" Color="Color.Primary">@orderLine.Product.Name</MudText>
+                            <MudText Typo="Typo.h6" Color="Color.Primary">@orderLine.Product?.Name</MudText>
                             <MudIconButton 
                                 Icon="@Icons.Material.Filled.Close"
                                 Color="Color.Info" aria-label="delete"

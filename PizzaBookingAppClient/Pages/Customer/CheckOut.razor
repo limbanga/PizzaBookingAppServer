@@ -34,11 +34,7 @@
                     <MudTd Style="color: var(--mud-palette-text-secondary);"
                            DataLabel="Product">
                         @* Show image here *@
-                        <MudImage Src="@(
-                            context.Product!.ImagePath is not null ?
-                            "/upload/" + context.Product!.ImagePath:
-                            "/public/images/nothing.png"
-                                )"
+                        <MudImage Src="@("/upload/products/" + context.Product!.ImagePath)"
                                   Height="100"
                                   Width="200"
                                   ObjectFit="ObjectFit.Contain" />
@@ -138,27 +134,37 @@
             
             @if (isPayClicked)
             {
-                <MudText Typo="Typo.h6" Color="Color.Primary" Align="Align.Center">Scan qr code to pay</MudText>
+                if (!isScanQRDone)
+                {
+                    <MudText Typo="Typo.h6" Color="Color.Primary" Align="Align.Center">Scan qr code to pay</MudText>
+                    <MudImage Src="/public/images/qr_code_demo.png" Fluid="true" />
 
-                <MudImage Src="/public/images/qr_code_demo.png" Fluid="true" />
+                    <MudButton OnClick="OnScanQRcode"
+                               StartIcon="@(!isScanQRProcessing? Icons.Material.Filled.CreditScore :"")"
+                               Class="mt-8"
+                               Color="Color.Success"
+                               Variant="Variant.Filled"
+                               FullWidth="true">
+                        @if (isScanQRProcessing)
+                        {
+                            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                            <MudText Class="ms-2">Processing</MudText>
+                        }
+                        else
+                        {
+                            <MudText>Scan</MudText>
+                        }
 
-                <MudButton OnClick="OnScanQRcode"
-                           StartIcon="@(!isScanQRProcessing? Icons.Material.Filled.CreditScore :"")"
-                           Class="mt-8"
-                           Color="Color.Success"
-                           Variant="Variant.Filled"
-                           FullWidth="true">
-                    @if (isScanQRProcessing)
-                    {
-                        <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
-                        <MudText Class="ms-2">Processing</MudText>
-                    }
-                    else
-                    {
-                        <MudText>Scan</MudText>
-                    }
-                    
-                </MudButton>
+                    </MudButton>
+                }
+                else
+                {
+                    <MudText Color="Color.Success"
+                             Align="Align.Center"
+                             Class="py-4">
+                        Your order is on the way
+                    </MudText>
+                }
             }
 
         </MudPaper>
@@ -269,6 +275,8 @@
     }
 
     private bool isScanQRProcessing = false;
+    private bool isScanQRDone = false;
+
     private async Task OnScanQRcode()
     {
         Console.WriteLine("OnScanQRcode enter");
@@ -285,6 +293,7 @@
                     config.HideTransitionDuration = 3000;
                     config.ShowTransitionDuration = 500;
                 });
+                isScanQRDone = true;
         }
         catch (Exception)
         {

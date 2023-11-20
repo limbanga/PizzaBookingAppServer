@@ -3,20 +3,6 @@
 <PageTitle>Admin - Order</PageTitle>
 <MudText Typo="Typo.h3" GutterBottom="true" Color="Color.Primary"> Order </MudText>
 
-<div class="d-flex align-center pa-4">
-
-    <div class="d-flex flex-wrap mt-4">
-        <MudSwitch @bind-Checked="@hover" Color="Color.Success">Hover</MudSwitch>
-        <MudSwitch @bind-Checked="@dense" Color="Color.Success">Dense</MudSwitch>
-        <MudSwitch @bind-Checked="@striped" Color="Color.Success">Striped</MudSwitch>
-        <MudSwitch @bind-Checked="@bordered" Color="Color.Success">Bordered</MudSwitch>
-    </div>
-
-    <MudSpacer/>
-
-</div>
-
-
 <MudTable Items="products"
           SortLabel="Sort By" Elevation="0"
           OnRowClick="RowClickEvent" T="Order"
@@ -24,10 +10,10 @@
           Bordered="@bordered" Striped="@striped"
           Filter="new Func<Order,bool>(FilterFunc1)"
 @bind-SelectedItem="selectedItem"
-          Style="background: var(--mud-palette-secondary);">
+          >
 
     <ToolBarContent>
-        <MudText Typo="Typo.h6">Periodic Elements</MudText>
+        <MudText Typo="Typo.h6">Orders</MudText>
         <MudSpacer />
         <MudTextField @bind-Value="searchString"
                       Placeholder="Search" Adornment="Adornment.Start"
