@@ -19,6 +19,12 @@ namespace PizzaBookingShared.Entities
         [MaxLength(200, ErrorMessage = "Max length 200 chacracters")]
         [StringLength(200)]
         public string Address { get; set; } = null!;
+		[JsonIgnore]
         public List<OrderLine>? OrderLines { get; set; }
-	}
+
+		// function for display data
+		public string GetDisplayCustomerName => Customer is null ? "Unknown" : Customer.FirstName;
+        public string GetShortAddress => Address.Length < 15 ? Address : Address.Substring(0, 15);
+
+    }
 }

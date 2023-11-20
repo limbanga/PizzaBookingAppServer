@@ -36,17 +36,6 @@ else
                         </MudItem>
                     </MudItem>
 
-                    <MudButtonGroup OverrideStyles="false" Class="my-4">
-                        <MudButton Color="Color.Primary"
-                                   Variant="@isSizeSelected("S")"
-                                   OnClick="@(() => ProductSize = "S")">S</MudButton>
-                        <MudButton Color="Color.Primary"
-                                   Variant="@isSizeSelected("M")"
-                                   OnClick="@(() => ProductSize = "M")">M</MudButton>
-                        <MudButton Color="Color.Primary"
-                                   Variant="@isSizeSelected("L")"
-                                   OnClick="@(() => ProductSize = "L")">L</MudButton>
-                    </MudButtonGroup>
 
                     <MudNumericField @bind-Value="quantity"
                                      Label="Please choose quantity"

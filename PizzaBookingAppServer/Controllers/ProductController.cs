@@ -10,8 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace PizzaBookingShared.Controllers
 {
-	[ApiController]
-    [Authorize(Policy = "admin")]
+	[ApiController, Authorize(Roles = "admin")]
 	public class ProductController : GenericController<Product>
 	{
         private readonly IProductRepository _productRepo;
@@ -25,8 +24,7 @@ namespace PizzaBookingShared.Controllers
             _productRepo = productRepo;
         }
 
-        [HttpGet]
-        [AllowAnonymous]
+        [HttpGet, AllowAnonymous]
         public override async Task<ActionResult<List<Product>>> GetAll()
         {
             return await base.GetAll();
@@ -38,8 +36,7 @@ namespace PizzaBookingShared.Controllers
 			return base.Get(id);
 		}
 
-		[HttpGet]
-		[AllowAnonymous]
+		[HttpGet, AllowAnonymous]
 		public async Task<List<Product>> Fillter(
             string? name,
             [FromQuery(Name ="cate")] string? categoryAlias
@@ -48,31 +45,29 @@ namespace PizzaBookingShared.Controllers
 			return await _productRepo.FillterAsync(name, categoryAlias);
 		}
 
-		[HttpGet]
-		[AllowAnonymous]
-		public async Task<List<Product>> GetAllWithCategory()
+        [HttpGet, AllowAnonymous]
+        public async Task<List<Product>> GetAllWithCategory()
         {
             return await _productRepo.GetAllWithCategoryAsync();
         }
 
-        [HttpGet("{categoryId}")]
-		[AllowAnonymous]
-		public async Task<Int32> CountByCategory(int categoryId)
+        [HttpGet("{categoryId}"),
+        AllowAnonymous]
+        public async Task<Int32> CountByCategory(int categoryId)
         {
             int result = await _productRepo.CountByCategory(categoryId);
             return result;
         }
 
-        [HttpGet("{categoryAlias}")]
-        [AllowAnonymous]
+        [HttpGet("{categoryAlias}"), AllowAnonymous]
         public async Task<List<Product>> GetAllByCategoryAlias(string categoryAlias)
         {
             var result = await _productRepo.GetAllByCategoryAliasAsync(categoryAlias);
             return result;
         }
 
-        [HttpPost]
-        public async Task<ActionResult<string>> UploadProductImage(IFormFile file)
+        [HttpPost, Authorize(Roles ="admin")]
+        public async Task<ActionResult<string>> Upload(IFormFile file)
         {
             try
             {

@@ -1,0 +1,104 @@
+﻿<MudDialog Style="width: 80%; max-width: 500px;"
+           Class="pa-4 pt-n4"
+           DisableSidePadding="true">
+
+    <DialogContent>
+        <MudText Typo="Typo.h4" Color="Color.Primary" Align="Align.Center">
+            @Title
+        </MudText>
+    </DialogContent>
+
+    <DialogActions>
+
+        <EditForm Model="model" OnValidSubmit="SaveChange"
+                  style="width: 100%; max-height: 500px; overflow-y: scroll;">
+
+            <DataAnnotationsValidator />
+
+            <MudTextField @bind-Value="model.Name"
+                          For="@(() => model.Name)"
+                          Class="mt-8"
+                          Label="Name"
+                          HelperText="Max. 50 characters" />
+
+            <div class="d-flex gap-4 mt-8">
+
+                <MudButton OnClick="Cancel"
+                           Variant="Variant.Outlined"
+                           Color="Color.Primary"
+                           FullWidth="true">Cancel</MudButton>
+
+                <MudButton Color="Color.Success"
+                           Variant="Variant.Filled"
+                           ButtonType="ButtonType.Submit"
+                           FullWidth="true">Save</MudButton>
+            </div>
+
+        </EditForm>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    MudDialogInstance MudDialog { get; set; } = null!;
+    [Parameter]
+    public Category model { get; set; } = null!;
+    [Parameter]
+    public bool isUpdate { get; set; } = false;
+
+    private string Title = "Add category";
+
+    protected override void OnInitialized()
+    {
+        if (isUpdate)
+        {
+            Title = "Update prodduct";
+        }
+        else
+        {
+
+        }
+        base.OnInitialized();
+    }
+
+    void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+
+
+    private async Task SaveChange()
+    {
+        if (isUpdate)
+        {
+            try
+            {
+
+                Console.WriteLine("call api update");
+                await _httpService.Update<Category>("/Category/Update", model);
+                _snackbar.Add("Update category success.", Severity.Success);
+                Console.WriteLine("done update");
+                MudDialog.Cancel();
+            }
+            catch (Exception ex)
+            {
+                _snackbar.Add(ex.Message, Severity.Error);
+            }
+        }
+        else
+        {
+            try
+            {
+                Console.WriteLine("call api add");
+                await _httpService.Create<Category>("/Category/Create", model);
+                _snackbar.Add("Create category success.", Severity.Success);
+                Console.WriteLine("done add");
+                MudDialog.Cancel();
+            }
+            catch (Exception ex)
+            {
+                _snackbar.Add(ex.Message, Severity.Error);
+            }
+        }
+    }
+}

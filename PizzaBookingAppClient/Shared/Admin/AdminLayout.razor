@@ -7,6 +7,13 @@
 <MudLayout>
     <MudAppBar Elevation="0">
   
+        <MudToggleIconButton @bind-Toggled="@_drawerOpen"
+                             Icon="@Icons.Material.Filled.Menu" 
+                             Color="@Color.Success" 
+                             ToggledIcon="@Icons.Material.Filled.Close" 
+                             ToggledColor="@Color.Error" 
+        @onclick=@(() => _drawerOpen = !_drawerOpen) />
+
         <MudSpacer />
 
         <MudTooltip Text="Change Theme">
@@ -15,14 +22,13 @@
                            OnClick="@((e) => ThemeToggle())" />
         </MudTooltip>
 
-        <MudIconButton Icon="@Icons.Custom.Brands.GitHub"  OnClick="@((e) => ThemeToggle())" />
-
     </MudAppBar>
 
     <MudDrawer @bind-Open="_drawerOpen" Elevation="1"
                Style="background: var(--mud-palette-background);">
         <MudDrawerHeader Style="background: var(--mud-palette-appbar-background);">
-            <MudText Typo="Typo.h6" Color="Color.Primary">Admin dashoard</MudText>
+            <MudText Typo="Typo.h6"
+                     Style="color: white;">Admin dashoard</MudText>
         </MudDrawerHeader>
 
         <AdminNavMenu />
@@ -69,7 +75,7 @@
                 Background = "#161616",
                 TextPrimary = "#adff2f",
                 TextSecondary = "#adff2f",
-                HoverOpacity = .25,
+                HoverOpacity = .06,
                 Surface="000000"
             }
     };

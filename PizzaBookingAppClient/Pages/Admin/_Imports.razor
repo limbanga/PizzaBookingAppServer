@@ -16,9 +16,8 @@
 @inject HttpService _httpService
 @inject ISnackbar _snackbar
 @inject IJSRuntime _jSRuntime
+@inject HttpClient _httpClient
 
 @layout AdminLayout
-@*
-
 @attribute [Authorize(Policy = "admin")]
-*@
+

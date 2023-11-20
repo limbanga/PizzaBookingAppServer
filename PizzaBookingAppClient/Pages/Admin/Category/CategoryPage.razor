@@ -1,21 +1,15 @@
 ﻿@page "/admin/category"
-@using PizzaBookingShared.Entities
-@using PizzaBookingAppClient.Shared
 
 <PageTitle>Admin - Category</PageTitle>
 <MudText Typo="Typo.h3" GutterBottom="true" Color="Color.Primary"> Category </MudText>
 
 <div class="d-flex align-center pa-4">
-
-    <div class="d-flex flex-wrap mt-4">
-        <MudSwitch @bind-Checked="@hover" Color="Color.Success">Hover</MudSwitch>
-        <MudSwitch @bind-Checked="@dense" Color="Color.Success">Dense</MudSwitch>
-        <MudSwitch @bind-Checked="@striped" Color="Color.Success">Striped</MudSwitch>
-        <MudSwitch @bind-Checked="@bordered" Color="Color.Success">Bordered</MudSwitch>
-    </div>
-
     <MudSpacer/>
-    <MudButton Variant="Variant.Filled" Href="/admin/category/create" Color="@Color.Success">Create now!</MudButton>
+    <MudButton OnClick="@(()=> OpenDialog())"
+               Variant="Variant.Filled"
+               Color="@Color.Success">
+        Create now!
+    </MudButton>
 </div>
 
 
@@ -25,11 +19,11 @@
           Dense="@dense" Hover="@hover"
           Bordered="@bordered" Striped="@striped"
           Filter="new Func<Category,bool>(FilterFunc1)"
-@bind-SelectedItem="selectedItem1"
+          @bind-SelectedItem="selectedItem1"
           Style="background: var(--mud-palette-secondary);">
 
     <ToolBarContent>
-        <MudText Typo="Typo.h6">Periodic Elements</MudText>
+        <MudText Typo="Typo.h6">Categories</MudText>
         <MudSpacer />
         <MudTextField @bind-Value="searchString1" 
         Placeholder="Search" Adornment="Adornment.Start" 
@@ -40,28 +34,23 @@
     <HeaderContent>
         <MudTh>
             <MudTableSortLabel Style="color: var(--mud-palette-text-secondary);"
-                               InitialDirection="SortDirection.Ascending"
-                               SortBy="new Func<Category, object>(x=>x.Name)">Name</MudTableSortLabel>
+                               SortBy="new Func<Category, object>(x=>x.Name)">
+                                   Name
+            </MudTableSortLabel>
         </MudTh>
 
         <MudTh>
             <MudTableSortLabel Style="color: var(--mud-palette-text-secondary);"
                                SortBy="new Func<Category, object>(x=>x.CreatedAt.ToLocalTime())">
-                                   CreatedAt
-                               </MudTableSortLabel>
-        </MudTh>
-
-        <MudTh>
-            <MudTableSortLabel Style="color: var(--mud-palette-text-secondary);" 
-            SortBy="new Func<Category, object>(x=>x.UpdatedAt.ToLocalTime())">
-                UpdatedAt
+                CreatedAt
             </MudTableSortLabel>
         </MudTh>
 
         <MudTh>
-            <MudTableSortLabel Style="color: var(--mud-palette-text-secondary);" 
-            SortBy="new Func<Category, object>(x=>x.Count)">
-                Count
+            <MudTableSortLabel Style="color: var(--mud-palette-text-secondary);"
+                               InitialDirection="SortDirection.Descending"
+                               SortBy="new Func<Category, object>(x=>x.UpdatedAt.ToLocalTime())">
+                UpdatedAt
             </MudTableSortLabel>
         </MudTh>
 
@@ -77,14 +66,12 @@
         <MudTd DataLabel="UpdatedAt" Style="color: var(--mud-palette-text-secondary);">
             @context.UpdatedAt</MudTd>
 
-        <MudTd DataLabel="Count" Style="color: var(--mud-palette-text-secondary);">
-            @context.Count</MudTd>
     </RowTemplate>
 
     <PagerContent>
 
         <MudTablePager Style="color: var(--mud-palette-text-secondary);"
-                       PageSizeOptions="new int[]{ 10, 20, 50, 100}" />
+                       PageSizeOptions="new int[] { 10, 20, 50, 100}" />
     </PagerContent>
 
 </MudTable>
@@ -92,7 +79,7 @@
 
 @code {
 
-    private bool dense = false;
+    private bool dense = true;
     private bool hover = true;
     private bool striped = false;
     private bool bordered = false;
@@ -104,18 +91,29 @@
     protected override async Task OnInitializedAsync()
     {
         categories = await _httpService.GetAll<Category>("/Category/GetAll");
-
-        foreach (var category in categories)
-        {
-            category.Count = await _httpService.Count($"/Product/CountByCategory/{category.Id}");
-        }
     }
 
     private void RowClickEvent(TableRowClickEventArgs<Category> row)
     {
         // nav to update
-        _navigationManager.NavigateTo($"/admin/category/update/{row.Item.Id}");
         Console.WriteLine(row.Item.Name);
+        OpenDialog(row.Item);
+    }
+
+    private void OpenDialog(Category? model = null)
+    {
+        bool isUpdate = true;
+        if (model is null)
+        {
+            model = new();
+            isUpdate = false;
+        }
+
+        var parameters = new DialogParameters();
+        parameters.Add("model", model);
+        parameters.Add("isUpdate", isUpdate);
+        var options = new DialogOptions { CloseOnEscapeKey = false };
+        _dialogService.Show<CategoryDialog>("", parameters, options);
     }
 
     private bool FilterFunc1(Category category)

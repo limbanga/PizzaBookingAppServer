@@ -45,6 +45,4 @@ builder.Services.AddAuthorizationCore(options =>
 	});
 });
 
-
-
 await builder.Build().RunAsync();

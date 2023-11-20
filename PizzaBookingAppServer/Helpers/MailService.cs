@@ -21,14 +21,20 @@ namespace PizzaBookingAppServer.Helpers
             smtpClient.EnableSsl = true;
         }
 
-        public void SendMail(IEnumerable<string> to, string subject, string content, bool isBodyHtml = false)
+        public void SendMail(
+            IEnumerable<string> to,
+            string subject, 
+            string content, 
+            bool isBodyHtml = false)
         {
             MailMessage message = new MailMessage();
             message.From = new MailAddress("liemdev23@outlook.com");
+
             foreach (var reciever in to) 
             {
                 message.To.Add(reciever);
             }
+
             message.Subject = subject;
             message.Body = content;
             message.IsBodyHtml = true;

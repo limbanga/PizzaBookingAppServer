@@ -18,7 +18,6 @@ builder.Services.AddAutoMapper(typeof(Program));
 // Add services to the container.
 builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 builder.Services.AddTransient<ICategoryRepository, CategoryRepository>();
-builder.Services.AddTransient<IImageProductRepository, ImageProductRepository>();
 builder.Services.AddTransient<IOrderRepository, OrderRepository>();
 builder.Services.AddTransient<IOrderLineRepository, OrderLineRepository>();
 builder.Services.AddTransient<IProductRepository, ProductRepository>();
@@ -51,13 +50,7 @@ builder.Services.AddAuthentication(x =>
 	};
 });
 
-builder.Services.AddAuthorization(options =>
-{
-	options.AddPolicy("admin", p =>
-	{
-		p.RequireClaim("role", "admin");
-	});
-});
+builder.Services.AddAuthorization();
 
 const string DEVELOPMENT_POLICY = "DEVELOPMENT_POLICY";
 

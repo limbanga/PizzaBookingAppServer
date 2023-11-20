@@ -61,7 +61,6 @@ public class AppContext : DbContext
 
     public DbSet<PizzaBookingShared.Entities.Category> Category { get; set; } = default!;
 	public DbSet<PizzaBookingShared.Entities.User> User { get; set; } = default!;
-	public DbSet<PizzaBookingShared.Entities.ImageProduct> ImageProduct { get; set; } = default!;
 	public DbSet<PizzaBookingShared.Entities.Order> Order { get; set; } = default!;
 	public DbSet<PizzaBookingShared.Entities.OrderLine> OrderLine { get; set; } = default!;
 	public DbSet<PizzaBookingShared.Entities.Product> Product { get; set; } = default!;

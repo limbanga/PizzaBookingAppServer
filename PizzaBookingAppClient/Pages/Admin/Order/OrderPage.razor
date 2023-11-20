@@ -1,7 +1,157 @@
 ﻿@page "/admin/order"
 
-<h3>OrderPage</h3>
+<PageTitle>Admin - Order</PageTitle>
+<MudText Typo="Typo.h3" GutterBottom="true" Color="Color.Primary"> Order </MudText>
+
+<div class="d-flex align-center pa-4">
+
+    <div class="d-flex flex-wrap mt-4">
+        <MudSwitch @bind-Checked="@hover" Color="Color.Success">Hover</MudSwitch>
+        <MudSwitch @bind-Checked="@dense" Color="Color.Success">Dense</MudSwitch>
+        <MudSwitch @bind-Checked="@striped" Color="Color.Success">Striped</MudSwitch>
+        <MudSwitch @bind-Checked="@bordered" Color="Color.Success">Bordered</MudSwitch>
+    </div>
+
+    <MudSpacer/>
+
+</div>
+
+
+<MudTable Items="products"
+          SortLabel="Sort By" Elevation="0"
+          OnRowClick="RowClickEvent" T="Order"
+          Dense="@dense" Hover="@hover"
+          Bordered="@bordered" Striped="@striped"
+          Filter="new Func<Order,bool>(FilterFunc1)"
+@bind-SelectedItem="selectedItem"
+          Style="background: var(--mud-palette-secondary);">
+
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Periodic Elements</MudText>
+        <MudSpacer />
+        <MudTextField @bind-Value="searchString"
+                      Placeholder="Search" Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search"
+                      IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+
+    <HeaderContent>
+
+        <MudTh>
+            <MudTableSortLabel SortBy="new Func<Order, object>(x=>x.GetDisplayCustomerName)">
+                Customer
+            </MudTableSortLabel>
+        </MudTh>
+
+        <MudTh>
+            <MudTableSortLabel InitialDirection="SortDirection.Ascending"
+                               SortBy="new Func<Order, object>(x=>x.PhoneNumber)">
+                                   PhoneNumber
+                               </MudTableSortLabel>
+        </MudTh>
+
+        <MudTh>
+            <MudTableSortLabel InitialDirection="SortDirection.Ascending"
+                               SortBy="new Func<Order, object>(x=>x.GetShortAddress)">
+                Address
+            </MudTableSortLabel>
+        </MudTh>
+
+        <MudTh>
+            <MudTableSortLabel SortBy="new Func<Order, object>(x=>x.CreatedAt.ToLocalTime())">
+                CreatedAt
+            </MudTableSortLabel>
+        </MudTh>
+
+        <MudTh>
+            <MudTableSortLabel SortBy="new Func<Order, object>(x=>x.UpdatedAt.ToLocalTime())">
+                UpdatedAt
+            </MudTableSortLabel>
+        </MudTh>
+
+    </HeaderContent>
+
+    <RowTemplate>
+
+        <MudTd DataLabel="CustomerName">
+            @context.GetDisplayCustomerName
+        </MudTd>
+
+        <MudTd DataLabel="PhoneNumber">
+            @context.PhoneNumber
+        </MudTd>
+
+        <MudTd DataLabel="Address">
+            @context.GetShortAddress
+        </MudTd>
+
+        <MudTd DataLabel="CreatedAt" >
+            @context.CreatedAt
+        </MudTd>
+
+        <MudTd DataLabel="UpdatedAt" >
+            @context.UpdatedAt
+        </MudTd>
+
+    </RowTemplate>
+
+    <PagerContent>
+        <MudTablePager PageSizeOptions="new int[]{ 10, 20, 50, 100}" />
+    </PagerContent>
+
+</MudTable>
+
 
 @code {
 
+    private bool dense = false;
+    private bool hover = true;
+    private bool striped = false;
+    private bool bordered = false;
+
+    private string searchString = string.Empty;
+    private Order selectedItem = null!;
+    private List<Order>? products;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var httpResponse = await _httpClient.GetAsync("/Order/GetAll");
+        if (httpResponse is null)
+        {
+            _snackbar.Add("Unknown error.", Severity.Error);
+        }
+        else if (httpResponse.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+        {
+            _snackbar.Add("Unauthorized.", Severity.Error);
+        }
+        else if (!httpResponse.IsSuccessStatusCode)
+        {
+            _snackbar.Add("Fail to connect to server.", Severity.Error);
+        }
+        else
+        {
+            products = await httpResponse.Content.ReadFromJsonAsync<List<Order>>();
+        }
+    }
+
+    private void RowClickEvent(TableRowClickEventArgs<Order> row)
+    {
+        // nav to update
+        _navigationManager.NavigateTo($"/admin/product/update/{row.Item.Id}");
+        Console.WriteLine(row.Item.Id);
+    }
+
+    private bool FilterFunc1(Order category)
+    {
+        return FilterFunc(category, searchString);
+    }
+
+    private bool FilterFunc(Order element, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (element.PhoneNumber.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        return false;
+    }
 }

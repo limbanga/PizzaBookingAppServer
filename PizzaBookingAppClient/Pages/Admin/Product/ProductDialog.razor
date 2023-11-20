@@ -1,0 +1,213 @@
+﻿<MudDialog Style="width: 80%; max-width: 500px;"
+           Class="pa-4 pt-n4"
+           DisableSidePadding="true">
+
+    <DialogContent>
+        <MudText Typo="Typo.h4" Color="Color.Primary" Align="Align.Center">
+            @Title
+        </MudText>
+    </DialogContent>
+
+    <DialogActions>
+        
+        <EditForm Model="model" OnValidSubmit="SaveChange"
+            style="width: 100%; max-height: 500px; overflow-y: scroll;">
+
+            <DataAnnotationsValidator />
+
+            <MudTextField @bind-Value="model.Name"
+                          For="@(() => model.Name)"
+                          Class="mt-8"
+                          Label="Name"
+                          HelperText="Max. 50 characters" />
+
+            <MudNumericField @bind-Value="model.Price"
+                             For="@(() => model.Price)"
+                             Min="0"
+                             Class="mt-8"
+                             Label="Price"
+                             HelperText="product price" />
+
+            @if (categories == null)
+            {
+                <LoaderPizza/>
+            } 
+            else
+            {
+                <MudSelect T="Category"
+                           Class="mt-8"
+                           Label="Category"
+                           AnchorOrigin="Origin.BottomCenter"
+                           @bind-Value="model.Category"
+                           ToStringFunc="convertFunc">
+
+                    @foreach (var category in categories)
+                    {
+                        <MudSelectItem Value="@category" />
+                    }
+
+                </MudSelect>
+            }
+            
+            <InputFile OnChange="OnFileChange" id="__upload_image_product" hidden/>
+
+            <div class="d-flex justify-start align-end gap-1 mt-8">
+
+                <MudButton HtmlTag="label"
+                           StartIcon="@Icons.Material.Filled.UploadFile"
+                           Variant="Variant.Outlined"
+                           Color="Color.Primary"
+                           for="__upload_image_product">
+                    Choose product image
+                </MudButton>
+
+                <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                               Variant="Variant.Outlined"
+                               Color="Color.Error"
+                               Size="Size.Medium"
+                               OnClick="ClearFileInput" />
+            </div>
+
+            @if (!string.IsNullOrEmpty(imageTempPath))
+            {
+                <div style="width: 100%;" class="mt-8">
+                    <MudImage Src="@imageTempPath"
+                              Alt="Image about product"
+                              Style="width: 100%;"
+                              ObjectFit="ObjectFit.Contain"
+                              ObjectPosition="ObjectPosition.Center"
+                              Class="rounded-lg object-center" />
+                </div>
+            }
+            
+            <div class="d-flex gap-4 mt-8">
+
+                <MudButton OnClick="Cancel"
+                           Variant="Variant.Outlined"
+                           Color="Color.Primary"
+                           FullWidth="true">Cancel</MudButton>
+
+                <MudButton Color="Color.Success"
+                           Variant="Variant.Filled"
+                            ButtonType="ButtonType.Submit"
+                           FullWidth="true">Save</MudButton>
+            </div>
+
+        </EditForm>      
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    MudDialogInstance MudDialog { get; set; } = null!;
+    [Parameter]
+    public Product model { get; set; } = null!;
+    [Parameter]
+    public bool isUpdate { get; set; } = false;
+    [Parameter]
+    public Func<Task> ReloadFunc { get; set; } = null!;
+
+    private string Title = "Add product";
+    private List<Category> categories = null!;
+    private string? imageTempPath = null;
+    private IBrowserFile? browserFile = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        categories = await _httpService.GetAll<Category>("/Category/GetAll");
+
+        if (isUpdate)
+        {
+            Title = "Update prodduct";
+            var respone = await _httpClient.GetAsync($"/Category/Get/{model.CategoryId}");
+            model.Category = await respone.Content.ReadFromJsonAsync<Category>();
+        }
+        else
+        {
+            model.Category = categories[0];
+        }
+
+        await base.OnInitializedAsync();
+    }
+
+    void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+
+    private async Task OnFileChange(InputFileChangeEventArgs e)
+    {
+        browserFile = e.File;
+        imageTempPath = await _jSRuntime.InvokeAsync<string>("getTempURL", "__upload_image_product");
+        StateHasChanged();
+    }
+
+    private void ClearFileInput()
+    {
+        browserFile = null;
+        imageTempPath = null;
+    }
+
+    private async Task SaveChange()
+    {
+        model.CategoryId = model.Category!.Id;
+        if (isUpdate)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(imageTempPath) &&
+                    browserFile is not null)
+                {
+                    Console.WriteLine("upload file");
+                    string fileName = await _httpService.PostFile("/Product/Upload", browserFile);
+                    model.ImagePath = fileName;
+                    Console.WriteLine($"upload file done, fileName:{fileName}");
+                }
+
+                Console.WriteLine("call api update");
+                await _httpService.Update<Product>("/Product/Update", model);
+                _snackbar.Add("Update product success.", Severity.Success);
+                Console.WriteLine("done update");
+                MudDialog.Cancel();
+            }
+            catch (Exception ex)
+            {
+                _snackbar.Add(ex.Message, Severity.Error);
+            }
+        }
+        else
+        {
+            if (string.IsNullOrEmpty(imageTempPath) || browserFile is null)
+            {
+                _snackbar.Add("Please choose an image.", Severity.Error);
+                return;
+            }
+
+            try
+            {
+                Console.WriteLine("upload file");
+                string fileName = await _httpService.PostFile("/Product/Upload", browserFile);
+                model.ImagePath = fileName;
+                Console.WriteLine($"upload file done, fileName:{fileName}");
+
+                Console.WriteLine("call api add");
+                await _httpService.Create<Product>("/Product/Create", model);
+                _snackbar.Add("Create product success.", Severity.Success);
+                Console.WriteLine("done add");
+
+                if (ReloadFunc is not null)
+                {
+                    await ReloadFunc();
+                }
+
+                MudDialog.Cancel();
+            }
+            catch (Exception ex)
+            {
+                _snackbar.Add(ex.Message, Severity.Error);
+            }
+        }
+    }
+
+    private Func<Category, string> convertFunc = c => c.Name;
+}

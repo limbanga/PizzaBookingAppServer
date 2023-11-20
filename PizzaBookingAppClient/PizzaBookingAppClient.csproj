@@ -19,10 +19,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Content Update="Pages\Admin\Product\Create.razor">
-	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-	  </Content>
-	  <Content Update="Pages\Admin\Product\Index.razor">
+	  <Content Update="Pages\Admin\Product\ProductPage.razor">
 	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
 	  </Content>
 	</ItemGroup>
