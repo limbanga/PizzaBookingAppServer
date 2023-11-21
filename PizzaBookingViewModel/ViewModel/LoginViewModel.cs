@@ -9,13 +9,13 @@ namespace PizzaBookingShared.ViewModel
 {
     public class LoginViewModel
     {
-        [Required(ErrorMessage ="required")]
-        [EmailAddress]
+        [Required(ErrorMessage ="required"),
+        EmailAddress(ErrorMessage ="invalid email")]
         public string LoginName { get; set; } = null!;
 
-        [Required(ErrorMessage = "required")]
-        [MinLength(8, ErrorMessage = "at least {1} chacracters")]
-        [DataType(DataType.Password)]
+        [Required(ErrorMessage = "required"),
+        MinLength(8, ErrorMessage = "at least {1} chacracters"),
+        DataType(DataType.Password)]
         public string Password { get; set; } = null!;
     }
 }

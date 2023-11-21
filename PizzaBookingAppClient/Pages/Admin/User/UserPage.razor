@@ -1,17 +1,17 @@
-﻿@page "/admin/order"
+﻿@page "/admin/customer"
 
-<PageTitle>Admin - Order</PageTitle>
-<MudText Typo="Typo.h3" GutterBottom="true" Color="Color.Primary"> Order </MudText>
+<PageTitle>Admin - Customer</PageTitle>
+<MudText Typo="Typo.h3" GutterBottom="true" Color="Color.Primary"> Customer </MudText>
 
 <MudTable Items="orders"
           SortLabel="Sort By" Elevation="0"
-          OnRowClick="RowClickEvent" T="Order"
+          T="User"
           Dense="@dense" Hover="@hover"
           Bordered="@bordered" Striped="@striped"
-          Filter="new Func<Order,bool>(FilterFunc1)">
+          Filter="new Func<User,bool>(FilterFunc1)">
 
     <ToolBarContent>
-        <MudText Typo="Typo.h6">Orders</MudText>
+        <MudText Typo="Typo.h6">Customer</MudText>
         <MudSpacer />
         <MudTextField @bind-Value="searchString"
                       Placeholder="Search" Adornment="Adornment.Start"
@@ -22,29 +22,28 @@
     <HeaderContent>
 
         <MudTh>
-            <MudTableSortLabel SortBy="@(new Func<Order, object>(x=> x.Customer != null ?  x.Customer.FirstName: ""))"
+            <MudTableSortLabel SortBy="new Func<User, object>(x=> x.FirstName)"
                                Style="color: var(--mud-palette-text-secondary);">
-                Customer
+                First name
             </MudTableSortLabel>
         </MudTh>
 
         <MudTh>
-            <MudTableSortLabel SortBy="new Func<Order, object>(x=>x.PhoneNumber)"
+            <MudTableSortLabel SortBy="new Func<User, object>(x=> x.LastName)"
                                Style="color: var(--mud-palette-text-secondary);">
-                                   PhoneNumber
-                               </MudTableSortLabel>
-        </MudTh>
-
-        <MudTh>
-            <MudTableSortLabel Style="color: var(--mud-palette-text-secondary);"
-                               SortBy="new Func<Order, object>(x =>
-                                x.Address.Substring(0, x.Address.Length < 15 ? x.Address.Length: 15))">
-                Address
+                Last name
             </MudTableSortLabel>
         </MudTh>
 
         <MudTh>
-            <MudTableSortLabel SortBy="new Func<Order, object>(x=>x.CreatedAt.ToLocalTime())"
+            <MudTableSortLabel SortBy="new Func<User, object>(x=>x.PhoneNumber)"
+                               Style="color: var(--mud-palette-text-secondary);">
+                PhoneNumber
+            </MudTableSortLabel>
+        </MudTh>
+
+        <MudTh>
+            <MudTableSortLabel SortBy="new Func<User, object>(x=>x.CreatedAt.ToLocalTime())"
                                Style="color: var(--mud-palette-text-secondary);">
                 CreatedAt
             </MudTableSortLabel>
@@ -52,7 +51,7 @@
 
         <MudTh>
             <MudTableSortLabel InitialDirection="SortDirection.Descending"
-                               SortBy="new Func<Order, object>(x=>x.UpdatedAt.ToLocalTime())"
+                               SortBy="new Func<User, object>(x=>x.UpdatedAt.ToLocalTime())"
                                Style="color: var(--mud-palette-text-secondary);">
                 UpdatedAt
             </MudTableSortLabel>
@@ -62,23 +61,23 @@
 
     <RowTemplate>
 
-        <MudTd DataLabel="CustomerName">
-            @(context.Customer is null? "Unknown": context.Customer.FirstName)
+        <MudTd DataLabel="FirstName">
+            @context.FirstName
+        </MudTd>
+
+        <MudTd DataLabel="LastName">
+            @context.LastName
         </MudTd>
 
         <MudTd DataLabel="PhoneNumber">
             @context.PhoneNumber
         </MudTd>
 
-        <MudTd DataLabel="Address">
-            @context.Address.Substring(0, context.Address.Length < 15 ? context.Address.Length: 15)
-        </MudTd>
-
-        <MudTd DataLabel="CreatedAt" >
+        <MudTd DataLabel="CreatedAt">
             @context.CreatedAt
         </MudTd>
 
-        <MudTd DataLabel="UpdatedAt" >
+        <MudTd DataLabel="UpdatedAt">
             @context.UpdatedAt
         </MudTd>
 
@@ -99,28 +98,25 @@
     private bool bordered = false;
 
     private string searchString = string.Empty;
-    private List<Order>? orders;
+    private List<User>? orders;
 
     protected override async Task OnInitializedAsync()
     {
         await LoadData();
     }
 
-    private void RowClickEvent(TableRowClickEventArgs<Order> row)
-    {
-        Console.WriteLine(row.Item.Id);
-    }
-
-    private bool FilterFunc1(Order category)
+    private bool FilterFunc1(User category)
     {
         return FilterFunc(category, searchString);
     }
 
-    private bool FilterFunc(Order element, string searchString)
+    private bool FilterFunc(User element, string searchString)
     {
         if (string.IsNullOrWhiteSpace(searchString))
             return true;
         if (element.PhoneNumber.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (element.FirstName.Contains(searchString, StringComparison.OrdinalIgnoreCase))
             return true;
         return false;
     }
@@ -129,7 +125,7 @@
     {
         try
         {
-            orders = await _httpService.GetAll<Order>("/Order/GetAll");
+            orders = await _httpService.GetAll<User>("/User/GetAll");
             StateHasChanged();
         }
         catch (Exception ex)

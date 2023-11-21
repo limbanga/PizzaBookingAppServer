@@ -5,10 +5,11 @@ using PizzaBookingShared.Entities;
 using PizzaBookingShared.Repositories;
 using PizzaBookingShared;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PizzaBookingShared.Controllers
 {
-	[ApiController]
+	[ApiController, Authorize(Roles = "admin")]
 	public class OrderController : GenericController<Order>
 	{
 		private readonly IOrderRepository _repo;
@@ -21,12 +22,7 @@ namespace PizzaBookingShared.Controllers
 			_repo = tRepo;
 		}
 
-		[HttpGet]
-        public async Task<ActionResult<List<Order>>> GetAllIncludeCustomer()
-        {
-            return await _repo.GetAllIncludeCustomerAsync();
-        }
-
+		[AllowAnonymous]
         public override Task<ActionResult<Order>> Create(Order model)
         {
 			// get user id if exist
@@ -40,7 +36,7 @@ namespace PizzaBookingShared.Controllers
             return base.Create(model);
         }
 
-		[HttpPost]
+        [HttpPost, AllowAnonymous]
 		public async Task<ActionResult> Pay([FromBody] int id) 
 		{
 			// kiểm tra nhận được tiền chưa từ đúng khác hàng chưa.
@@ -62,7 +58,23 @@ namespace PizzaBookingShared.Controllers
         [NonAction]
         public override Task<ActionResult> Update(Order model)
         {
-            return base.Update(model);
+			throw new NotImplementedException();
+        }
+
+        public override Task<ActionResult> Delete(int id)
+        {
+            return base.Delete(id);
+        }
+
+		[AllowAnonymous]
+        public override Task<ActionResult<Order>> Get(int id)
+        {
+            return base.Get(id);
+        }
+
+        public override Task<ActionResult<List<Order>>> GetAll()
+        {
+            return base.GetAll();
         }
     }
 }

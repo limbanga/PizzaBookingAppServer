@@ -8,126 +8,162 @@
     <MudItem xs="12" sm="9" md="8">
         <MudPaper Class="d-flex align-center justify-center mud-width-full mt-8 pa-4"
                   Style="@($"background: var(--mud-palette-secondary);")">
+            @if (!isRegisterSuccess)
+            {
+                <MudGrid>
 
-            <MudGrid>
+                    <MudItem sm="3" md="4" Class="d-none d-sm-flex">
+                        <MudImage Src="/public/images/banner1.jpg"
+                                  Style="width: 100%; height: 100%;"
+                                  ObjectFit="ObjectFit.Cover"
+                                  ObjectPosition="ObjectPosition.Left" />
+                    </MudItem>
 
-                <MudItem sm="3" md="4" Class="d-none d-sm-flex">
-                    <MudImage
-                        Src="/public/images/banner1.jpg"
-                        Style="width: 100%; height: 100%;"
-                        ObjectFit="ObjectFit.Cover"
-                        ObjectPosition="ObjectPosition.Left"/>
-                </MudItem>
+                    <MudItem xs="12" sm="9" md="8" Class="d-flex align-center justify-center flex-wrap pa-8">
+                        <EditForm Model="model" OnValidSubmit="OnRegister">
 
-                <MudItem xs="12" sm="9" md="8" Class="d-flex align-center justify-center flex-wrap pa-8">
-                    <EditForm Model="model" OnValidSubmit="OnRegister">
+                            <DataAnnotationsValidator />
 
-                        <DataAnnotationsValidator />
+                            <MudText Typo="Typo.h4"
+                                     Color="Color.Primary">Register now!</MudText>
 
-                        <MudText Typo="Typo.h4"
-                                 Color="Color.Primary">Register now!</MudText>
+                            <MudGrid>
+                                <MudItem xs="12" sm="6">
+                                    <MudTextField @bind-Value="@model.FirstName"
+                                                  For="@(() => model.FirstName)"
+                                                  Class="mt-8 mt-sm-0"
+                                                  FullWidth=true
+                                                  Label="First name"
+                                                  Variant="Variant.Text" />
+                                </MudItem>
 
-                        <MudGrid>
-                            <MudItem xs="12" sm="6">
-                                <MudTextField 
-                                    @bind-Value="@model.FirstName"
-                                    For="@(() => model.FirstName)"
-                                    Class="mt-8 mt-sm-0"
-                                    FullWidth=true
-                                    Label="First name"
-                                    Variant="Variant.Text" />
-                            </MudItem>
+                                <MudItem xs="12" sm="6">
+                                    <MudTextField @bind-Value="model.LastName"
+                                                  For="@(() => model.LastName)"
+                                                  Class="mt-8 mt-sm-0"
+                                                  FullWidth=true
+                                                  Label="Last name"
+                                                  Variant="Variant.Text" />
+                                </MudItem>
+                            </MudGrid>
 
-                            <MudItem xs="12" sm="6">
-                                <MudTextField 
-                                    @bind-Value="model.LastName"
-                                    For="@(() => model.LastName)"
-                                    Class="mt-8 mt-sm-0"
-                                    FullWidth=true
-                                    Label="Last name"
-                                    Variant="Variant.Text" />
-                            </MudItem>
-                        </MudGrid>
+                            <MudTextField @bind-Value="model.PhoneNumber"
+                                          For="@(() => model.PhoneNumber)"
+                                          Class="mt-8"
+                                          FullWidth=true
+                                          Label="Phone number"
+                                          Variant="Variant.Text" />
 
-                        <MudTextField 
-                            @bind-Value="model.PhoneNumber"
-                            For="@(() => model.PhoneNumber)"
-                            Class="mt-8"
-                            FullWidth=true
-                            Label="Phone number"
-                            Variant="Variant.Text" />
+                            <MudTextField @bind-Value="model.LoginName"
+                                          For="@(() => model.LoginName)"
+                                          Class="mt-8"
+                                          FullWidth=true
+                                          Label="Email"
+                                          Variant="Variant.Text" />
 
-                        <MudTextField 
-                            @bind-Value="model.LoginName"
-                            For="@(() => model.LoginName)"
-                            Class="mt-8"
-                            FullWidth=true
-                            Label="Email"
-                            Variant="Variant.Text" />
+                            <MudTextField @bind-Value="model.Password"
+                                          For="@(() => model.Password)"
+                                          Class="mt-8"
+                                          FullWidth=true
+                                          HelperText="8 characters"
+                                          AdornmentColor="Color.Success"
+                                          InputType="InputType.Password"
+                                          Label="Password"
+                                          Variant="Variant.Text" />
 
-                        <MudTextField
-                            @bind-Value="model.Password"
-                            For="@(() => model.Password)"
-                            Class="mt-8"
-                            FullWidth=true
-                            HelperText="8 characters"
-                            AdornmentColor="Color.Success"
-                            InputType="InputType.Password"
-                            Label="Password"
-                            Variant="Variant.Text" />
+                            <MudTextField @bind-Value="model.RePassword"
+                                          For="@(() => model.RePassword)"
+                                          Class="mt-8"
+                                          FullWidth=true
+                                          HelperText="8 characters"
+                                          AdornmentColor="Color.Success"
+                                          InputType="InputType.Password"
+                                          Label="Re-password"
+                                          Variant="Variant.Text" />
 
-                        <MudTextField 
-                            @bind-Value="model.RePassword"
-                            For="@(() => model.RePassword)"
-                            Class="mt-8"
-                            FullWidth=true
-                            HelperText="8 characters"
-                            AdornmentColor="Color.Success"
-                            InputType="InputType.Password"
-                            Label="Re-password"
-                            Variant="Variant.Text" />
+                            <MudButton Class="mt-8"
+                                       Variant="Variant.Filled"
+                                       FullWidth=true
+                                       Color="Color.Error"
+                                       ButtonType="ButtonType.Submit">
+                                Register!
+                            </MudButton>
 
-                        <MudButton
-                            Class="mt-8"
-                            Variant="Variant.Filled"
-                            FullWidth=true
-                            Color="Color.Error"
-                            ButtonType="ButtonType.Submit">
-                            Register!
-                        </MudButton>
+                        </EditForm>
 
-                    </EditForm>
 
-                </MudItem>
+                        <MudDivider Class="my-4"
+                                    Style="background: var(--mud-palette-primary); width: 80%; height: 0.5px;" />
 
-            </MudGrid>
+                        <MudLink Href="/login"
+                                 Typo="Typo.caption">
+                            Already member? Login now!
+                        </MudLink>
+                    </MudItem>
+
+                </MudGrid>
+            }
+            else
+            {
+                <div style="width: 100%;" class="d-flex flex-wrap justify-center">
+                    <MudText Typo="Typo.h6"
+                             Align="Align.Center"
+                             Color="Color.Primary"
+                             Style="width: 100%;">
+                        Register successfully!
+                    </MudText>
+
+                    <p class="pa-4">
+                        We have just send active account link via your email.
+                        Please open your mail and active your account.
+                        We have many offer for you. Let check it.
+                    </p>
+
+                    <MudDivider Class="my-4"
+                                Style="background: var(--mud-palette-primary); width: 90%; height: 0.5px;" />
+
+                    <MudLink Href="/login" Style="width: 100%;">
+                        <MudText Align="Align.Center" Typo="Typo.h6">
+                            Login now!
+                        </MudText>
+                    </MudLink>
+
+                </div>
+            }
+            
         </MudPaper>
     </MudItem>
 </MudGrid>
 
 @code {
+    private RegisterViewModel model = new();
+    private bool isRegisterSuccess = false;
 
-    private RegisterViewModel model = new RegisterViewModel();
-
-    private async Task OnRegister(EditContext context)
+    private bool isOnRegisterProcessing = false;
+    private async Task OnRegister()
     {
+        if (isOnRegisterProcessing)
+        {
+            return;
+        }
+
+        isOnRegisterProcessing = true;
         try
         {
-            TokenPairRespone token = await _authService.RegisterAsync(model); 
+            await _authService.RegisterAsync(model); 
             _snackbar.Add("Account created successfully!", Severity.Success);
-            await _localStorageService.SetItemAsync<TokenPairRespone>("authToken", token);
-            _navigationManager.NavigateTo("/");
+            isRegisterSuccess = true;
+            StateHasChanged();
         }
         catch (AppException ex)
         {
             Console.WriteLine( "AppException:"+ ex.Message);
             _snackbar.Add(ex.Message, Severity.Error);
         }
-        catch (Exception)
+        finally
         {
-            throw;
+            isOnRegisterProcessing = false;
         }
-        StateHasChanged();
     }
 
 }

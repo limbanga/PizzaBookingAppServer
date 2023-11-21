@@ -16,16 +16,15 @@ namespace PizzaBookingShared.Entities
         public string LastName { get; set; } = null!;
         [Required, MaxLength(50)]
         public string PhoneNumber { get; set; } = null!;
-        [MaxLength(200)]
-        public string? Addresss { get; set; }
-		public int LoginFailedCount { get; set; }
+        [JsonIgnore]
         [StringLength(16)]
         public string? NewPassword { get; set; } = null;
+        [JsonIgnore]
         [StringLength(200)]
 		public string? ResetPasswordToken { get; set; } = null;
+        [JsonIgnore]
         [StringLength(200)]
         public string? ActiveAccountToken { get; set; } = null;
-        public bool Locked { get; set; } = false;
 		public string? Role { get; set; } = null!;
 	}
 }

@@ -12,17 +12,10 @@ namespace PizzaBookingShared.Entities
 		public string? State { get; set; } = null;
 		[Required(ErrorMessage = "required")]
         [MaxLength(15, ErrorMessage = "Invalid phone number")]
-		[StringLength(15)]
         public string PhoneNumber { get; set; } = null!;
         [Required(ErrorMessage = "required")]
-        [MaxLength(200, ErrorMessage = "Max length 200 chacracters")]
-        [StringLength(200)]
+        [MaxLength(200, ErrorMessage = "Max 200 chacracters")]
         public string Address { get; set; } = null!;
-		[JsonIgnore]
         public List<OrderLine>? OrderLines { get; set; }
-
-		// function for display data
-        public string GetShortAddress => Address.Length < 15 ? Address : Address.Substring(0, 15);
-
     }
 }

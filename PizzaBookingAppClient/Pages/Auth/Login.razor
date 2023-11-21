@@ -84,11 +84,19 @@
 </MudGrid>
 
 @code {
-    private LoginViewModel model = new LoginViewModel();
-    private bool ShowPassword { get; set; }
+    private LoginViewModel model = new();
+    private bool ShowPassword { get; set; } = false;
 
+    private bool isOnLoginProcess = false;
     private async Task OnLogin()
     {
+        if (isOnLoginProcess)
+        {
+            return;
+        }
+
+        isOnLoginProcess = true;
+
         try
         {
             TokenPairRespone token = await _authService.LoginAsync(model);
@@ -97,19 +105,20 @@
             if (role.Equals("admin"))
             {
                 _navigationManager.NavigateTo("/admin");
-                return;
             }
-            _navigationManager.NavigateTo("/");
+            else
+            {
+                _navigationManager.NavigateTo("/");
+            }
         }
         catch (AppException ex)
         {
             Console.WriteLine("AppException:" + ex.Message);
             _snackbar.Add(ex.Message, Severity.Error);
         }
-        catch (Exception)
+        finally
         {
-            throw;
+            isOnLoginProcess = false;   
         }
-        StateHasChanged();
     }
 }

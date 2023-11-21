@@ -43,7 +43,7 @@ namespace PizzaBookingShared.Repositories
             return entitie;
 		}
 
-		public async Task<List<T>> GetAllAsync()
+		public virtual async Task<List<T>> GetAllAsync()
 		{
 			return await _dbSet.ToListAsync();
 		}

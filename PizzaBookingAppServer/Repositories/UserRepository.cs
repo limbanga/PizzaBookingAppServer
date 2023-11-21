@@ -13,11 +13,15 @@ namespace PizzaBookingShared.Repositories
     public interface IUserRepository
     {
         Task RegisterAsync(User model);
+
+        Task ActiveAccountAsync(string activeToken);
         Task<User> LoginAsync(string loginName, string password);
         string GetAccessTokenAsync(User model);
         Task ChangePasswordAsync(int userId, string oldPassword, string newPassword);
         Task<string> GenerateResetPasswordToken(string email, string newPassword);
         Task ActiveNewPasswordAsync(string resetPasswordToken);
+        Task<List<User>> GetAllAsync();
+        string GenerateRandomToken(int length);
     }
 
     public class UserRepository : IUserRepository
@@ -100,12 +104,7 @@ namespace PizzaBookingShared.Repositories
             {
                 throw new AppException("User does't exist.");
             }
-
-            if (user.Locked)
-            {
-                throw new AppException("This account is locked.");
-            }
-
+                
             var verifyResult = _passwordHasher.VerifyHashedPassword(user, user.HashedPassword, password);
             if (verifyResult != PasswordVerificationResult.Success)
             {
@@ -163,7 +162,7 @@ namespace PizzaBookingShared.Repositories
             return token;
         }
 
-        private string GenerateRandomToken(int length = 32)
+        public string GenerateRandomToken(int length = 32)
         {
             using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
             {
@@ -198,6 +197,30 @@ namespace PizzaBookingShared.Repositories
             model.NewPassword = null;
             model.ResetPasswordToken = null;
 
+            _context.User.Update(model);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<List<User>> GetAllAsync()
+        {
+            var list = await _context.User.ToListAsync();
+            return list;        
+        }
+
+        public async Task ActiveAccountAsync(string activeToken)
+        {
+            var model = await _context.User
+                            .Where(u =>
+                             u.ActiveAccountToken != null &&
+                             u.ActiveAccountToken.Equals(activeToken))
+                            .FirstOrDefaultAsync();
+
+            if (model is null)
+            {
+                throw new RequestException("activeToken does't exist.");
+            }
+
+            model.ActiveAccountToken = null;
             _context.User.Update(model);
             await _context.SaveChangesAsync();
         }

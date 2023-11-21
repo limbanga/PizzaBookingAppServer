@@ -6,7 +6,6 @@ namespace PizzaBookingShared.Repositories
 {
     public interface IOrderRepository : IGenericRepository<Order>
     {
-        Task<ActionResult<List<Order>>> GetAllIncludeCustomerAsync();
     }
 
     public class OrderRepository : GenericRepository<Order>, IOrderRepository
@@ -15,9 +14,14 @@ namespace PizzaBookingShared.Repositories
 			: base(context)
 		{ }
 
-        public async Task<ActionResult<List<Order>>> GetAllIncludeCustomerAsync()
+        public override async Task<List<Order>> GetAllAsync()
         {
-            return await _context.Order.Include(o => o.Customer).ToListAsync();
+            var list =  await _context.Order
+                .Include(o=> o.Customer)
+                .Include(o => o.OrderLines)
+                .ToListAsync();
+
+            return list;
         }
     }
 }

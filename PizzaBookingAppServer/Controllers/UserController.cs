@@ -39,7 +39,7 @@ namespace PizzaBookingShared.Controllers
         }
 
         [HttpPost]
-		public async Task<ActionResult<TokenPairRespone>> LoginAsync(LoginViewModel model)
+		public async Task<ActionResult<TokenPairRespone>> Login(LoginViewModel model)
 		{
 			try
 			{
@@ -63,21 +63,22 @@ namespace PizzaBookingShared.Controllers
 		}
 
         [HttpPost]
-        public async Task<ActionResult<TokenPairRespone>> RegisterAsync(RegisterViewModel model)
+        public async Task<ActionResult> Register(RegisterViewModel model)
         {
             try
             {
                 User userModel = _mapper.Map<User>(model);
-
+                var activeToken = _repo.GenerateRandomToken(32);
+                userModel.ActiveAccountToken = activeToken;
                 await _repo.RegisterAsync(userModel);
 
-                string accessToken = _repo.GetAccessTokenAsync(userModel);
+                //_mailService.SendMail(
+                //    new string[] { model.LoginName },
+                //    "Active your account",
+                //    $"<a href='https://localhost:7266/active={activeToken}'>Click here to active your account.</a>",
+                //    isBodyHtml: true);
 
-                return new TokenPairRespone
-                {
-                    AccessToken = accessToken,
-                    RefreshToken = ""
-                };
+                return Ok();
             }
             catch (AppException ex)
             {
@@ -89,8 +90,25 @@ namespace PizzaBookingShared.Controllers
             }
         }
 
-        [HttpPost]
-        [Authorize]
+        [HttpGet("/active={activeToken}")]
+        public async Task<ActionResult> ActiveAccount(string activeToken)
+        {
+            try
+            {
+                await _repo.ActiveAccountAsync(activeToken);
+                return Ok("Your account has just been actived");
+            }
+            catch (AppException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        [HttpPost, Authorize]
         public async Task<ActionResult> ChangePassword(ChangePasswordViewModel model)
         {
             int userId = Convert.ToInt32(HttpContext.User.FindFirstValue("id"));
@@ -146,6 +164,25 @@ namespace PizzaBookingShared.Controllers
             {
                 await _repo.ActiveNewPasswordAsync(resetPasswordToken);
                 return Ok("New password is take effect now!");
+            }
+            catch (RequestException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        [HttpGet, Authorize(Roles ="admin")]
+        public async Task<ActionResult<List<User>>> GetAll()
+        {
+
+            try
+            {
+                var list = await _repo.GetAllAsync();
+                return list;
             }
             catch (RequestException ex)
             {

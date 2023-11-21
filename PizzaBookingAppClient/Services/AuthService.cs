@@ -12,7 +12,7 @@ namespace PizzaBookingAppClient.Services
 {
     public interface IAuthService
     {
-        Task<TokenPairRespone> RegisterAsync(RegisterViewModel model);
+        Task RegisterAsync(RegisterViewModel model);
         Task<TokenPairRespone> LoginAsync(LoginViewModel model);
         Task LogoutAsync();
         Task<string> GetClaimValue(string key);
@@ -50,32 +50,20 @@ namespace PizzaBookingAppClient.Services
         public async Task<TokenPairRespone> LoginAsync(LoginViewModel model)
         {
             var respone = await _httpClient.PostAsJsonAsync<LoginViewModel>("/User/Login", model);
-            if (respone is null)
+
+            if (respone.IsSuccessStatusCode)
             {
-                throw new Exception();
+                var token = await respone.Content.ReadFromJsonAsync<TokenPairRespone>();
+
+                await _localStorageService.SetItemAsync<TokenPairRespone>("authToken", token!);
+                ((CustomAuthProvider)_authenticationStateProvider).NotifyAuthState();
+
+                return token!;
             }
 
-            if (respone.StatusCode == HttpStatusCode.Unauthorized)
-            {
-                string errorMessage = await respone.Content.ReadAsStringAsync();
-                throw new AppException(errorMessage);
-            }
+            string errorMessage = await respone.Content.ReadAsStringAsync();
 
-            if (!respone.IsSuccessStatusCode)
-            {
-                throw new Exception();
-            }
-
-            TokenPairRespone? token = await respone.Content.ReadFromJsonAsync<TokenPairRespone>();
-            if (token is null)
-            {
-                throw new Exception();
-            }
-			
-            await _localStorageService.SetItemAsync<TokenPairRespone>("authToken", token);
-            ((CustomAuthProvider)_authenticationStateProvider).NotifyAuthState();
-
-			return token;
+             throw new AppException(errorMessage);
         }
 
         public async Task LogoutAsync()
@@ -84,33 +72,17 @@ namespace PizzaBookingAppClient.Services
             ((CustomAuthProvider)_authenticationStateProvider).NotifyAuthState();
         }
 
-        public async Task<TokenPairRespone> RegisterAsync(RegisterViewModel model)
+        public async Task RegisterAsync(RegisterViewModel model)
         {
             var respone = await _httpClient.PostAsJsonAsync<RegisterViewModel>("/User/Register", model);
 
-            if (respone is null)
+            if (respone.IsSuccessStatusCode)
             {
-                throw new Exception();    
+                return;
             }
 
-            if (respone.StatusCode == HttpStatusCode.BadRequest)
-            {
-                string errorMessage = await respone.Content.ReadAsStringAsync();
-                throw new AppException(errorMessage);
-            }
-
-            if (!respone.IsSuccessStatusCode)
-            {
-                throw new Exception();
-            }
-
-            TokenPairRespone? token = await respone.Content.ReadFromJsonAsync<TokenPairRespone>();
-            if (token is null)
-            {
-                throw new Exception();
-            }
-
-            return token;
+            string errorMessage = await respone.Content.ReadAsStringAsync();
+            throw new AppException(errorMessage);
         }
     }
 }
