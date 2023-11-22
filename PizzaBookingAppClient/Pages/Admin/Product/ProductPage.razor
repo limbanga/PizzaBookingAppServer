@@ -179,7 +179,7 @@
     {
         try
         {
-            products = await _httpService.GetAll<Product>("/Product/GetAll");
+            products = await _httpService.Get<List<Product>>("/Product/GetAll");
             StateHasChanged();
         }
         catch (Exception ex)

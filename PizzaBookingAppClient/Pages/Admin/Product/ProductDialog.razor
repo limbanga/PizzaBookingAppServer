@@ -114,7 +114,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        categories = await _httpService.GetAll<Category>("/Category/GetAll");
+        categories = await _httpService.Get<List<Category>>("/Category/GetAll");
 
         if (isUpdate)
         {

@@ -63,7 +63,7 @@ namespace PizzaBookingAppClient.Services
 
             string errorMessage = await respone.Content.ReadAsStringAsync();
 
-             throw new AppException(errorMessage);
+            throw new AppException(errorMessage);
         }
 
         public async Task LogoutAsync()

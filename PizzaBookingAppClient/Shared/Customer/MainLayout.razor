@@ -101,9 +101,6 @@
 </CascadingValue>
 
 @code {
-
-    private string TextValue = string.Empty;
-
     private int cartCount;
     public bool _drawerOpenAccount = false;
     private bool _drawerOpenCart = false;
@@ -134,7 +131,6 @@
 
     private void ToggleAccountDrawer()
     {
-        Console.WriteLine("clicked!");
         _drawerOpenAccount = !_drawerOpenAccount;
     }
 
@@ -147,13 +143,23 @@
     private async Task LoadCart()
     {
         orderLines = await _cartService.GetAsync();
+
         foreach (var orderLine in orderLines)
         {
             if (orderLine.ProductId != null)
             {
-                orderLine.Product =
-                    await _httpService.Get<Product>("/Product/Get", (int)orderLine.ProductId);
+                try
+                {
+                    orderLine.Product = await _httpService.Get<Product>(
+                        $"/Product/Get/{orderLine.ProductId}"); 
+                }
+                catch (AppException ex)
+                {
+                    Console.WriteLine($"Failed to load product id ={orderLine.ProductId}");
+                    Console.WriteLine(ex.Message);
+                }
             }
+
         }
         await LoadCartCount();
     }

@@ -18,7 +18,9 @@
 
 	protected override async Task OnParametersSetAsync()
 	{
-		Console.WriteLine($"/Product/Fillter/?name={Query}&cate={CategoryQuery}");
-		products = await _httpService.GetAll<Product>($"/Product/Fillter/?name={Query}&cate={CategoryQuery}");
+		products = await _httpService.Get<List<Product>>
+		($"/Product/Fillter/?name={Query}&cate={CategoryQuery}");
+
+		await base.OnParametersSetAsync();
 	}
 }

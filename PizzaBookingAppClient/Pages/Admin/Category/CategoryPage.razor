@@ -143,7 +143,7 @@
     {
         try
         {
-            categories = await _httpService.GetAll<Category>("/Category/GetAll");
+            categories = await _httpService.Get<List<Category>>("/Category/GetAll");
             StateHasChanged();
         }
         catch (Exception ex)

@@ -74,7 +74,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        product = await _httpService.Get<Product>("/Product/Get", Id);
+        product = await _httpService.Get<Product>($"/Product/Get/{Id}");
     }
 
     private Variant isSizeSelected(string s)

@@ -50,7 +50,7 @@ Class="pa-4">
     {
         if (categories == null)
         {
-            categories = await _httpService.GetAll<Category>("/Category/GetAll");
+            categories = await _httpService.Get<List<Category>>("/Category/GetAll");
         }
     }
 

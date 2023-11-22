@@ -125,7 +125,7 @@
     {
         try
         {
-            orders = await _httpService.GetAll<User>("/User/GetAll");
+            orders = await _httpService.Get<List<User>>("/User/GetAll");
             StateHasChanged();
         }
         catch (Exception ex)

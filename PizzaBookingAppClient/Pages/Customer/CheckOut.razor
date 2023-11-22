@@ -113,13 +113,13 @@
                               Margin="Margin.Dense" />
 
                 <MudButton ButtonType="ButtonType.Submit"
-                           StartIcon="@(!isProcessingConfirmPayment?Icons.Material.Filled.CreditScore:"")"
-                           Disabled="isProcessingConfirmPayment"
+                           StartIcon="@(!isConfirmPaymentProcessing?Icons.Material.Filled.CreditScore:"")"
+                           Disabled="isConfirmPaymentProcessing"
                            Class="mt-8"
                            Color="Color.Warning"
                            Variant="Variant.Outlined"
                            FullWidth="true">
-                    @if (isProcessingConfirmPayment)
+                    @if (isConfirmPaymentProcessing)
                     {
                         <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
                         <MudText Class="ms-2" Color="Color.Warning">Processing</MudText>
@@ -190,7 +190,7 @@
             if (orderLine.ProductId != null)
             {
                 orderLine.Product =
-                    await _httpService.Get<Product>("/Product/Get", (int)orderLine.ProductId);
+                    await _httpService.Get<Product>($"/Product/Get/{orderLine.ProductId}");
             }
         }
         PreviewTotalPrice();
@@ -247,43 +247,47 @@
         debounceTimer.Start();
     }   
 
-    private bool isProcessingConfirmPayment = false;
+    private bool isConfirmPaymentProcessing = false;
     private async Task OnConfirmPayment()
     {
-        Console.WriteLine("OnConfirmPayment enter");
-        isProcessingConfirmPayment = true;
+        if (isConfirmPaymentProcessing)
+        {
+            return;    
+        }
+
         try
         {
+            Console.WriteLine("OnConfirmPayment enter");
+            isConfirmPaymentProcessing = true;
             model.OrderLines = orderLines;
-            var responeModel = await _httpService.PostAsync<Order, Order>("/Order/Create", model);
-            if (responeModel is null)
-            {
-                throw new Exception("responeModel is null");
-            }
-            model = responeModel;
+            model = await _httpService.Create<Order>("/Order/Create", model); 
             isPayClicked = true;
         }
-        catch (Exception)
+        catch (AppException ex)
         {
-            throw;
+            _snackbar.Add(ex.Message, Severity.Error);
         }
         finally
         {
-            isProcessingConfirmPayment = false;
+            isConfirmPaymentProcessing = false;
             Console.WriteLine("OnConfirmPayment done");
         }
     }
 
     private bool isScanQRProcessing = false;
     private bool isScanQRDone = false;
-
     private async Task OnScanQRcode()
     {
-        Console.WriteLine("OnScanQRcode enter");
-        isScanQRProcessing = true;
+        if (isScanQRProcessing)
+        {
+            return;
+        }
+
         try
         {
-            await _httpService.PostAsync<Int32>("/Order/Pay", model.Id);
+            Console.WriteLine("OnScanQRcode enter");
+            isScanQRProcessing = true;
+            await _httpService.Create<Int32>("/Order/Pay", model.Id);
             _snackbar.Add(
                 "Place order successfully. Your order is on the way", 
                 Severity.Success,
@@ -295,10 +299,9 @@
                 });
                 isScanQRDone = true;
         }
-        catch (Exception)
+        catch (AppException ex)
         {
-            _snackbar.Add("Something went wrong!", Severity.Error);
-            throw;
+            _snackbar.Add(ex.Message, Severity.Error);
         }
         finally
         {

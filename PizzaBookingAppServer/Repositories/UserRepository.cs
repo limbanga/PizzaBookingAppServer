@@ -13,7 +13,6 @@ namespace PizzaBookingShared.Repositories
     public interface IUserRepository
     {
         Task RegisterAsync(User model);
-
         Task ActiveAccountAsync(string activeToken);
         Task<User> LoginAsync(string loginName, string password);
         string GetAccessTokenAsync(User model);
@@ -89,6 +88,7 @@ namespace PizzaBookingShared.Repositories
                 new Claim("email", model.LoginName),
                 new Claim("phoneNumber", model.PhoneNumber),
                 new Claim("role", model.Role?? ""),
+                new Claim("lastName", model.LastName?? ""),
             };
 
             return WriteToken(claims);
@@ -102,7 +102,7 @@ namespace PizzaBookingShared.Repositories
 
             if (user is null)
             {
-                throw new AppException("User does't exist.");
+                throw new AppException("User doesn't exist.");
             }
                 
             var verifyResult = _passwordHasher.VerifyHashedPassword(user, user.HashedPassword, password);

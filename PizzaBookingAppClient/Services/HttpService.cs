@@ -14,18 +14,10 @@ namespace PizzaBookingAppClient.Services
 {
     public interface IHttpService
     {
-        Task<T1?> PostAsync<T1, T2>(string uri, T2 model);
-        Task PostAsync<T>(string uri, T model);
-
-
         Task<T> Create<T>(string uri, T model);
         Task<T> Update<T>(string uri, T model);
-        Task<T> Get<T>(string uri, int id);
-        Task<List<T>> GetAll<T>(string uri);
-        Task<List<T>> GetAllBy<T>(string uri, string id);
+        Task<T> Get<T>(string uri);
         Task DeleteAsync(string uri, string id);
-
-
         Task<Int32> Count(string uri);
         Task<string> PostFile(string uri, IBrowserFile file);
     }
@@ -36,22 +28,6 @@ namespace PizzaBookingAppClient.Services
         public HttpService(HttpClient client)
         {
             this._client = client;
-        }
-
-        public async Task PostAsync<T>(string uri, T model)
-        {
-            var respone = await _client.PostAsJsonAsync<T>(uri, model);
-            await CheckRespone(respone);
-        }
-
-        public async Task<T1?> PostAsync<T1, T2>(string uri, T2 model)
-        {
-            var respone = await _client.PostAsJsonAsync<T2>(uri, model);
-
-            await CheckRespone(respone);
-
-            T1? result = await respone.Content.ReadFromJsonAsync<T1>();
-            return result;
         }
 
         private async Task CheckRespone(HttpResponseMessage? response)
@@ -74,6 +50,11 @@ namespace PizzaBookingAppClient.Services
                 throw new BadRequestException($"BadRequest: {errorMessage}");
             }
 
+            if (response.StatusCode.Equals(HttpStatusCode.NotFound))
+            {
+                throw new AppException($"NotFound: {errorMessage}");
+            }
+
             if (response.StatusCode.Equals(HttpStatusCode.Unauthorized))
             {
                 throw new UnAthorizeException($"Unauthorized: {errorMessage}");
@@ -91,15 +72,7 @@ namespace PizzaBookingAppClient.Services
         {
             var respone = await _client.PostAsJsonAsync<T>(uri, model);
 
-            if (respone == null)
-            {
-                throw new Exception("respone is null");
-            }
-
-            if (!respone.IsSuccessStatusCode)
-            {
-                throw new Exception(respone.StatusCode.ToString());
-            }
+            await CheckRespone(respone);
 
             return model;
         }
@@ -113,89 +86,27 @@ namespace PizzaBookingAppClient.Services
             return model;
         }
 
-        public async Task<T> Get<T>(string uri, int id)
-        {
-            var respone = await _client.GetAsync($"{uri}/{id}");
-
-            if (respone == null)
-            {
-                throw new Exception("respone is null");
-            }
-
-            if (!respone.IsSuccessStatusCode)
-            {
-                throw new Exception(respone.StatusCode.ToString());
-            }
-
-            T? model = await respone.Content.ReadFromJsonAsync<T>();
-            return model!;
-        }
-
-		public async Task<T> Get<T>(string uri, string id)
-		{
-			var respone = await _client.GetAsync($"{uri}/{id}");
-
-			if (respone == null)
-			{
-				throw new Exception("respone is null");
-			}
-
-			if (!respone.IsSuccessStatusCode)
-			{
-				throw new Exception(respone.StatusCode.ToString());
-			}
-
-			T? model = await respone.Content.ReadFromJsonAsync<T>();
-			return model!;
-		}
-
-		public async Task<List<T>> GetAll<T>(string uri)
+        public async Task<T> Get<T>(string uri)
         {
             var respone = await _client.GetAsync(uri);
 
             await CheckRespone(respone);
 
-            List<T>? list = await respone.Content.ReadFromJsonAsync<List<T>>();
-            return list!;
+            T? model = await respone.Content.ReadFromJsonAsync<T>();
+            return model!;
         }
-
-		public async Task<List<T>> GetAllBy<T>(string uri, string id)
-		{
-			var respone = await _client.GetAsync($"{uri}/{id}");
-
-			if (respone == null)
-			{
-				throw new Exception("respone is null");
-			}
-
-			if (!respone.IsSuccessStatusCode)
-			{
-				throw new Exception(respone.StatusCode.ToString());
-			}
-
-			List<T>? list = await respone.Content.ReadFromJsonAsync<List<T>>();
-			return list!;
-		}
 
 		public async Task<Int32> Count(string uri)
         {
             var respone = await _client.GetAsync(uri);
 
-            if (respone == null)
-            {
-                throw new Exception("respone is null");
-            }
-
-            if (!respone.IsSuccessStatusCode)
-            {
-                throw new Exception(respone.StatusCode.ToString());
-            }
-
+            await CheckRespone(respone);
+            
             int count = await respone.Content.ReadFromJsonAsync<Int32>();
             return count!;
         }
 
-        public async Task<string> PostFile(string uri,IBrowserFile file)
+        public async Task<string> PostFile(string uri, IBrowserFile file)
         {
 
             var content = new MultipartFormDataContent();
