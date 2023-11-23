@@ -2,6 +2,7 @@
     display: none;
 }
 
+
 .mud-table-pagination-actions
 .mud-button-root.mud-icon-button.mud-ripple.mud-ripple-icon
 .mud-icon-button-label {
@@ -9,11 +10,14 @@
     opacity: 1;
 }
 
-
 .mud-table-pagination-actions
 .mud-button-root.mud-icon-button.mud-ripple.mud-ripple-icon:disabled
 .mud-icon-button-label {
     color: var(--mud-palette-text-secondary);
     opacity: .5 ;
 }
-
+/* hover effect */
+.mud-list-item-clickable:hover {
+    background-color: var(--mud-palette-action-default-hover);
+/*    background-color: red;*/
+}

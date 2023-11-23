@@ -1,5 +1,6 @@
 ﻿@inherits LayoutComponentBase
 
+
 <MudThemeProvider @ref="@_mudThemeProvider" @bind-IsDarkMode="@_isDarkMode" Theme="_currentTheme" />
 <MudDialogProvider />
 <MudSnackbarProvider />
@@ -8,35 +9,35 @@
     <MudAppBar Elevation="0">
   
         <MudToggleIconButton @bind-Toggled="@_drawerOpen"
-                             Icon="@Icons.Material.Filled.Menu" 
-                             Color="@Color.Primary" 
-                             ToggledIcon="@Icons.Material.Filled.Close" 
-                             ToggledColor="@Color.Primary" 
+                                Icon="@Icons.Material.Filled.Menu" 
+                                Color="@Color.Primary" 
+                                ToggledIcon="@Icons.Material.Filled.Close" 
+                                ToggledColor="@Color.Primary" 
         @onclick=@(() => _drawerOpen = !_drawerOpen) />
 
         <MudSpacer />
 
         <MudTooltip Text="Change Theme">
             <MudIconButton Icon="@( _isDarkMode? Icons.Material.Filled.Nightlight : @Icons.Material.Filled.LightMode)"
-                           Color="@( _isDarkMode? Color.Primary : Color.Warning)" 
-                           OnClick="@((e) => ThemeToggle())" />
+                            Color="@( _isDarkMode? Color.Primary : Color.Warning)" 
+                            OnClick="@((e) => ThemeToggle())" />
         </MudTooltip>
 
     </MudAppBar>
 
     <MudDrawer @bind-Open="_drawerOpen" Elevation="1"
-               Style="background: var(--mud-palette-background);">
+                Style="background: var(--mud-palette-background);">
         <MudDrawerHeader Style="background: var(--mud-palette-appbar-background);">
             <MudText Typo="Typo.h6"
-                     Style="color: white;">Admin dashoard</MudText>
+                        Style="color: white;">Admin dashoard</MudText>
         </MudDrawerHeader>
-
+        
         <AdminNavMenu />
 
     </MudDrawer>
 
     <MudMainContent>
-        <MudContainer MaxWidth="MaxWidth.Large">
+        <MudContainer MaxWidth="MaxWidth.Large" Fixed="true">
             @Body
         </MudContainer>
     </MudMainContent>
@@ -51,33 +52,36 @@
 
     private readonly MudTheme _currentTheme = new()
     {
-            Palette = new Palette
-            {
-                Primary = "#000000",
-                Secondary = "#ffffff",
-                Info = "#64a7e2",
-                Success = "#2ECC40",
-                Warning = "#FFC107",
-                AppbarBackground = "#ff0000",
-                Background = "#ffffff",
-                TextPrimary = "#000000",
-                TextSecondary = "#1564ef",
-                HoverOpacity = .25,
-            },
-            PaletteDark = new Palette
-            {
-                Primary = "#ffffff",
-                Secondary = "#000000",
-                Info = "#a4c2dd",
-                Success = "#2ECC40",
-                Warning = "#fff000",
-                AppbarBackground = "#121212",
-                Background = "#161616",
-                TextPrimary = "#adff2f",
-                TextSecondary = "#adff2f",
-                HoverOpacity = .06,
-                Surface="000000"
-            }
+        Palette = new Palette
+        {
+            Primary = "#000000",
+            Secondary = "#ffffff",
+            Info = "#64a7e2",
+            Success = "#2ECC40",
+            Warning = "#FFC107",
+            AppbarBackground = "#ff0000",
+            Background = "#ffffff",
+            TextPrimary = "#000000",
+            TextSecondary = "#1564ef",
+            Surface = "ffffff",
+            HoverOpacity = .06,
+
+        },
+        PaletteDark = new Palette
+        {
+            Primary = "#ffffff",
+            Secondary = "#000000",
+            Info = "#a4c2dd",
+            Success = "#2ECC40",
+            Warning = "#fff000",
+            AppbarBackground = "#121212",
+            Background = "#161616",
+            TextPrimary = "#adff2f",
+            TextSecondary = "#adff2f",
+            Surface = "#000000",
+            ActionDefault = "#ffffffc4",
+            HoverOpacity = .06,
+        }
     };
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
