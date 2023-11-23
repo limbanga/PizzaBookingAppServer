@@ -1,5 +1,6 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
+using PizzaBookingAppServer.AppExceptions;
 using PizzaBookingShared.Entities;
 using PizzaBookingShared.Repositories;
 
@@ -42,6 +43,13 @@ namespace PizzaBookingAppServer.Repositories
 
         public async Task<AppSetting> UpdateAsync(AppSetting entity)
         {
+            bool isExist = await _context.AppSetting
+                        .AnyAsync(x => x.Id == entity.Id);
+            if (!isExist)
+            {
+                throw new RequestException("AppSetting id doesn't exist.");
+            }
+
             _context.AppSetting.Update(entity);
             await _context.SaveChangesAsync();
             return entity;

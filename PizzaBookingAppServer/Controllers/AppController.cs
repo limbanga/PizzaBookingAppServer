@@ -52,7 +52,11 @@ namespace PizzaBookingAppServer.Controllers
 
             var appSetting = new AppSetting
             {
-
+                AllowAnonymousLogin = true,
+                Dense = true,
+                Bordered=false,
+                Striped=true,
+                Hover=true,
             };
 
             await _repo.CreateAsync(appSetting);

@@ -14,10 +14,14 @@
 
 
 <MudTable Items="categories"
-          SortLabel="Sort By" Elevation="0"
-          OnRowClick="RowClickEvent" T="Category"
-          Dense="@dense" Hover="@hover"
-          Bordered="@bordered" Striped="@striped"
+          SortLabel="Sort By" 
+          Elevation="0"
+          OnRowClick="RowClickEvent"
+          T="Category"
+          Dense="@setting.Dense"
+          Hover="@setting.Hover"
+          Bordered="@setting.Bordered" 
+          Striped="@setting.Striped"
           Filter="new Func<Category,bool>(FilterFunc1)"
           @bind-SelectedItem="selectedItem1"
           Style="background: var(--mud-palette-secondary);">
@@ -88,17 +92,16 @@
 
 @code {
 
-    private bool dense = true;
-    private bool hover = true;
-    private bool striped = false;
-    private bool bordered = false;
-
+    private AppSetting setting = new();
     private string searchString1 = string.Empty;
     private Category selectedItem1 = null!;
     private List<Category>? categories;
 
     protected override async Task OnInitializedAsync()
     {
+        await base.OnInitializedAsync();
+
+        await LoadSetting();
         await LoadData();
     }
 
@@ -169,6 +172,19 @@
             await _httpService.DeleteAsync("/Category/Delete", category.Id.ToString());
             _snackbar.Add("Delete category successfully.", Severity.Success);
             await LoadData();
+        }
+        catch (Exception ex)
+        {
+            _snackbar.Add(ex.Message, Severity.Error);
+        }
+    }
+
+    public async Task LoadSetting()
+    {
+        try
+        {
+            setting = await _httpService.Get<AppSetting>("/App/Get");
+            StateHasChanged();
         }
         catch (Exception ex)
         {
