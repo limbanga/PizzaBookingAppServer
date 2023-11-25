@@ -73,17 +73,17 @@ namespace PizzaBookingAppClient.Services
             var respone = await _client.PostAsJsonAsync<T>(uri, model);
 
             await CheckRespone(respone);
-
-            return model;
+            T? result = await respone.Content.ReadFromJsonAsync<T>();
+            return result!;
         }
 
         public async Task<T> Update<T>(string uri, T model)
         {
             var respone = await _client.PutAsJsonAsync<T>(uri, model);
 
-            await CheckRespone(respone);      
-
-            return model;
+            await CheckRespone(respone);
+            T? result = await respone.Content.ReadFromJsonAsync<T>();
+            return result!;
         }
 
         public async Task<T> Get<T>(string uri)

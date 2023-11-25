@@ -15,6 +15,6 @@ namespace PizzaBookingShared.Entities
 		[JsonIgnore]
 		public Category? Category { get; set; }
 		[Range(0, double.MaxValue)]
-		public float Price { get; set; }
+		public double Price { get; set; }
 	}
 }

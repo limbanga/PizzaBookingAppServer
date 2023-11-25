@@ -9,7 +9,7 @@ namespace PizzaBookingShared.Entities
 		public int? CustomerId { get; set; }
 		public User? Customer { get; set; }
 		[MaxLength(20)]
-		public string? State { get; set; } = null;
+		public string State { get; set; } = string.Empty;
 		[Required(ErrorMessage = "required")]
         [MaxLength(15, ErrorMessage = "Invalid phone number")]
         public string PhoneNumber { get; set; } = null!;

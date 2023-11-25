@@ -44,9 +44,10 @@
         </MudTh>
 
         <MudTh>
-            <MudTableSortLabel SortBy="new Func<Order, object>(x=>x.CreatedAt.ToLocalTime())"
+            <MudTableSortLabel SortBy="@(new Func<Order, object>(
+                    x=>string.IsNullOrEmpty(x.State)?"not pay":x.State))"
                                Style="color: var(--mud-palette-text-secondary);">
-                CreatedAt
+                Status
             </MudTableSortLabel>
         </MudTh>
 
@@ -74,8 +75,8 @@
             @context.Address.Substring(0, context.Address.Length < 15 ? context.Address.Length: 15)
         </MudTd>
 
-        <MudTd DataLabel="CreatedAt" >
-            @context.CreatedAt
+        <MudTd DataLabel="Status" >
+            @(string.IsNullOrEmpty(context.State) ? "not pay" : context.State)
         </MudTd>
 
         <MudTd DataLabel="UpdatedAt" >
@@ -109,6 +110,17 @@
     private void RowClickEvent(TableRowClickEventArgs<Order> row)
     {
         Console.WriteLine(row.Item.Id);
+        OpenDialog(row.Item);
+    }
+
+    private void OpenDialog(Order model)
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("model", model);
+        parameters.Add("ReloadFunc", new Func<Task>(LoadData));
+
+        var options = new DialogOptions { CloseOnEscapeKey = false };
+        _dialogService.Show<OrderDialog>("", parameters, options);
     }
 
     private bool FilterFunc1(Order category)

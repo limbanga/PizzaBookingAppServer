@@ -6,6 +6,7 @@ using PizzaBookingShared.Repositories;
 using PizzaBookingShared;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using PizzaBookingShared.ViewModel;
 
 namespace PizzaBookingShared.Controllers
 {
@@ -28,32 +29,51 @@ namespace PizzaBookingShared.Controllers
 			// get user id if exist
 			var claimId = User.FindFirst("id");
 
-            if (claimId is not null)
+			if (claimId is not null)
 			{
 				model.CustomerId = Convert.ToInt32(claimId.Value);
 			}
 
-            return base.Create(model);
+			return base.Create(model);
         }
 
         [HttpPost, AllowAnonymous]
-		public async Task<ActionResult> Pay([FromBody] int id) 
+		public async Task<ActionResult> Pay(PaymentViewModel model) 
 		{
 			// kiểm tra nhận được tiền chưa từ đúng khác hàng chưa.
 			
 			// cập nhập trạng thái đơn hàng
-			var model = await _repo.GetAsync(id);
+			var order = await _repo.GetAsync(model.OrderId);
 
-			if (model is null)
+			if (order is null)
 			{
 				return BadRequest("Order id doesn't exist.");
 			}
 
-			model.State = "On the way";
+            order.State = "On the way";
 
-			await _repo.UpdateAsync(model);
-			return Ok(model);	
+			await _repo.UpdateAsync(order);
+			return Ok(order);	
 		}
+
+        [HttpPost]
+        public async Task<ActionResult> MarkAsDone(ChangeStatusViewModel model)
+        {
+            // kiểm tra nhận được tiền chưa từ đúng khác hàng chưa.
+
+            // cập nhập trạng thái đơn hàng
+            var order = await _repo.GetAsync(model.OrderId);
+
+            if (order is null)
+            {
+                return BadRequest("Order id doesn't exist.");
+            }
+
+            order.State = model.State;
+
+            await _repo.UpdateAsync(order);
+            return Ok(order);
+        }
 
         [NonAction]
         public override Task<ActionResult> Update(Order model)

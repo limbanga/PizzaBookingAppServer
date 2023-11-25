@@ -15,7 +15,7 @@
             <MudTable Items="@orderLines"
                       Hover="true"
                       Breakpoint="Breakpoint.Sm"
-                      Loading="@_showLoading"
+                      Loading="orderLines == null"
                       LoadingProgressColor="Color.Error"
                       Style="background: var(--mud-palette-secondary)">
 
@@ -176,7 +176,6 @@
 
 @code {
     private const int DebounceDelay = 400; //ms
-    private bool _showLoading => orderLines is null;
     public Order model { get; set; } = new();
     private List<OrderLine> orderLines = null!;
     private double TotalPrice { get; set; } = 0;
@@ -195,6 +194,7 @@
         }
         PreviewTotalPrice();
         StateHasChanged();
+        await base.OnInitializedAsync();
     }
 
     private void ChangeQuantity(OrderLine orderLine, int amount)
@@ -287,7 +287,11 @@
         {
             Console.WriteLine("OnScanQRcode enter");
             isScanQRProcessing = true;
-            await _httpService.Create<Int32>("/Order/Pay", model.Id);
+            var paymentVM = new PaymentViewModel 
+            {
+                OrderId = model.Id
+            };
+            await _httpService.Create<PaymentViewModel>("/Order/Pay", paymentVM);
             _snackbar.Add(
                 "Place order successfully. Your order is on the way", 
                 Severity.Success,
@@ -297,6 +301,7 @@
                     config.HideTransitionDuration = 3000;
                     config.ShowTransitionDuration = 500;
                 });
+                model = new();
                 isScanQRDone = true;
         }
         catch (AppException ex)

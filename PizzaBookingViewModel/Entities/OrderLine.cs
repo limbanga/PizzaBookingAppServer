@@ -9,7 +9,7 @@ namespace PizzaBookingShared.Entities
 		[JsonIgnore]
 		public Order? Order { get; set; }
 		public int? ProductId { get; set; }
-        [JsonIgnore]
+		[JsonIgnore]
         public Product? Product { get; set; }
 		public int Quantity { get; set; }
 	}
