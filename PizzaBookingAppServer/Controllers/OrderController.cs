@@ -57,10 +57,8 @@ namespace PizzaBookingShared.Controllers
 		}
 
         [HttpPost]
-        public async Task<ActionResult> MarkAsDone(ChangeStatusViewModel model)
+        public async Task<ActionResult> ChangeStatus(ChangeStatusViewModel model)
         {
-            // kiểm tra nhận được tiền chưa từ đúng khác hàng chưa.
-
             // cập nhập trạng thái đơn hàng
             var order = await _repo.GetAsync(model.OrderId);
 
@@ -73,6 +71,14 @@ namespace PizzaBookingShared.Controllers
 
             await _repo.UpdateAsync(order);
             return Ok(order);
+        }
+
+
+        [HttpGet("{year}/{month}"), AllowAnonymous]
+        public async Task<ActionResult<IEnumerable<double>>> ReportSale(int year, int? month = null)
+        {
+            var report = await _repo.ReportSaleAsync(year, month);
+            return report.ToArray();
         }
 
         [NonAction]

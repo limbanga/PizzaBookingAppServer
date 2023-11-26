@@ -136,7 +136,7 @@
         {
             Console.WriteLine("call save change");
             await _httpService.Create<ChangeStatusViewModel>
-                ("/Order/MarkAsDone", changeStatusViewModel);
+                ("/Order/ChangeStatus", changeStatusViewModel);
             _snackbar.Add("Save change success.", Severity.Success);
             Console.WriteLine("done save change");
             if (ReloadFunc is not null)
