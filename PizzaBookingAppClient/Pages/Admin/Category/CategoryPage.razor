@@ -23,8 +23,7 @@
           Bordered="@setting.Bordered" 
           Striped="@setting.Striped"
           Filter="new Func<Category,bool>(FilterFunc1)"
-          @bind-SelectedItem="selectedItem1"
-          Style="background: var(--mud-palette-secondary);">
+          @bind-SelectedItem="selectedItem1">
 
     <ToolBarContent>
         <MudText Typo="Typo.h6">Categories</MudText>
@@ -37,21 +36,21 @@
 
     <HeaderContent>
         <MudTh>
-            <MudTableSortLabel Style="color: var(--mud-palette-text-secondary);"
+            <MudTableSortLabel 
                                SortBy="new Func<Category, object>(x=>x.Name)">
                                    Name
             </MudTableSortLabel>
         </MudTh>
 
         <MudTh>
-            <MudTableSortLabel Style="color: var(--mud-palette-text-secondary);"
+            <MudTableSortLabel 
                                SortBy="new Func<Category, object>(x=>x.CreatedAt.ToLocalTime())">
                 CreatedAt
             </MudTableSortLabel>
         </MudTh>
 
         <MudTh>
-            <MudTableSortLabel Style="color: var(--mud-palette-text-secondary);"
+            <MudTableSortLabel 
                                InitialDirection="SortDirection.Descending"
                                SortBy="new Func<Category, object>(x=>x.UpdatedAt.ToLocalTime())">
                 UpdatedAt
@@ -64,13 +63,13 @@
     </HeaderContent>
 
     <RowTemplate>
-        <MudTd DataLabel="Name" Style="color: var(--mud-palette-text-secondary);">
+        <MudTd DataLabel="Name" >
             @context.Name</MudTd>
 
-        <MudTd DataLabel="CreatedAt" Style="color: var(--mud-palette-text-secondary);">
+        <MudTd DataLabel="CreatedAt" >
             @context.CreatedAt</MudTd>
 
-        <MudTd DataLabel="UpdatedAt" Style="color: var(--mud-palette-text-secondary);">
+        <MudTd DataLabel="UpdatedAt" >
             @context.UpdatedAt</MudTd>
 
         <MudTd>
@@ -83,7 +82,7 @@
 
     <PagerContent>
 
-        <MudTablePager Style="color: var(--mud-palette-text-secondary);"
+        <MudTablePager 
                        PageSizeOptions="new int[] { 10, 20, 50, 100}" />
     </PagerContent>
 

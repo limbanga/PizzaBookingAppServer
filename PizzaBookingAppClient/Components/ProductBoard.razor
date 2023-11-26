@@ -30,7 +30,7 @@ else
                              Align="Align.Center"
                              Class="py-2"
                              Color="Color.Error">        
-                            $@product.Price
+                            @(string.Format("${0:N2}", product.Price))
                     </MudText>
 
                     <MudItem Class="d-flex align-center justify-center py-2">

@@ -16,5 +16,5 @@ namespace PizzaBookingShared.Entities
 		public Category? Category { get; set; }
 		[Range(0, double.MaxValue)]
 		public double Price { get; set; }
-	}
+    }
 }

@@ -42,7 +42,9 @@
                     </MudTd>
 
                     <MudTd Style="color: var(--mud-palette-text-secondary);"
-                           DataLabel="Price">$@context.Product!.Price</MudTd>
+                           DataLabel="Price">
+                        @(string.Format("${0:N2}", context.Product?.Price))
+                    </MudTd>
 
                     <MudTd Style="color: var(--mud-palette-text-secondary);"
                            DataLabel="Quantity">
@@ -63,9 +65,7 @@
 
                     <MudTd Style="color: var(--mud-palette-text-secondary);"
                            DataLabel="Total">
-
-                        $@(context.Quantity * context.Product?.Price)
-
+                        @(string.Format("${0:N2}", context.Quantity * context.Product?.Price))
                     </MudTd>
 
                 </RowTemplate>
@@ -81,7 +81,7 @@
                      Align="Align.End"
                      Typo="Typo.h5"
                      Color="Color.Error">
-                Total: $@TotalPrice
+                Total: @(string.Format("${0:N2}", @TotalPrice))
             </MudText>
         </MudPaper>
 
@@ -126,7 +126,7 @@
                     }
                     else
                     {
-                        <MudText> Pay $@TotalPrice </MudText>
+                        <MudText> Pay @(string.Format("${0:N2}", @TotalPrice)) </MudText>
                     }
 
                 </MudButton>

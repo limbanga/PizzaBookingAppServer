@@ -77,7 +77,7 @@
 
     private async Task HandleReport()
     {
-        Console.WriteLine($"year: {year}, month: {month}");
+        Console.WriteLine($"reportBy: {reportBy}, year: {year}, month: {month}");
         if (reportBy == "year")
         {
             var listSale = await _httpService.Get<List<double>>($"/Order/ReportSale/{year}");

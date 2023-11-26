@@ -23,7 +23,10 @@ else
                                 Color="Color.Info" aria-label="delete"
                                 OnClick="@(() => OnRemoveItem((int) orderLine!.ProductId!))" />
                         </div>
-                        <MudText Typo="Typo.h6" Color="Color.Error">@orderLine.Quantity x 90.000vnd</MudText>
+                        <MudText Typo="Typo.h6" Color="Color.Error">
+                            @orderLine.Quantity x
+                            @(string.Format("${0:N2}", orderLine.Product?.Price))
+                        </MudText>
 
                         <MudNumericField Label="Please choose quantity"
                             @bind-Value="orderLine.Quantity"
