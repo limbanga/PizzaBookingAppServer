@@ -32,8 +32,9 @@ namespace PizzaBookingShared.Repositories
             {
                 throw new RequestException("Invalid month.");
             }
+
             var query = _context.Order
-                .Where(o => o.UpdatedAt.Year == year)
+                .Where(o => o.UpdatedAt.Year == year && o.State == "Complete")
                 .AsQueryable();
 
             if (month == null) // by year

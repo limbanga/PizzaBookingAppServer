@@ -7,6 +7,7 @@ using PizzaBookingShared;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using PizzaBookingShared.ViewModel;
+using PizzaBookingAppServer.AppExceptions;
 
 namespace PizzaBookingShared.Controllers
 {
@@ -74,11 +75,19 @@ namespace PizzaBookingShared.Controllers
         }
 
 
-        [HttpGet("{year}/{month}"), AllowAnonymous]
+        [HttpGet("{year}/{month?}"), AllowAnonymous]
         public async Task<ActionResult<IEnumerable<double>>> ReportSale(int year, int? month = null)
         {
-            var report = await _repo.ReportSaleAsync(year, month);
-            return report.ToArray();
+			try
+			{
+                var report = await _repo.ReportSaleAsync(year, month);
+                return report.ToArray();
+            }
+			catch (AppException ex)
+			{
+                return BadRequest(ex.Message);
+			}
+           
         }
 
         [NonAction]

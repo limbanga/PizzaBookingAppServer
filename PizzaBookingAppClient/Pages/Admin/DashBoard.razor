@@ -1,47 +1,111 @@
 ﻿@page "/admin"
 <PageTitle>Admin - DashBoard</PageTitle>
 
+<div class="d-flex justify-center gap-4">
+    <MudSelect T="string" Label="Report by"
+               Variant="Variant.Outlined"
+               SelectedValuesChanged="HandleReport"
+               AnchorOrigin="Origin.BottomCenter"@bind-Value="reportBy">
+        <MudSelectItem T="string" Value="@("year")" />
+        <MudSelectItem T="string" Value="@("month")" />
+    </MudSelect>
+
+    <MudSelect T="int" Label="Year"
+               Variant="Variant.Outlined" 
+               SelectedValuesChanged="HandleReport"
+               AnchorOrigin="Origin.BottomCenter" @bind-Value="year">
+        @foreach (var item in listYear)
+        {
+            <MudSelectItem T="int" Value="@item" />
+
+        }
+    </MudSelect>
+
+    <MudSelect T="int" Label="Month"
+               Disabled="@(reportBy == "year")"
+               Variant="Variant.Outlined"
+               AnchorOrigin="Origin.BottomCenter" @bind-Value="month"
+               SelectedValuesChanged="HandleReport">
+        @for (int i = 12; i > 0; i--)
+        {
+            <MudSelectItem T="int" Value="@i" />
+        }
+    </MudSelect>
+</div>
+
+
 <div class="d-flex justify-center">
     <MudChart 
         Style="width: 80%; margin: auto;"
         ChartType="ChartType.Line"
         ChartSeries="@Series" 
-        @bind-SelectedIndex="Index"
         XAxisLabels="@XAxisLabels"
         Width="100%" />
 </div>
-<MudButton @onclick="RandomizeData" Color="Color.Error">Randomize Data</MudButton>
-
-<MudText Typo="Typo.h6">Selected portion of the chart: @Index</MudText>
 
 @code {
-    private int Index = -1; //default value cannot be 0 -> first selectedindex is 0.
+    private string reportBy = "month";
+    private int year = DateTime.Now.Year;
+    private int month = DateTime.Now.Month;
+    private List<int> listYear = new(3);
 
     public List<ChartSeries> Series = new List<ChartSeries>()
     {
         new ChartSeries() { Name = "Series 1", Data = new double[] { 90, 79, 72, 69, 62, 62, 55, 65, 70 } },
-        new ChartSeries() { Name = "Series 2", Data = new double[] { 10, 41, 35, 51, 49, 62, 69, 91, 148 } },
-        new ChartSeries() { Name = "Series 3", Data = new double[] { 90, 79, 72, 69, 49, 62, 69, 91, 148 } },
-
     };
-
     public string[] XAxisLabels = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep" };
 
-    Random random = new Random();
-    public void RandomizeData()
+    protected override async Task OnInitializedAsync()
     {
-        var new_series = new List<ChartSeries>()
+        await base.OnInitializedAsync();
+
+        for (int i = year; i > 2020 ; i--)
         {
-            new ChartSeries() { Name = "Series 1", Data = new double[9] },
-            new ChartSeries() { Name = "Series 2", Data = new double[9] },
-        };
-        for (int i = 0; i < 9; i++)
-        {
-            new_series[0].Data[i] = random.NextDouble() * 100;
-            new_series[1].Data[i] = random.NextDouble() * 100;
+            listYear.Add(i);
         }
-        Series = new_series;
-        StateHasChanged();
+
+        try
+        {
+            await HandleReport();
+            StateHasChanged();
+        }
+        catch (Exception)
+        {
+            throw;
+        }
     }
+
+    private async Task HandleReport()
+    {
+        Console.WriteLine($"year: {year}, month: {month}");
+        if (reportBy == "year")
+        {
+            var listSale = await _httpService.Get<List<double>>($"/Order/ReportSale/{year}");
+
+            Series = new List<ChartSeries>()
+            {
+                new ChartSeries() { Name = $"Sale in {year}", Data = listSale.ToArray() }
+            };
+            XAxisLabels = new string[] { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+            StateHasChanged();
+        }
+        else
+        {
+            var listSale = await _httpService.Get<List<double>>($"/Order/ReportSale/{year}/{month}");
+
+            Series = new List<ChartSeries>()
+            {
+                new ChartSeries() { Name = $"Sale in {year}-{month}", Data = listSale.ToArray() }
+            };
+
+            XAxisLabels = new string[listSale.Count]; 
+            for (int i = 1; i <= listSale.Count; i++)
+            {
+                XAxisLabels[i-1] = i.ToString();    
+            }
+            StateHasChanged();
+        }
+    }
+
 }
 
