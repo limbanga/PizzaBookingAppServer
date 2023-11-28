@@ -104,7 +104,16 @@ namespace PizzaBookingShared.Repositories
             {
                 throw new AppException("User doesn't exist.");
             }
-                
+
+            var appSetting = await _context.AppSetting.FirstAsync();
+            if (
+                !appSetting.AllowAnonymousLogin && // prevent anonymous
+                !string.IsNullOrEmpty(user.ActiveAccountToken)
+                )
+            {
+                throw new AppException("User account is not active.");
+            }
+
             var verifyResult = _passwordHasher.VerifyHashedPassword(user, user.HashedPassword, password);
             if (verifyResult != PasswordVerificationResult.Success)
             {

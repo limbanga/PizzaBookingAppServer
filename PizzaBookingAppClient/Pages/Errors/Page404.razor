@@ -1,20 +1,28 @@
 ﻿@page "/not-found"
 
+<MudText Typo="Typo.h1" Align="Align.Center" Class="mt-4">
+	404
+</MudText>
 
-<MudContainer>
-    <MudGrid>
-        <MudItem xs="12">
-            <MudPaper>
+<MudText Typo="Typo.h3" Color="Color.Error" Align="Align.Center">
+	There's nothing here.
+</MudText>
 
-                <MudText Typo="Typo.h4">404 - Trang không tìm thấy</MudText>
+<div class="d-flex justify-center">
+	<MudLink Href="/">Back to home page</MudLink>
+</div>
 
-                <MudText>
-                    Xin lỗi, trang bạn đang tìm kiếm không tồn tại.
-                </MudText>
+<div>
+	<MudText Typo="Typo.h3" Color="Color.Primary"> May be you like &#x2665; .</MudText>
+	<ProductBoard products="products"/>
+</div>
 
-                <MudButton Href="/">Quay lại trang chủ</MudButton>
+@code {
+	private List<Product> products = null!;
 
-            </MudPaper>
-        </MudItem>
-    </MudGrid>
-</MudContainer>
+	protected override async Task OnParametersSetAsync()
+	{
+		await base.OnParametersSetAsync();
+		products = await _httpService.Get<List<Product>>($"/Product/GetAll");
+	}
+}
