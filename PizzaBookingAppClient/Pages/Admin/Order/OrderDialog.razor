@@ -1,154 +1,156 @@
 ﻿<MudDialog Style="width: 80%; max-width: 500px;"
-           Class="pa-4 pt-n4"
-           DisableSidePadding="true">
+		   Class="pa-4 pt-n4"
+		   DisableSidePadding="true">
 
-    <DialogContent>
-        <MudText Typo="Typo.h4" Color="Color.Primary" Align="Align.Center">
-            @Title
-        </MudText>
-    </DialogContent>
+	<DialogContent>
+		<MudText Typo="Typo.h4" Color="Color.Primary" Align="Align.Center">
+			@Title
+		</MudText>
+	</DialogContent>
 
-    <DialogActions>
+	<DialogActions>
 
-        <div style="width: 100%;">
+		<div style="width: 100%; overflow: scroll; max-height: 70vh;">
 
-            <MudList Clickable="true">
+			<MudList Clickable="true">
 
-                <MudListItem>
-                    <MudText Typo="Typo.h6">
-                        Customer: 
-                        @(model.Customer is null ?
-                        "Unknown" :
-                        model.Customer.LastName)
-                    </MudText>
-                </MudListItem>
-                
-                <MudListItem>
-                    <MudText Typo="Typo.h6">
-                        Order at: @model.UpdatedAt.ToLocalTime()
-                    </MudText>
-                </MudListItem>
+				<MudListItem>
+					<MudText Typo="Typo.h6">
+						Customer:
+						@(model.Customer is null ?
+							"Unknown" :
+							model.Customer.LastName)
+					</MudText>
+				</MudListItem>
 
-                <MudListItem>
-                    <MudText Typo="Typo.h6">
-                        Total: $@Total
-                    </MudText>
-                </MudListItem>
+				<MudListItem>
+					<MudText Typo="Typo.h6">
+						Order at: @model.UpdatedAt.ToLocalTime()
+					</MudText>
+				</MudListItem>
 
-                <MudListItem>
-                    <MudText Typo="Typo.h6">
-                        Status
+				<MudListItem>
+					<MudText Typo="Typo.h6">
+						Total: @(string.Format("${0:N2}", Total))
+					</MudText>
+				</MudListItem>
 
-                    </MudText>
-                    <MudRadioGroup @bind-SelectedOption="@changeStatusViewModel.State">
-                        <MudRadio Option="@("")"
-                                  Color="Color.Primary">Not pay</MudRadio>
-                        <MudRadio Option="@("On the way")"
-                                  Color="Color.Primary">On the way</MudRadio>
-                        <MudRadio Option="@("Complete")"
-                                  Color="Color.Success">Complete</MudRadio>
-                    </MudRadioGroup>
-                </MudListItem>
+				<MudListItem>
+					<MudText Typo="Typo.h6">
+						Status
 
-                @* Product List *@
-                <MudListItem Icon="@Icons.Material.Filled.Inbox"
-                             Text="Products"
-                             InitiallyExpanded="true">
-                    <NestedList>
-                        @foreach (var item in model.OrderLines!)
-                        {
-                            <MudListItem>
-                                <div class="d-flex justify-space-between pr-4">
-                                    <MudText Typo="Typo.h6">
-                                        @item.Product?.Name
-                                    </MudText>
+					</MudText>
+					<MudRadioGroup @bind-SelectedOption="@changeStatusViewModel.State">
+						<MudRadio Option="@("")"
+								  Color="Color.Primary">Not pay</MudRadio>
+						<MudRadio Option="@("On the way")"
+								  Color="Color.Primary">On the way</MudRadio>
+						<MudRadio Option="@("Complete")"
+								  Color="Color.Success">Complete</MudRadio>
+					</MudRadioGroup>
+				</MudListItem>
 
-                                    <MudText Typo="Typo.h6">
-                                        $@item.Product?.Price x @item.Quantity
-                                        = @(item.Product?.Price * item.Quantity)
-                                    </MudText>
-                                </div>
-                            </MudListItem>
-                        }
-                    </NestedList>
-                </MudListItem>
-                
-            </MudList>
- 
+				@* Product List *@
+				<MudListItem Icon="@Icons.Material.Filled.Inbox"
+							 Text="Products"
+							 InitiallyExpanded="true">
+					<NestedList>
+						@foreach (var item in model.OrderLines!)
+						{
+							<MudListItem>
+								<div class="d-flex justify-space-between pr-4">
+									<MudText Typo="Typo.h6">
+										@item.Product?.Name
+									</MudText>
+
+									<MudText Typo="Typo.h6">
+										@(string.Format("${0:N2}", item.Product?.Price)) x
+										@item.Quantity =  
+										@(string.Format("${0:N2}", 
+											item.Product?.Price * item.Quantity))
+									</MudText>
+								</div>
+							</MudListItem>
+						}
+					</NestedList>
+				</MudListItem>
+
+			</MudList>
 
 
-            <div class="d-flex gap-4 mt-8">
 
-                <MudButton OnClick="Cancel"
-                           Variant="Variant.Outlined"
-                           Color="Color.Primary"
-                           FullWidth="true">Cancel</MudButton>
+			<div class="d-flex gap-4 mt-8">
 
-                <MudButton Color="Color.Success"
-                           Variant="Variant.Filled"
-                           ButtonType="ButtonType.Submit"
-                           OnClick="SaveChange"
-                           FullWidth="true">Save</MudButton>
-            </div>
-        </div>
-       
+				<MudButton OnClick="Cancel"
+						   Variant="Variant.Outlined"
+						   Color="Color.Primary"
+						   FullWidth="true">Cancel</MudButton>
 
-    </DialogActions>
+				<MudButton Color="Color.Success"
+						   Variant="Variant.Filled"
+						   ButtonType="ButtonType.Submit"
+						   OnClick="SaveChange"
+						   FullWidth="true">Save</MudButton>
+			</div>
+		</div>
+
+
+	</DialogActions>
 </MudDialog>
 
 @code {
-    [CascadingParameter]
-    MudDialogInstance MudDialog { get; set; } = null!;
-    [Parameter]
-    public Order model { get; set; } = null!;
-    [Parameter]
-    public Func<Task> ReloadFunc { get; set; } = null!;
-    private double Total = 0;
-    private string Title = "Order";
+	[CascadingParameter]
+	MudDialogInstance MudDialog { get; set; } = null!;
+	[Parameter]
+	public Order model { get; set; } = null!;
+	[Parameter]
+	public Func<Task> ReloadFunc { get; set; } = null!;
+	private double Total = 0;
+	private string Title = "Order";
 
-    public ChangeStatusViewModel changeStatusViewModel { get; set; } = new();
+	public ChangeStatusViewModel changeStatusViewModel { get; set; } = new();
 
-    protected override async Task OnInitializedAsync()
-    {
-        changeStatusViewModel.OrderId = model.Id;
-        changeStatusViewModel.State = model.State;
+	protected override async Task OnInitializedAsync()
+	{
+		changeStatusViewModel.OrderId = model.Id;
+		changeStatusViewModel.State = model.State;
 
-        model.OrderLines = await _httpService
-            .Get<List<OrderLine>>($"/OrderLine/GetByOrderId/{model.Id}");
-        foreach (var item in model.OrderLines)
-        {
-            item.Product = await _httpService
-            .Get<Product>($"/Product/Get/{item.ProductId}");
+		model.OrderLines = await _httpService
+			.Get<List<OrderLine>>($"/OrderLine/GetByOrderId/{model.Id}");
+		foreach (var item in model.OrderLines)
+		{
+			item.Product = await _httpService
+			.Get<Product>($"/Product/Get/{item.ProductId}");
 
-            Total += item.Product!.Price * item.Quantity;
-        }
-        await base.OnInitializedAsync();
-    }
+			Total += item.Product!.Price * item.Quantity;
+		}
+		await base.OnInitializedAsync();
+	}
 
-    void Cancel()
-    {
-        MudDialog.Cancel();
-    }
+	void Cancel()
+	{
+		MudDialog.Cancel();
+	}
 
-    private async Task SaveChange()
-    {
-        try
-        {
-            Console.WriteLine("call save change");
-            await _httpService.Create<ChangeStatusViewModel>
-                ("/Order/ChangeStatus", changeStatusViewModel);
-            _snackbar.Add("Save change success.", Severity.Success);
-            Console.WriteLine("done save change");
-            if (ReloadFunc is not null)
-            {
-                await ReloadFunc();
-            }
-            MudDialog.Cancel();
-        }
-        catch (Exception ex)
-        {
-            _snackbar.Add(ex.Message, Severity.Error);
-        }
-      
-    }
+	private async Task SaveChange()
+	{
+		try
+		{
+			Console.WriteLine("call save change");
+			await _httpService.Create<ChangeStatusViewModel>
+				("/Order/ChangeStatus", changeStatusViewModel);
+			_snackbar.Add("Save change success.", Severity.Success);
+			Console.WriteLine("done save change");
+			if (ReloadFunc is not null)
+			{
+				await ReloadFunc();
+			}
+			MudDialog.Cancel();
+		}
+		catch (Exception ex)
+		{
+			_snackbar.Add(ex.Message, Severity.Error);
+		}
+
+	}
 }

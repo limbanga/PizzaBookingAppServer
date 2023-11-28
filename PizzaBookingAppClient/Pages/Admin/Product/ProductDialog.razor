@@ -22,6 +22,7 @@
                           HelperText="Max. 50 characters" />
 
             <MudNumericField @bind-Value="model.Price"
+                             Format="N2"
                              For="@(() => model.Price)"
                              Min="0"
                              Class="mt-8"

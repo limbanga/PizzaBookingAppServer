@@ -10,7 +10,7 @@ namespace PizzaBookingShared.Repositories
         Task<List<Product>> GetAllWithCategoryAsync();
 		Task<List<Product>> GetAllByCategoryAliasAsync(string alias);
 		Task<List<Product>> FillterAsync(string? name = null, string? categoryAlias = null);
-
+		Task<Product?> GetByAliasAsync(string alias);
 	}
 
 	public class ProductRepository : GenericRepository<Product>, IProductRepository
@@ -61,5 +61,13 @@ namespace PizzaBookingShared.Repositories
         {
             return await _dbSet.Include(p => p.Category).ToListAsync();
         }
-    }
+
+		public async Task<Product?> GetByAliasAsync(string alias)
+		{
+            var result = await _dbSet.Where(p => p.Alias == alias)
+                .FirstOrDefaultAsync();
+
+            return result;
+		}
+	}
 }

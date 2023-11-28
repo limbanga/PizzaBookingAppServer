@@ -102,6 +102,7 @@
 
 @code {
     private int cartCount;
+    public double TotalPrice;
     public bool _drawerOpenAccount = false;
     private bool _drawerOpenCart = false;
     private bool isDarkTheme { get; set; } = true;
@@ -138,6 +139,7 @@
     {
         _drawerOpenCart = !_drawerOpenCart;
         await LoadCart();
+        PreviewTotalPrice();
     }
 
     private async Task LoadCart()
@@ -162,6 +164,11 @@
 
         }
         await LoadCartCount();
+    }
+
+    public void PreviewTotalPrice()
+    {
+        TotalPrice = _cartService.PreviewTotalPrice(orderLines);
     }
 
     private readonly MudTheme _currentTheme = new()

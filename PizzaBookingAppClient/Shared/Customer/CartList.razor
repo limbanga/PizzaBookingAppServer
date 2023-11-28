@@ -5,17 +5,17 @@
 else
 {
     <MudList>
-        <MudListItem>
-            @foreach (var orderLine in OrderLines)
-            {
-                <div Class="d-flex"
-                        Style="background: var(--mud-palette-background);">
+        @foreach (var orderLine in OrderLines)
+        {
+            <MudListItem>
+
+                <div class="d-flex">
                     <MudImage Src="@("/upload/products/"+ orderLine.Product?.ImagePath)"
                                 Style="width: 25%;"
                                 ObjectFit="ObjectFit.Contain"
                                 Class="rounded-lg" />
 
-                    <div style="width: 75%;" class="pa-4">
+                    <div style="width: 75%;" class="px-4">
                         <div class="d-flex justify-space-between align-center">
                             <MudText Typo="Typo.h6" Color="Color.Primary">@orderLine.Product?.Name</MudText>
                             <MudIconButton 
@@ -23,40 +23,104 @@ else
                                 Color="Color.Info" aria-label="delete"
                                 OnClick="@(() => OnRemoveItem((int) orderLine!.ProductId!))" />
                         </div>
-                        <MudText Typo="Typo.h6" Color="Color.Error">
-                            @orderLine.Quantity x
-                            @(string.Format("${0:N2}", orderLine.Product?.Price))
-                        </MudText>
 
-                        <MudNumericField Label="Please choose quantity"
-                            @bind-Value="orderLine.Quantity"
-                            Min="1"
-                            Max="100"
-                            FullWidth="true"
-                            Variant="Variant.Filled"
-                            Style="background: var(--mud-palette-background);
-                                    color: var(--mud-palette-primary);" />
+                        <MudText Typo="Typo.h6"
+                                     Color="Color.Error"
+                                     Class="my-2">
+                                @orderLine.Quantity x
+                                @(string.Format("${0:N2}", orderLine.Product?.Price))
+                         </MudText>
+
+                        <MudButtonGroup Size="Size.Small"
+                                        OverrideStyles="false">
+
+                            <MudButton Variant="Variant.Outlined"
+                                        OnClick="@(() => ChangeQuantity(orderLine, -1))"
+                                        Color="Color.Success">-</MudButton>
+
+                            <MudButton Variant="Variant.Outlined"
+                                        OnClick="@(() => ChangeQuantity(orderLine, 1))"
+                                        Color="Color.Error">+</MudButton>
+
+                        </MudButtonGroup>
+                        </div>
+
                     </div>
+            </MudListItem>
 
-                </div>
-                <MudDivider />
-            }
-        </MudListItem>
+            <MudDivider />
+        }
+
+        <MudText Color="Color.Error" Typo="Typo.h6" Class="px-4">
+            Total:
+            @(string.Format("${0:N2}", MainLayout.TotalPrice))
+        </MudText>
     </MudList>
 }
 
 
 
 @code {
+    [CascadingParameter]
+    public MainLayout MainLayout { get; set; } = null!;
     [Parameter]
     public List<OrderLine> OrderLines { get; set; } = null!;
     [Parameter]
     public EventCallback LoadCart { get; set; }
+
 
     private async Task OnRemoveItem(int productId)
     {
         await _cartService.Remove(productId);
         _snackbar.Add("Remove item from cart.", Severity.Success);
         await LoadCart.InvokeAsync();
+    }
+
+
+    private void ChangeQuantity(OrderLine orderLine, int amount)
+    {
+        if (orderLine.Quantity + amount > 0)
+        {
+            orderLine.Quantity += amount;
+        }
+        MainLayout.PreviewTotalPrice();
+        Console.WriteLine("debound trigger");
+        Debounce(async () => await SaveCartChange(), 5000);
+    }
+
+
+    private async Task SaveCartChange()
+    {
+        Console.WriteLine("Call back func start...");
+        if (OrderLines is not null)
+        {
+            await _cartService.SaveCart(OrderLines);
+            await LoadCart.InvokeAsync();
+            StateHasChanged();
+        }
+        Console.WriteLine("Call back done.");
+    }
+    private static System.Timers.Timer? debounceTimer;
+    private static void Debounce(Action action, int milliseconds)
+    {
+        if (debounceTimer != null)
+        {
+            debounceTimer.Stop();
+            debounceTimer.Dispose();
+        }
+
+        debounceTimer = new System.Timers.Timer();
+        debounceTimer.Interval = milliseconds;
+        // gắn sự  kiện sẽ thực hiện
+        // khi đếm hết thời gian
+        debounceTimer.Elapsed += (sender, eventArgs) =>
+        {
+            Console.WriteLine("Time out! call back!");
+            action();
+            debounceTimer.Stop();
+            debounceTimer.Dispose();
+        };
+
+        debounceTimer.Start();
     }
 }

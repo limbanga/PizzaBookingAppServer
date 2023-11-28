@@ -1,4 +1,4 @@
-﻿@page "/product/{Id:int}"
+﻿@page "/product/{Alias}"
 <PageTitle> @(product == null? "Loading": product.Name)</PageTitle>
 
 @if (product == null)
@@ -66,20 +66,15 @@ else
     [CascadingParameter]
     public MainLayout MainLayout { get; set; } = null!;
     [Parameter]
-    public int Id { get; set; }
+    public string Alias { get; set; } = null!;
     private Product product { get; set; } = null!;
 
-    private string ProductSize { get; set; } = "S";
     private int quantity { get; set; } = 1;
 
     protected override async Task OnInitializedAsync()
     {
-        product = await _httpService.Get<Product>($"/Product/Get/{Id}");
-    }
-
-    private Variant isSizeSelected(string s)
-    {
-        return s.Equals(ProductSize) ? Variant.Outlined: Variant.Text;
+        await base.OnInitializedAsync();
+        product = await _httpService.Get<Product>($"/Product/GetByAlias/{Alias}");
     }
 
     private async Task OnAddToCart()

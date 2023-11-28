@@ -7,6 +7,7 @@ using PizzaBookingShared.Helpers;
 using PizzaBookingShared.Repositories;
 using PizzaBookingShared;
 using Microsoft.AspNetCore.Authorization;
+using PizzaBookingAppServer.Helpers;
 
 namespace PizzaBookingShared.Controllers
 {
@@ -34,6 +35,17 @@ namespace PizzaBookingShared.Controllers
 		public override Task<ActionResult<Product>> Get(int id)
 		{
 			return base.Get(id);
+		}
+
+		[HttpGet("{alias}"), AllowAnonymous]
+		public async Task<ActionResult<Product>> GetByAlias(string alias)
+		{
+			var model = await _productRepo.GetByAliasAsync(alias);
+			if (model is null)
+			{
+				return NotFound();
+			}
+			return model!;
 		}
 
 		[HttpGet, AllowAnonymous]
@@ -79,5 +91,17 @@ namespace PizzaBookingShared.Controllers
                 return BadRequest(ex);
             }
         }
-    }
+
+		public override Task<ActionResult<Product>> Create(Product model)
+		{
+            model.Alias = StringHelper.ConvertToUrlSlug(model.Name);
+			return base.Create(model);
+		}
+
+		public override Task<ActionResult> Update(Product model)
+		{
+			model.Alias = StringHelper.ConvertToUrlSlug(model.Name);
+			return base.Update(model);
+		}
+	}
 }

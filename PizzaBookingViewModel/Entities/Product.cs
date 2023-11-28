@@ -9,6 +9,8 @@ namespace PizzaBookingShared.Entities
         [Required]
         [StringLength(50)]
 		public string Name { get; set; } = null!;
+		[MaxLength(50)]
+		public string? Alias { get; set; }
 		[StringLength(100)]
         public string? ImagePath { get; set; }
 		public int? CategoryId { get; set; }

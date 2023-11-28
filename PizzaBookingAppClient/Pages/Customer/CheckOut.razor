@@ -1,7 +1,5 @@
 ﻿@page "/checkout"
 
-
-@* Kiếm font chữ thế vào *@
 <MudText Typo="Typo.h3" Color="Color.Primary" Align="Align.Center" Class="pa-4">
     Enjoy your meal!
 </MudText>
@@ -136,7 +134,10 @@
             {
                 if (!isScanQRDone)
                 {
-                    <MudText Typo="Typo.h6" Color="Color.Primary" Align="Align.Center">Scan qr code to pay</MudText>
+                    <MudText Typo="Typo.h6"
+                             Color="Color.Primary"
+                             Align="Align.Center">Scan qr code to pay</MudText>
+
                     <MudImage Src="/public/images/qr_code_demo.png" Fluid="true" />
 
                     <MudButton OnClick="OnScanQRcode"

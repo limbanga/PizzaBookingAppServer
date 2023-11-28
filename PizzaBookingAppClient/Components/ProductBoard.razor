@@ -8,7 +8,7 @@ else
         @foreach (var product in products)
         {
             <MudItem xs="6" sm="4" md="3">
-                <MudPaper @onclick="(()=> navToProductDetail(product.Id))"
+                <MudPaper @onclick="(()=> navToProductDetail(product.Alias))"
                           Class="border-solid border-1 mud-border-primary"
                           Style="background: var(--mud-palette-background);">
 
@@ -66,8 +66,8 @@ else
         _snackbar.Add("Add product to cart successfully", Severity.Success);
     }
 
-    private void navToProductDetail(int id)
+    private void navToProductDetail(string? alias)
     {
-        _navigationManager.NavigateTo($"/product/{id}");
+        _navigationManager.NavigateTo($"/product/{alias}");
     }
 }

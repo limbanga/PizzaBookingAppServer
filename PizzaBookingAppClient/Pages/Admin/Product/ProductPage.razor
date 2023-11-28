@@ -4,186 +4,181 @@
 <MudText Typo="Typo.h3" GutterBottom="true" Color="Color.Primary"> Product </MudText>
 
 <div class="d-flex align-center pa-4">
-    <MudSpacer />
+	<MudSpacer />
 
-    <MudButton Variant="Variant.Filled"
-               Color="@Color.Success"
-               OnClick="@(()=> OpenDialog())">Create now!</MudButton>
+	<MudButton Variant="Variant.Filled"
+			   Color="@Color.Success"
+			   OnClick="@(()=> OpenDialog())">Create now!</MudButton>
 </div>
 
 
 <MudTable Items="products"
-          SortLabel="Sort By" Elevation="0"
-          OnRowClick="RowClickEvent" T="Product"
-          Dense="@dense" Hover="@hover"
-          Bordered="@bordered" Striped="@striped"
-          Filter="new Func<Product,bool>(FilterFunc1)"
-          @bind-SelectedItem="selectedItem">
+		  SortLabel="Sort By" Elevation="0"
+		  OnRowClick="RowClickEvent" T="Product"
+		  Dense="@dense" Hover="@hover"
+		  Bordered="@bordered" Striped="@striped"
+		  Filter="new Func<Product,bool>(FilterFunc1)"
+@bind-SelectedItem="selectedItem">
 
-    <ToolBarContent>
-        <MudText Typo="Typo.h6">Products</MudText>
-        <MudSpacer />   
-        <MudTextField @bind-Value="searchString"
-                      Placeholder="Search" Adornment="Adornment.Start"
-                      AdornmentIcon="@Icons.Material.Filled.Search"
-                      IconSize="Size.Medium" Class="mt-0"></MudTextField>
-    </ToolBarContent>
+	<ToolBarContent>
+		<MudText Typo="Typo.h6">Products</MudText>
+		<MudSpacer />
+		<MudTextField @bind-Value="searchString"
+					  Placeholder="Search" Adornment="Adornment.Start"
+					  AdornmentIcon="@Icons.Material.Filled.Search"
+					  IconSize="Size.Medium" Class="mt-0"></MudTextField>
+	</ToolBarContent>
 
-    <HeaderContent>
+	<HeaderContent>
 
-        <MudTh>
-            <MudTableSortLabel
-                               SortBy="new Func<Product, object>(x=>x.Name)">Name</MudTableSortLabel>
-        </MudTh>
+		<MudTh>
+			<MudTableSortLabel SortBy="new Func<Product, object>(x=>x.Name)">Name</MudTableSortLabel>
+		</MudTh>
 
-        <MudTh>
-            <MudTableSortLabel
-                               SortBy="new Func<Product, object>(x=>x.Price)">Price</MudTableSortLabel>
-        </MudTh>
+		<MudTh>
+			<MudTableSortLabel SortBy="new Func<Product, object>(x=>x.Price)">Price</MudTableSortLabel>
+		</MudTh>
 
-        <MudTh>
-            <MudTableSortLabel
-                               SortBy="new Func<Product, object>(x=>x.CreatedAt.ToLocalTime())">
-                CreatedAt
-            </MudTableSortLabel>
-        </MudTh>
+		<MudTh>
+			<MudTableSortLabel SortBy="new Func<Product, object>(x=>x.CreatedAt.ToLocalTime())">
+				CreatedAt
+			</MudTableSortLabel>
+		</MudTh>
 
-        <MudTh>
-            <MudTableSortLabel 
-                               InitialDirection="SortDirection.Descending"
-                               SortBy="new Func<Product, object>(x=>x.UpdatedAt.ToLocalTime())">
-                UpdatedAt
-            </MudTableSortLabel>
-        </MudTh>
+		<MudTh>
+			<MudTableSortLabel InitialDirection="SortDirection.Descending"
+							   SortBy="new Func<Product, object>(x=>x.UpdatedAt.ToLocalTime())">
+				UpdatedAt
+			</MudTableSortLabel>
+		</MudTh>
 
-        <MudTh>
-        </MudTh>
+		<MudTh>
+		</MudTh>
 
-    </HeaderContent>
+	</HeaderContent>
 
-    <RowTemplate>
+	<RowTemplate>
 
-        <MudTd DataLabel="Name">
-            @context.Name
-        </MudTd>
+		<MudTd DataLabel="Name">
+			@context.Name
+		</MudTd>
 
-        <MudTd DataLabel="Name" >
-            @(string.Format("${0:N2}", context.Price))
-        </MudTd>
+		<MudTd DataLabel="Name">
+			@(string.Format("${0:N2}", context.Price))
+		</MudTd>
 
-        <MudTd DataLabel="CreatedAt" >
-            @context.CreatedAt
-        </MudTd>
+		<MudTd DataLabel="CreatedAt">
+			@context.CreatedAt
+		</MudTd>
 
-        <MudTd DataLabel="UpdatedAt" >
-            @context.UpdatedAt
-        </MudTd>
+		<MudTd DataLabel="UpdatedAt">
+			@context.UpdatedAt
+		</MudTd>
 
-        <MudTd DataLabel="delete" >
-            <MudIconButton OnClick="@(()=>OnpenDeleteDialog(context))"
-                Icon="@Icons.Material.Filled.DeleteOutline"
-            Color="Color.Error"/>
-        </MudTd>
-    </RowTemplate>
+		<MudTd DataLabel="delete">
+			<MudIconButton OnClick="@(()=>OnpenDeleteDialog(context))"
+						   Icon="@Icons.Material.Filled.DeleteOutline"
+						   Color="Color.Error" />
+		</MudTd>
+	</RowTemplate>
 
-    <PagerContent>
+	<PagerContent>
 
-        <MudTablePager 
-                       PageSizeOptions="new int[]{ 10, 20, 50, 100}" />
-    </PagerContent>
+		<MudTablePager PageSizeOptions="new int[]{ 10, 20, 50, 100}" />
+	</PagerContent>
 
 </MudTable>
 
 
 @code {
-    // get from db
-    private bool dense = true;
-    private bool hover = true;
-    private bool striped = false;
-    private bool bordered = false;
+	// get from db
+	private bool dense = true;
+	private bool hover = true;
+	private bool striped = false;
+	private bool bordered = false;
 
-    private string searchString = string.Empty;
-    private Product selectedItem = null!;
-    private List<Product>? products;
+	private string searchString = string.Empty;
+	private Product selectedItem = null!;
+	private List<Product>? products;
 
-    protected override async Task OnInitializedAsync()
-    {
-        await LoadData();
-        await base.OnInitializedAsync();
-    }
+	protected override async Task OnInitializedAsync()
+	{
+		await LoadData();
+		await base.OnInitializedAsync();
+	}
 
-    private void RowClickEvent(TableRowClickEventArgs<Product> row)
-    {
-        OpenDialog(row.Item);
-        Console.WriteLine("click row:" + row.Item.Name);
-    }
+	private void RowClickEvent(TableRowClickEventArgs<Product> row)
+	{
+		OpenDialog(row.Item);
+		Console.WriteLine("click row:" + row.Item.Name);
+	}
 
-    private void OpenDialog(Product? model = null)
-    {
-        bool isUpdate = true;
-        if (model is null)
-        {
-            model = new();
-            isUpdate = false;
-        }
+	private void OpenDialog(Product? model = null)
+	{
+		bool isUpdate = true;
+		if (model is null)
+		{
+			model = new();
+			isUpdate = false;
+		}
 
-        var parameters = new DialogParameters();
-        parameters.Add("model", model);
-        parameters.Add("isUpdate", isUpdate);
-        parameters.Add("ReloadFunc", new Func<Task>(LoadData));
+		var parameters = new DialogParameters();
+		parameters.Add("model", model);
+		parameters.Add("isUpdate", isUpdate);
+		parameters.Add("ReloadFunc", new Func<Task>(LoadData));
 
-        var options = new DialogOptions { CloseOnEscapeKey = false };
-        _dialogService.Show<ProductDialog>("", parameters, options );
-    }
+		var options = new DialogOptions { CloseOnEscapeKey = false };
+		_dialogService.Show<ProductDialog>("", parameters, options);
+	}
 
-    private async Task OnpenDeleteDialog(Product product)
-    {
-        var parameters = new DialogParameters();
-        parameters.Add("Content", $"Do you want to delete {product.Name}?");
-        var options = new DialogOptions { CloseOnEscapeKey = false };
-        var result = await _dialogService.Show<ConfirmDialog>("", parameters, options).Result;
-        if (result.Cancelled)
-        {
-            Console.WriteLine("cancel delete");
-            return;
-        }
+	private async Task OnpenDeleteDialog(Product product)
+	{
+		var parameters = new DialogParameters();
+		parameters.Add("Content", $"Do you want to delete {product.Name}?");
+		var options = new DialogOptions { CloseOnEscapeKey = false };
+		var result = await _dialogService.Show<ConfirmDialog>("", parameters, options).Result;
+		if (result.Cancelled)
+		{
+			Console.WriteLine("cancel delete");
+			return;
+		}
 
-        try
-        {
-            await _httpService.DeleteAsync("/Product/Delete", product.Id.ToString());
-            _snackbar.Add("Delete product successfully.", Severity.Success);
-            await LoadData();
-        }
-        catch (Exception ex)
-        {
-            _snackbar.Add(ex.Message, Severity.Error);   
-        }
-    }
+		try
+		{
+			await _httpService.DeleteAsync("/Product/Delete", product.Id.ToString());
+			_snackbar.Add("Delete product successfully.", Severity.Success);
+			await LoadData();
+		}
+		catch (Exception ex)
+		{
+			_snackbar.Add(ex.Message, Severity.Error);
+		}
+	}
 
-    private bool FilterFunc1(Product category)
-    {
-        return FilterFunc(category, searchString);
-    }
+	private bool FilterFunc1(Product category)
+	{
+		return FilterFunc(category, searchString);
+	}
 
-    private bool FilterFunc(Product element, string searchString)
-    {
-        if (string.IsNullOrWhiteSpace(searchString))
-            return true;
-        if (element.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
-            return true;
-        return false;
-    }
+	private bool FilterFunc(Product element, string searchString)
+	{
+		if (string.IsNullOrWhiteSpace(searchString))
+			return true;
+		if (element.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+			return true;
+		return false;
+	}
 
-    public async Task LoadData()
-    {
-        try
-        {
-            products = await _httpService.Get<List<Product>>("/Product/GetAll");
-            StateHasChanged();
-        }
-        catch (Exception ex)
-        {
-            _snackbar.Add(ex.Message, Severity.Error);
-        }
-    }
+	public async Task LoadData()
+	{
+		try
+		{
+			products = await _httpService.Get<List<Product>>("/Product/GetAll");
+			StateHasChanged();
+		}
+		catch (Exception ex)
+		{
+			_snackbar.Add(ex.Message, Severity.Error);
+		}
+	}
 }
