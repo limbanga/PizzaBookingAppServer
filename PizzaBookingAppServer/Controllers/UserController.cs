@@ -72,13 +72,15 @@ namespace PizzaBookingShared.Controllers
                 userModel.ActiveAccountToken = activeToken;
                 await _repo.RegisterAsync(userModel);
 
-                //_mailService.SendMail(
-                //    new string[] { model.LoginName },
-                //    "Active your account",
-                //    $"<a href='https://localhost:7266/active={activeToken}'>Click here to active your account.</a>",
-                //    isBodyHtml: true);
+                // send active account link
+                _mailService.SendMail(
+                    new string[] { model.LoginName },
+                    "Active your account",
+                    $"<a href='https://localhost:7266/active={activeToken}'>" +
+                    $"Click here to active your account.</a>",
+                    isBodyHtml: true);
 
-                return Ok();
+                return Ok("Register success");
             }
             catch (AppException ex)
             {
@@ -133,16 +135,17 @@ namespace PizzaBookingShared.Controllers
 
             try
             {
-                string email = model.Email;
-
+                // generate new password here
                 string newPassword = "Letmein123$";
-                var resetPasswordToken =  await _repo.GenerateResetPasswordToken(email, newPassword);
+				string email = model.Email;
+				var resetPasswordToken =  await _repo.GenerateResetPasswordToken(email, newPassword);
 
                 _mailService.SendMail(
                     new string[] { email },
                     "Reset password",
                     $"Your new password is: { newPassword } <br/>" +
-                    $"<a href='https://localhost:7266/reset={resetPasswordToken}'>Click here to active your account.</a>", 
+                    $"<a href='https://localhost:7266/reset={resetPasswordToken}'>" +
+                    $"Click here to active your account.</a>", 
                     isBodyHtml: true);
 
                 return Ok("Email was send!");

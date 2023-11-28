@@ -1,224 +1,225 @@
 ﻿@inherits LayoutComponentBase
 
 <CascadingValue Value="this">
-    <MudThemeProvider @ref="@_mudThemeProvider" @bind-IsDarkMode="@isDarkTheme" Theme="_currentTheme" />
-    <MudDialogProvider />
-    <MudSnackbarProvider />
+	<MudThemeProvider @ref="@_mudThemeProvider" @bind-IsDarkMode="@isDarkTheme" Theme="_currentTheme" />
+	<MudDialogProvider />
+	<MudSnackbarProvider />
 
-    <MudLayout>
+	<MudLayout>
 
-        <MudAppBar Elevation="0">
+		<MudAppBar Elevation="0">
 
-            <MudItem Class="d-flex" @onclick="navToHomePage">
-                <MudText Typo="Typo.h4" Style="color: white;">Pixel</MudText>
-                <MudText Typo="Typo.h4" Color="Color.Warning">Pizza</MudText>
-            </MudItem>
+			<MudItem Class="d-flex" @onclick="navToHomePage">
+				<MudText Typo="Typo.h4" Style="color: white;">Pixel</MudText>
+				<MudText Typo="Typo.h4" Color="Color.Warning">Pizza</MudText>
+			</MudItem>
 
-            <MudSpacer />
-            
-            @* Search button *@
-            <MudIconButton @onclick="OpenDialog" 
-                Icon="@Icons.Material.Filled.Search"
-                            Color="Color.Primary"
-                            aria-label="search" />
+			<MudSpacer />
 
-            <MudBadge 
-                @onclick="ToggleCartDrawer"
-                Content="cartCount"
-                Overlap="true"
-                Class="mx-6 my-4" Color="@(isDarkTheme? Color.Error: Color.Dark)">
+			@* Search button *@
+			<MudIconButton @onclick="OpenDialog"
+						   Icon="@Icons.Material.Filled.Search"
+						   Color="Color.Primary"
+						   aria-label="search" />
 
-                <MudIcon 
-                    Icon="@Icons.Material.Filled.ShoppingCart"
-                    Color="Color.Primary"
-                    @onclick="ToggleCartDrawer" />
+			<MudBadge @onclick="ToggleCartDrawer"
+					  Content="cartCount"
+					  Overlap="true"
+					  Class="mx-6 my-4" Color="@(isDarkTheme? Color.Error: Color.Dark)">
 
-            </MudBadge>
+				<MudIcon Icon="@Icons.Material.Filled.ShoppingCart"
+						 Color="Color.Primary"
+				@onclick="ToggleCartDrawer" />
 
-            <MudTooltip Text="@(isDarkTheme ? "Change to light": "Change to dark")">
-                <MudToggleIconButton @bind-Toggled="@isDarkTheme"
-                                     Size="Size.Medium"
-                                     Icon="@Icons.Material.Filled.WbSunny" Color="@Color.Warning" Title="Off"
-                                     ToggledIcon="@Icons.Material.Filled.DarkMode" ToggledColor="@Color.Primary" ToggledTitle="On" />
-            </MudTooltip>
+			</MudBadge>
+
+			<MudTooltip Text="@(isDarkTheme ? "Change to light": "Change to dark")">
+				<MudToggleIconButton @bind-Toggled="@isDarkTheme"
+									 Size="Size.Medium"
+									 Icon="@Icons.Material.Filled.WbSunny" Color="@Color.Warning" Title="Off"
+									 ToggledIcon="@Icons.Material.Filled.DarkMode" ToggledColor="@Color.Primary" ToggledTitle="On" />
+			</MudTooltip>
 
 
 
-            <AuthorizeView>
-                <Authorized>
-                    <MudAvatar @onclick="ToggleAccountDrawer"
-                               Class="px-4"
-                               Color="Color.Tertiary"
-                               Size="Size.Medium">A</MudAvatar>
-                </Authorized>
-                <NotAuthorized>
-                    <MudIconButton OnClick="@(()=> _navigationManager.NavigateTo("/login"))"
-                                   Icon="@Icons.Material.Filled.Login"
-                                   Color="Color.Primary" />
-                </NotAuthorized>
+			<AuthorizeView>
+				<Authorized>
+					<MudAvatar @onclick="ToggleAccountDrawer"
+							   Class="px-4"
+							   Color="Color.Tertiary"
+							   Size="Size.Medium">A</MudAvatar>
+				</Authorized>
+				<NotAuthorized>
+					<MudIconButton OnClick="@(()=> _navigationManager.NavigateTo("/login"))"
+								   Icon="@Icons.Material.Filled.Login"
+								   Color="Color.Primary" />
+				</NotAuthorized>
 
-            </AuthorizeView>
+			</AuthorizeView>
 
-        </MudAppBar>
+		</MudAppBar>
 
-        @* Account Drawer *@
-        <AuthorizeView>
-            <Authorized>
-                <AccountDrawer />
-            </Authorized>
-        </AuthorizeView>
+		@* Account Drawer *@
+		<AuthorizeView>
+			<Authorized>
+				<AccountDrawer />
+			</Authorized>
+		</AuthorizeView>
 
-        @* Cart Drawer *@
-        <MudDrawer @bind-Open="@_drawerOpenCart" Anchor="Anchor.End" Elevation="100" Variant="@DrawerVariant.Temporary" Width="500px"
-                   Style="background: var(--mud-palette-background);">
+		@* Cart Drawer *@
+		<MudDrawer @bind-Open="@_drawerOpenCart" Anchor="Anchor.End" Elevation="100" Variant="@DrawerVariant.Temporary" Width="500px"
+				   Style="background: var(--mud-palette-background);">
 
-            <MudDrawerHeader>
-                <MudText Typo="Typo.h5" Color="Color.Primary">Your cart</MudText>
-            </MudDrawerHeader>
+			<MudDrawerHeader>
+				<MudText Typo="Typo.h5" Color="Color.Primary">Your cart</MudText>
+			</MudDrawerHeader>
 
-            <div class="d-flex justify-end">
-                <MudButton Class="me-8"
-                           Variant="Variant.Outlined"
-                           StartIcon="@Icons.Material.Filled.Payments"
-                           Color="Color.Warning"
-                           OnClick="navToCheckOutPage">
-                    Check out now!
-                </MudButton>
-            </div>
+			<div class="d-flex justify-end">
+				<MudButton Class="me-8"
+						   Variant="Variant.Outlined"
+						   StartIcon="@Icons.Material.Filled.Payments"
+						   Color="Color.Warning"
+						   OnClick="navToCheckOutPage">
+					Check out now!
+				</MudButton>
+			</div>
 
-            <CartList OrderLines="orderLines" LoadCart="LoadCart" />
-        </MudDrawer>
+			<CartList OrderLines="orderLines" LoadCart="LoadCart" />
+		</MudDrawer>
 
-        @* Body *@
-        <MudMainContent>
-            <MudContainer MaxWidth="MaxWidth.Large" Fixed="true">
-                @Body
-            </MudContainer>
-        </MudMainContent>
+		@* Body *@
+		<MudMainContent>
+			<MudContainer MaxWidth="MaxWidth.Large" Fixed="true">
+				@Body
+			</MudContainer>
+		</MudMainContent>
 
-    </MudLayout>
+	</MudLayout>
 
 </CascadingValue>
 
 @code {
-    private int cartCount;
-    public double TotalPrice;
-    public bool _drawerOpenAccount = false;
-    private bool _drawerOpenCart = false;
-    private bool isDarkTheme { get; set; } = true;
-    private MudThemeProvider _mudThemeProvider = null!;
+	private int cartCount;
+	public double TotalPrice;
+	public bool _drawerOpenAccount = false;
+	private bool _drawerOpenCart = false;
+	private bool isDarkTheme { get; set; } = true;
+	private MudThemeProvider _mudThemeProvider = null!;
 
-    private List<OrderLine> orderLines { get; set; } = null!;
+	private List<OrderLine> orderLines { get; set; } = null!;
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            isDarkTheme = await _mudThemeProvider.GetSystemPreference();
-            StateHasChanged();
-        }
-    }
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (firstRender)
+		{
+			isDarkTheme = await _mudThemeProvider.GetSystemPreference();
+			StateHasChanged();
+		}
+	}
 
-    protected override async Task OnInitializedAsync()
-    {
-        await LoadCartCount();
-    }
+	protected override async Task OnInitializedAsync()
+	{
+		await LoadCartCount();
+	}
 
-    public async Task LoadCartCount()
-    {
-        cartCount = await _cartService.CountAsync();
-        StateHasChanged();
-    }
+	public async Task LoadCartCount()
+	{
+		cartCount = await _cartService.CountAsync();
+		StateHasChanged();
+	}
 
-    private void ToggleAccountDrawer()
-    {
-        _drawerOpenAccount = !_drawerOpenAccount;
-    }
+	private void ToggleAccountDrawer()
+	{
+		_drawerOpenAccount = !_drawerOpenAccount;
+	}
 
-    private async Task ToggleCartDrawer()
-    {
-        _drawerOpenCart = !_drawerOpenCart;
-        await LoadCart();
-        PreviewTotalPrice();
-    }
+	private async Task ToggleCartDrawer()
+	{
+		_drawerOpenCart = !_drawerOpenCart;
+		await LoadCart();
+		PreviewTotalPrice();
+	}
 
-    private async Task LoadCart()
-    {
-        orderLines = await _cartService.GetAsync();
+	private async Task LoadCart()
+	{
+		orderLines = await _cartService.GetAsync();
 
-        foreach (var orderLine in orderLines)
-        {
-            if (orderLine.ProductId != null)
-            {
-                try
-                {
-                    orderLine.Product = await _httpService.Get<Product>(
-                        $"/Product/Get/{orderLine.ProductId}"); 
-                }
-                catch (AppException ex)
-                {
-                    Console.WriteLine($"Failed to load product id ={orderLine.ProductId}");
-                    Console.WriteLine(ex.Message);
-                }
-            }
+		foreach (var orderLine in orderLines)
+		{
+			if (orderLine.ProductId != null)
+			{
+				try
+				{
+					orderLine.Product = await _httpService.Get<Product>(
+						$"/Product/Get/{orderLine.ProductId}");
+				}
+				catch (AppException ex)
+				{
+					Console.WriteLine($"Failed to load product id ={orderLine.ProductId}");
+					Console.WriteLine(ex.Message);
+				}
+			}
 
-        }
-        await LoadCartCount();
-    }
+		}
+		await LoadCartCount();
+	}
 
-    public void PreviewTotalPrice()
-    {
-        TotalPrice = _cartService.PreviewTotalPrice(orderLines);
-    }
+	public void PreviewTotalPrice()
+	{
+		TotalPrice = _cartService.PreviewTotalPrice(orderLines);
+	}
 
-    private readonly MudTheme _currentTheme = new()
-    {
-        Palette = new Palette
-        {
-            Primary = "#000000",
-            Secondary = "#ffffff",
-            Info = "#64a7e2",
-            Success = "#2ECC40",
-            Warning = "#FFC107",
-            AppbarBackground = "#ff0000",
-            Background = "#ffffff",
-            TextSecondary = "#1564ef",
-            HoverOpacity = .25,
-        },
-        PaletteDark = new Palette
-        {
-            Primary = "#ffffff",
-            Secondary = "#000000",
-            Info = "#a4c2dd",
-            Success = "#2ECC40",
-            Warning = "#fff000",
-            AppbarBackground = "#121212",
-            Background = "#161616",
-            TextSecondary = "#adff2f",
-            HoverOpacity = .25,
-        }
-    };
+	private readonly MudTheme _currentTheme = new()
+		{
+			Palette = new Palette
+			{
+				Primary = "#000000",
+				Secondary = "#ffffff",
+				Info = "#64a7e2",
+				Success = "#2ECC40",
+				Warning = "#FFC107",
+				AppbarBackground = "#ff0000",
+				Background = "#ffffff",
+				TextSecondary = "#1564ef",
+				HoverOpacity = .25,
+				ActionDefault = "#111111e8",
+			},
+			PaletteDark = new Palette
+			{
+				Primary = "#ffffff",
+				Secondary = "#000000",
+				Info = "#a4c2dd",
+				Success = "#2ECC40",
+				Warning = "#fff000",
+				AppbarBackground = "#121212",
+				Background = "#161616",
+				TextSecondary = "#adff2f",
+				HoverOpacity = .25,
+				TextPrimary = "#a7a6a6",
+				ActionDefault = "#cdcccc",
+			}
+		};
 
 
-    private void ThemeToggle()
-    {
-        isDarkTheme = !isDarkTheme;
-        StateHasChanged();
-    }
+	private void ThemeToggle()
+	{
+		isDarkTheme = !isDarkTheme;
+		StateHasChanged();
+	}
 
-    private void navToHomePage()
-    {
-        _navigationManager.NavigateTo("/");
-    }
+	private void navToHomePage()
+	{
+		_navigationManager.NavigateTo("/");
+	}
 
-    private void navToCheckOutPage()
-    {
-        _navigationManager.NavigateTo("/checkout");
-    }
+	private void navToCheckOutPage()
+	{
+		_navigationManager.NavigateTo("/checkout");
+	}
 
-    private void OpenDialog()
-    {
-        var options = new DialogOptions { CloseOnEscapeKey = true };
-        _dialogService.Show<SearchDialog>("Search", options);
-    }
+	private void OpenDialog()
+	{
+		var options = new DialogOptions { CloseOnEscapeKey = true };
+		_dialogService.Show<SearchDialog>("Search", options);
+	}
 }

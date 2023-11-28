@@ -18,10 +18,10 @@
           Elevation="0"
           OnRowClick="RowClickEvent"
           T="Category"
-          Dense="@setting.Dense"
-          Hover="@setting.Hover"
-          Bordered="@setting.Bordered" 
-          Striped="@setting.Striped"
+          Dense="@AdminLayout.setting.Dense"
+          Hover="@AdminLayout.setting.Hover"
+          Bordered="@AdminLayout.setting.Bordered" 
+          Striped="@AdminLayout.setting.Striped"
           Filter="new Func<Category,bool>(FilterFunc1)"
           @bind-SelectedItem="selectedItem1">
 
@@ -90,8 +90,8 @@
 
 
 @code {
-
-    private AppSetting setting = new();
+    [CascadingParameter]
+    public AdminLayout AdminLayout { get; set; } = null!;
     private string searchString1 = string.Empty;
     private Category selectedItem1 = null!;
     private List<Category>? categories;
@@ -99,8 +99,6 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-
-        await LoadSetting();
         await LoadData();
     }
 
@@ -171,19 +169,6 @@
             await _httpService.DeleteAsync("/Category/Delete", category.Id.ToString());
             _snackbar.Add("Delete category successfully.", Severity.Success);
             await LoadData();
-        }
-        catch (Exception ex)
-        {
-            _snackbar.Add(ex.Message, Severity.Error);
-        }
-    }
-
-    public async Task LoadSetting()
-    {
-        try
-        {
-            setting = await _httpService.Get<AppSetting>("/App/Get");
-            StateHasChanged();
         }
         catch (Exception ex)
         {

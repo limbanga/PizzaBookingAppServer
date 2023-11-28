@@ -69,10 +69,11 @@
                                OnClick="ClearFileInput" />
             </div>
 
-            @if (!string.IsNullOrEmpty(imageTempPath))
+            @if (!string.IsNullOrEmpty(imageTempPath) ||
+                 !string.IsNullOrEmpty(model.ImagePath))
             {
                 <div style="width: 100%;" class="mt-8">
-                    <MudImage Src="@imageTempPath"
+                    <MudImage Src="@(imageTempPath ?? $"/upload/products/{model.ImagePath}")"
                               Alt="Image about product"
                               Style="width: 100%;"
                               ObjectFit="ObjectFit.Contain"

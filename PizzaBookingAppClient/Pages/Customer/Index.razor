@@ -3,24 +3,52 @@
 <PageTitle>PixelPizza</PageTitle>
 
 <Carousel/>
+<div class="d-flex justify-center my-4">
+	<MudPagination BoundaryCount="1"
+				   MiddleCount="1"
+				   Count="pageCount"
+				   Rectangular="true"
+				   Size="Size.Large"
+				   SelectedChanged="@((e) => HandleChangePage(e))"
+				   Color="Color.Success" />
+</div>
 
-<ProductBoard products="products" />
+
+<ProductBoard products="displayList" />
 
 @code {
+	private int PAGE_SIZE = 8;
+
 	[Parameter]
 	[SupplyParameterFromQuery(Name ="q")]
 	public string Query { get; set; } = string.Empty;
 	[Parameter]
 	[SupplyParameterFromQuery(Name = "cate")]
 	public string CategoryQuery { get; set; } = string.Empty;
-
+	private int pageCount;
 	public List<Product>? products { get; set; } = null;
+	public List<Product>? displayList { get; set; } = null;
+
 
 	protected override async Task OnParametersSetAsync()
 	{
-		products = await _httpService.Get<List<Product>>
-		($"/Product/Fillter/?name={Query}&cate={CategoryQuery}");
-
 		await base.OnParametersSetAsync();
+		Console.WriteLine("call api from index");
+		products = await _httpService.Get<List<Product>>
+			($"/Product/Fillter/?name={Query}&cate={CategoryQuery}");
+		pageCount = products.Count / PAGE_SIZE;
+		HandleChangePage(1);
+	}
+
+	public void HandleChangePage(int page)
+	{
+		if (products != null)
+		{
+			displayList = products
+				.Skip(PAGE_SIZE * (page - 1))
+				.Take(PAGE_SIZE)
+				.ToList();
+			StateHasChanged();
+		}
 	}
 }

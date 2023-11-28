@@ -4,133 +4,136 @@
 <MudText Typo="Typo.h3" GutterBottom="true" Color="Color.Primary"> Customer </MudText>
 
 <MudTable Items="orders"
-          SortLabel="Sort By" Elevation="0"
-          T="User"
-          Dense="@dense" Hover="@hover"
-          Bordered="@bordered" Striped="@striped"
-          Filter="new Func<User,bool>(FilterFunc1)">
+		  SortLabel="Sort By"
+		  Elevation="0"
+		  T="User"
+		  Dense="@AdminLayout.setting.Dense"
+		  Hover="@AdminLayout.setting.Hover"
+		  Bordered="@AdminLayout.setting.Bordered"
+		  Striped="@AdminLayout.setting.Striped"
+		  Filter="new Func<User,bool>(FilterFunc1)">
 
-    <ToolBarContent>
-        <MudText Typo="Typo.h6">Customer</MudText>
-        <MudSpacer />
-        <MudTextField @bind-Value="searchString"
-                      Placeholder="Search" Adornment="Adornment.Start"
-                      AdornmentIcon="@Icons.Material.Filled.Search"
-                      IconSize="Size.Medium" Class="mt-0"></MudTextField>
-    </ToolBarContent>
+	<ToolBarContent>
+		<MudText Typo="Typo.h6">Customer</MudText>
+		<MudSpacer />
+		<MudTextField @bind-Value="searchString"
+					  Placeholder="Search" Adornment="Adornment.Start"
+					  AdornmentIcon="@Icons.Material.Filled.Search"
+					  IconSize="Size.Medium" Class="mt-0"></MudTextField>
+	</ToolBarContent>
 
-    <HeaderContent>
+	<HeaderContent>
 
-        <MudTh>
-            <MudTableSortLabel SortBy="new Func<User, object>(x=> x.FirstName)"
-                               Style="color: var(--mud-palette-text-secondary);">
-                First name
-            </MudTableSortLabel>
-        </MudTh>
+		<MudTh>
+			<MudTableSortLabel SortBy="new Func<User, object>(x=> x.FirstName)"
+							   Style="color: var(--mud-palette-text-secondary);">
+				First name
+			</MudTableSortLabel>
+		</MudTh>
 
-        <MudTh>
-            <MudTableSortLabel SortBy="new Func<User, object>(x=> x.LastName)"
-                               Style="color: var(--mud-palette-text-secondary);">
-                Last name
-            </MudTableSortLabel>
-        </MudTh>
+		<MudTh>
+			<MudTableSortLabel SortBy="new Func<User, object>(x=> x.LastName)"
+							   Style="color: var(--mud-palette-text-secondary);">
+				Last name
+			</MudTableSortLabel>
+		</MudTh>
 
-        <MudTh>
-            <MudTableSortLabel SortBy="new Func<User, object>(x=>x.PhoneNumber)"
-                               Style="color: var(--mud-palette-text-secondary);">
-                PhoneNumber
-            </MudTableSortLabel>
-        </MudTh>
+		<MudTh>
+			<MudTableSortLabel SortBy="new Func<User, object>(x=>x.PhoneNumber)"
+							   Style="color: var(--mud-palette-text-secondary);">
+				PhoneNumber
+			</MudTableSortLabel>
+		</MudTh>
 
-        <MudTh>
-            <MudTableSortLabel SortBy="new Func<User, object>(x=>x.CreatedAt.ToLocalTime())"
-                               Style="color: var(--mud-palette-text-secondary);">
-                CreatedAt
-            </MudTableSortLabel>
-        </MudTh>
+		<MudTh>
+			<MudTableSortLabel SortBy="new Func<User, object>(x=>x.CreatedAt.ToLocalTime())"
+							   Style="color: var(--mud-palette-text-secondary);">
+				CreatedAt
+			</MudTableSortLabel>
+		</MudTh>
 
-        <MudTh>
-            <MudTableSortLabel InitialDirection="SortDirection.Descending"
-                               SortBy="new Func<User, object>(x=>x.UpdatedAt.ToLocalTime())"
-                               Style="color: var(--mud-palette-text-secondary);">
-                UpdatedAt
-            </MudTableSortLabel>
-        </MudTh>
+		<MudTh>
+			<MudTableSortLabel InitialDirection="SortDirection.Descending"
+							   SortBy="new Func<User, object>(x=>x.UpdatedAt.ToLocalTime())"
+							   Style="color: var(--mud-palette-text-secondary);">
+				UpdatedAt
+			</MudTableSortLabel>
+		</MudTh>
 
-    </HeaderContent>
+	</HeaderContent>
 
-    <RowTemplate>
+	<RowTemplate>
 
-        <MudTd DataLabel="FirstName">
-            @context.FirstName
-        </MudTd>
+		<MudTd DataLabel="FirstName">
+			@context.FirstName
+		</MudTd>
 
-        <MudTd DataLabel="LastName">
-            @context.LastName
-        </MudTd>
+		<MudTd DataLabel="LastName">
+			@context.LastName
+		</MudTd>
 
-        <MudTd DataLabel="PhoneNumber">
-            @context.PhoneNumber
-        </MudTd>
+		<MudTd DataLabel="PhoneNumber">
+			@context.PhoneNumber
+		</MudTd>
 
-        <MudTd DataLabel="CreatedAt">
-            @context.CreatedAt
-        </MudTd>
+		<MudTd DataLabel="CreatedAt">
+			@context.CreatedAt
+		</MudTd>
 
-        <MudTd DataLabel="UpdatedAt">
-            @context.UpdatedAt
-        </MudTd>
+		<MudTd DataLabel="UpdatedAt">
+			@context.UpdatedAt
+		</MudTd>
 
-    </RowTemplate>
+	</RowTemplate>
 
-    <PagerContent>
-        <MudTablePager PageSizeOptions="new int[]{ 10, 20, 50, 100}" />
-    </PagerContent>
+	<PagerContent>
+		<MudTablePager PageSizeOptions="new int[]{ 10, 20, 50, 100}" />
+	</PagerContent>
 
 </MudTable>
 
 
 @code {
 
-    private bool dense = false;
-    private bool hover = true;
-    private bool striped = false;
-    private bool bordered = false;
+	[CascadingParameter]
+	public AdminLayout AdminLayout { get; set; } = null!;
 
-    private string searchString = string.Empty;
-    private List<User>? orders;
+	private string searchString = string.Empty;
+	private List<User>? orders;
 
-    protected override async Task OnInitializedAsync()
-    {
-        await LoadData();
-    }
+	protected override async Task OnInitializedAsync()
+	{
+		await LoadData();
+	}
 
-    private bool FilterFunc1(User category)
-    {
-        return FilterFunc(category, searchString);
-    }
+	private bool FilterFunc1(User category)
+	{
+		return FilterFunc(category, searchString);
+	}
 
-    private bool FilterFunc(User element, string searchString)
-    {
-        if (string.IsNullOrWhiteSpace(searchString))
-            return true;
-        if (element.PhoneNumber.Contains(searchString, StringComparison.OrdinalIgnoreCase))
-            return true;
-        if (element.FirstName.Contains(searchString, StringComparison.OrdinalIgnoreCase))
-            return true;
-        return false;
-    }
+	private bool FilterFunc(User element, string searchString)
+	{
+		if (string.IsNullOrWhiteSpace(searchString))
+			return true;
+		if (element.PhoneNumber.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+			return true;
+		if (element.LastName.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+			return true;
+		if (element.FirstName.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+			return true;
+		return false;
+	}
 
-    private async Task LoadData()
-    {
-        try
-        {
-            orders = await _httpService.Get<List<User>>("/User/GetAll");
-            StateHasChanged();
-        }
-        catch (Exception ex)
-        {
-            _snackbar.Add(ex.Message, Severity.Error);
-        }
-    }
+	private async Task LoadData()
+	{
+		try
+		{
+			orders = await _httpService.Get<List<User>>("/User/GetAll");
+			StateHasChanged();
+		}
+		catch (Exception ex)
+		{
+			_snackbar.Add(ex.Message, Severity.Error);
+		}
+	}
 }

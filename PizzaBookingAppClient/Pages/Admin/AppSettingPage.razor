@@ -4,80 +4,74 @@
 <MudText Typo="Typo.h3" GutterBottom="true" Color="Color.Primary"> App Setting </MudText>
 
 <MudPaper>
-    <MudList Clickable="true">
+	<MudList Clickable="true">
 
-        <MudListItem>
-            <MudCheckBox @bind-Checked="@model.AllowAnonymousLogin"
-                         Color="Color.Primary">
-                Allow anoymous login
-            </MudCheckBox>
-        </MudListItem>
-        <MudDivider />
+		<MudListItem>
+			<MudCheckBox @bind-Checked="@AdminLayout.setting.AllowAnonymousLogin"
+						 Color="Color.Primary">
+				Allow anoymous login
+			</MudCheckBox>
+		</MudListItem>
+		<MudDivider />
 
-        <MudListItem>
-            <MudCheckBox @bind-Checked="@model.Dense" Color="Color.Primary">
-                Dense
-            </MudCheckBox>
-        </MudListItem>
-        <MudDivider />
+		<MudListItem>
+			<MudCheckBox @bind-Checked="@AdminLayout.setting.Dense" Color="Color.Primary">
+				Dense
+			</MudCheckBox>
+		</MudListItem>
+		<MudDivider />
 
-        <MudListItem>
-            <MudCheckBox @bind-Checked="@model.Hover" Color="Color.Primary">
-                Hover
-            </MudCheckBox>
-        </MudListItem>
-        <MudDivider />
+		<MudListItem>
+			<MudCheckBox @bind-Checked="@AdminLayout.setting.Hover" Color="Color.Primary">
+				Hover
+			</MudCheckBox>
+		</MudListItem>
+		<MudDivider />
 
-        <MudListItem>
-            <MudCheckBox @bind-Checked="@model.Striped" Color="Color.Primary">
-                Striped
-            </MudCheckBox>
-        </MudListItem>
-        <MudDivider />
+		<MudListItem>
+			<MudCheckBox @bind-Checked="@AdminLayout.setting.Striped" Color="Color.Primary">
+				Striped
+			</MudCheckBox>
+		</MudListItem>
+		<MudDivider />
 
-        <MudListItem>
-            <MudCheckBox @bind-Checked="@model.Bordered" Color="Color.Primary">
-                Bordered
-            </MudCheckBox>
-        </MudListItem>
-        
-    </MudList>
-    <div class="d-flex justify-end pe-4 py-4">
-        <MudButton OnClick="OnSaveChange"
-            Variant="Variant.Filled"
-            Color="Color.Success">
-            Save Changes</MudButton>
-    </div>
+		<MudListItem>
+			<MudCheckBox @bind-Checked="@AdminLayout.setting.Bordered" Color="Color.Primary">
+				Bordered
+			</MudCheckBox>
+		</MudListItem>
+
+	</MudList>
+	<div class="d-flex justify-end pe-4 py-4">
+		<MudButton OnClick="OnSaveChange"
+				   Variant="Variant.Filled"
+				   Color="Color.Success">
+			Save Changes
+		</MudButton>
+	</div>
 </MudPaper>
-    
+
 @code {
-    private AppSetting model = new();
+	[CascadingParameter]
+	public AdminLayout AdminLayout { get; set; } = null!;
 
-    protected override async Task OnInitializedAsync()
-    {
-        await base.OnInitializedAsync();
+	protected override async Task OnInitializedAsync()
+	{
+		await base.OnInitializedAsync();
 
-        try
-        {
-            model = await _httpService.Get<AppSetting>("/App/Get");
-            StateHasChanged();
-        }
-        catch (Exception)
-        {   
-            throw;
-        }
-    }
+		await AdminLayout.LoadSetting();
+	}
 
-    private async Task OnSaveChange()
-    {
-        try
-        {
-            model = await _httpService.Update<AppSetting>("/App/Update", model);
-            _snackbar.Add("Save change success.", Severity.Success);
-        }
-        catch (Exception)
-        {      
-            throw;
-        }
-    }
+	private async Task OnSaveChange()
+	{
+		try
+		{
+			AdminLayout.setting = await _httpService.Update<AppSetting>("/App/Update", AdminLayout.setting);
+			_snackbar.Add("Save change success.", Severity.Success);
+		}
+		catch (Exception)
+		{
+			throw;
+		}
+	}
 }

@@ -22,9 +22,15 @@ public class AppContext : DbContext
 			.HasIndex(u => u.PhoneNumber)
 			.IsUnique();
 
+		//
+		modelBuilder.Entity<Product>()
+            .HasOne(p => p.Category)
+            .WithMany(c => c.Products)
+            .OnDelete(DeleteBehavior.Cascade);
+
 	}
 
-    private void AddTimestamps()
+	private void AddTimestamps()
     {
         var entities = ChangeTracker.Entries()
             .Where(x => x.Entity is TimeRecord && (x.State == EntityState.Added || x.State == EntityState.Modified));

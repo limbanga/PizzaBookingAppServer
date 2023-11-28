@@ -1,73 +1,73 @@
 ﻿@if (products == null)
 {
-    <LoaderPizza />
+	<LoaderPizza />
 }
 else
 {
-    <MudGrid Justify="Justify.Center" Class="mt-8">
-        @foreach (var product in products)
-        {
-            <MudItem xs="6" sm="4" md="3">
-                <MudPaper @onclick="(()=> navToProductDetail(product.Alias))"
-                          Class="border-solid border-1 mud-border-primary"
-                          Style="background: var(--mud-palette-background);">
+	<MudGrid Justify="Justify.Center" Class="mt-8">
+		@foreach (var product in products)
+		{
+			<MudItem xs="6" sm="4" md="3">
+				<MudPaper @onclick="(()=> navToProductDetail(product.Alias))"
+						  Class="border-solid border-1 mud-border-primary"
+						  Style="background: var(--mud-palette-background);">
 
-                    <div class="d-flex justify-center" style="height: 200px;">
+					<div class="d-flex justify-center" style="height: 200px;">
 
-                        <MudImage Src="@("upload/products/" + product.ImagePath)"
-                                  Alt="Image about product"
-                                  Class="rounded-t-lg"
-                                  ObjectFit="ObjectFit.Cover"
-                                  Style="width: 100%;" />
-                    </div>
+						<MudImage Src="@("upload/products/" + product.ImagePath)"
+								  Alt="Image about product"
+								  Class="rounded-t-lg"
+								  ObjectFit="ObjectFit.Cover"
+								  Style="width: 100%;" />
+					</div>
 
-                    <MudText Typo="Typo.h5"
-                             Align="Align.Center"
-                             Color="Color.Primary"
-                             Class="py-2">@product.Name</MudText>
+					<MudText Typo="Typo.h5"
+							 Align="Align.Center"
+							 Color="Color.Primary"
+							 Class="py-2">@product.Name</MudText>
 
-                    <MudText Typo="Typo.h6"
-                             Align="Align.Center"
-                             Class="py-2"
-                             Color="Color.Error">        
-                            @(string.Format("${0:N2}", product.Price))
-                    </MudText>
+					<MudText Typo="Typo.h6"
+							 Align="Align.Center"
+							 Class="py-2"
+							 Color="Color.Error">
+						@(string.Format("${0:N2}", product.Price))
+					</MudText>
 
-                    <MudItem Class="d-flex align-center justify-center py-2">
-                        <MudRating ReadOnly="true" SelectedValue="2" />
-                        <MudText Typo="Typo.caption">64 lượt</MudText>
-                    </MudItem>
+					<MudItem Class="d-flex align-center justify-center py-2">
+						<MudRating ReadOnly="true" SelectedValue="2" />
+						<MudText Typo="Typo.caption">64 lượt</MudText>
+					</MudItem>
 
-                    <MudButton Variant="Variant.Filled"
-                               StartIcon="@Icons.Material.Filled.ShoppingCart"
-                               FullWidth="true"
-                               Color="Color.Error"
-                               OnClick="(() => OnAddToCart(product.Id))">Add to cart</MudButton>
+					<MudButton Variant="Variant.Filled"
+							   StartIcon="@Icons.Material.Filled.ShoppingCart"
+							   FullWidth="true"
+							   Color="Color.Error"
+							   OnClick="(() => OnAddToCart(product.Id))">Add to cart</MudButton>
 
-                </MudPaper>
-            </MudItem>
-        }
-    </MudGrid>
+				</MudPaper>
+			</MudItem>
+		}
+	</MudGrid>
 }
 
 @code {
-    [CascadingParameter]
-    public MainLayout MainLayout { get; set; } = null!;
-    [Parameter]
-    public List<Product>? products { get; set; } = null;
+	[CascadingParameter]
+	public MainLayout MainLayout { get; set; } = null!;
+	[Parameter]
+	public List<Product>? products { get; set; } = null;
 
-    private async Task OnAddToCart(int productId)
-    {
-        OrderLine orderLine =
-            new OrderLine {ProductId = productId, Quantity = 1};
+	private async Task OnAddToCart(int productId)
+	{
+		OrderLine orderLine =
+			new OrderLine { ProductId = productId, Quantity = 1 };
 
-        await _cartService.Add(orderLine);
-        await MainLayout.LoadCartCount();
-        _snackbar.Add("Add product to cart successfully", Severity.Success);
-    }
+		await _cartService.Add(orderLine);
+		await MainLayout.LoadCartCount();
+		_snackbar.Add("Add product to cart successfully", Severity.Success);
+	}
 
-    private void navToProductDetail(string? alias)
-    {
-        _navigationManager.NavigateTo($"/product/{alias}");
-    }
+	private void navToProductDetail(string? alias)
+	{
+		_navigationManager.NavigateTo($"/product/{alias}");
+	}
 }

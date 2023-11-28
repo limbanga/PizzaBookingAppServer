@@ -1,71 +1,90 @@
 ﻿@inherits LayoutComponentBase
 
+<CascadingValue Value="this">
+	<MudThemeProvider @ref="@_mudThemeProvider" @bind-IsDarkMode="@_isDarkMode" Theme="_currentTheme" />
+	<MudDialogProvider />
+	<MudSnackbarProvider />
 
-<MudThemeProvider @ref="@_mudThemeProvider" @bind-IsDarkMode="@_isDarkMode" Theme="_currentTheme" />
-<MudDialogProvider />
-<MudSnackbarProvider />
+	<MudLayout>
+		<MudAppBar Elevation="0">
 
-<MudLayout>
-    <MudAppBar Elevation="0">
-  
-        <MudToggleIconButton @bind-Toggled="@_drawerOpen"
-                                Icon="@Icons.Material.Filled.Menu" 
-                                Color="@Color.Default" 
-                                ToggledIcon="@Icons.Material.Filled.Close" 
-                                ToggledColor="@Color.Default" 
-        @onclick=@(() => _drawerOpen = !_drawerOpen) />
+			<MudToggleIconButton @bind-Toggled="@_drawerOpen"
+								 Icon="@Icons.Material.Filled.Menu"
+								 Color="@Color.Default"
+								 ToggledIcon="@Icons.Material.Filled.Close"
+								 ToggledColor="@Color.Default"
+			@onclick=@(() => _drawerOpen = !_drawerOpen) />
 
-        <MudSpacer />
+			<MudSpacer />
 
-        <MudTooltip Text="Change Theme">
-            <MudIconButton Icon="@( _isDarkMode? Icons.Material.Filled.Nightlight : @Icons.Material.Filled.LightMode)"
-                            Color="@( _isDarkMode? Color.Primary : Color.Warning)" 
-                            OnClick="@((e) => ThemeToggle())" />
-        </MudTooltip>
+			<MudTooltip Text="Change Theme">
+				<MudIconButton Icon="@( _isDarkMode? Icons.Material.Filled.Nightlight : @Icons.Material.Filled.LightMode)"
+							   Color="@( _isDarkMode? Color.Primary : Color.Warning)"
+							   OnClick="@((e) => ThemeToggle())" />
+			</MudTooltip>
 
-    </MudAppBar>
+		</MudAppBar>
 
-    <MudDrawer @bind-Open="_drawerOpen" Elevation="1">
-        <MudDrawerHeader Style="background: var(--mud-palette-appbar-background);">
-            <MudText Typo="Typo.h6"
-                        Style="color: white;">Admin dashoard</MudText>
-        </MudDrawerHeader>
-        
-        <AdminNavMenu />
+		<MudDrawer @bind-Open="_drawerOpen" Elevation="1">
+			<MudDrawerHeader Style="background: var(--mud-palette-appbar-background);">
+				<MudText Typo="Typo.h6"
+						 Style="color: white;">Admin dashoard</MudText>
+			</MudDrawerHeader>
 
-    </MudDrawer>
+			<AdminNavMenu />
 
-    <MudMainContent>
-        <MudContainer MaxWidth="MaxWidth.Large" Fixed="true">
-            @Body
-        </MudContainer>
-    </MudMainContent>
+		</MudDrawer>
 
-</MudLayout>
+		<MudMainContent>
+			<MudContainer MaxWidth="MaxWidth.Large" Fixed="true">
+				@Body
+			</MudContainer>
+		</MudMainContent>
+
+	</MudLayout>
+</CascadingValue>
 
 @code {
-    bool _drawerOpen = true;
+	bool _drawerOpen = true;
+	public AppSetting setting = new();
+	public bool _isDarkMode;
+	private MudThemeProvider _mudThemeProvider = null!;
 
-    private bool _isDarkMode;
-    private MudThemeProvider _mudThemeProvider = null!;
+	private readonly MudTheme _currentTheme = new()
+		{
+			Palette = new Palette()
+		};
 
-    private readonly MudTheme _currentTheme = new()
-    {
-        Palette = new Palette()
-    };
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (firstRender)
+		{
+			_isDarkMode = await _mudThemeProvider.GetSystemPreference();
+			StateHasChanged();
+		}
+	}
+	protected override async Task OnInitializedAsync()
+	{
+		await base.OnInitializedAsync();
+		await LoadSetting();
+	}
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            _isDarkMode = await _mudThemeProvider.GetSystemPreference();
-            StateHasChanged();
-        }
-    }
+	void ThemeToggle()
+	{
+		_isDarkMode = !_isDarkMode;
+		StateHasChanged();
+	}
 
-    void ThemeToggle()
-    {
-        _isDarkMode = !_isDarkMode;
-        StateHasChanged();
-    }
+	public async Task LoadSetting()
+	{
+		try
+		{
+			setting = await _httpService.Get<AppSetting>("/App/Get");
+			StateHasChanged();
+		}
+		catch (Exception ex)
+		{
+			_snackbar.Add(ex.Message, Severity.Error);
+		}
+	}
 }

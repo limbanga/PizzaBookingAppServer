@@ -4,149 +4,154 @@
 <MudText Typo="Typo.h3" GutterBottom="true" Color="Color.Primary"> Order </MudText>
 
 <MudTable Items="orders"
-          SortLabel="Sort By" Elevation="0"
-          OnRowClick="RowClickEvent" T="Order"
-          Dense="@dense" Hover="@hover"
-          Bordered="@bordered" Striped="@striped"
-          Filter="new Func<Order,bool>(FilterFunc1)">
+		  SortLabel="Sort By" Elevation="0"
+		  OnRowClick="RowClickEvent" T="Order"
+		  Dense="@AdminLayout.setting.Dense"
+		  Hover="@AdminLayout.setting.Hover"
+		  Bordered="@AdminLayout.setting.Bordered"
+		  Striped="@AdminLayout.setting.Striped"
+		  Filter="new Func<Order,bool>(FilterFunc1)">
 
-    <ToolBarContent>
-        <MudText Typo="Typo.h6">Orders</MudText>
-        <MudSpacer />
-        <MudTextField @bind-Value="searchString"
-                      Placeholder="Search" Adornment="Adornment.Start"
-                      AdornmentIcon="@Icons.Material.Filled.Search"
-                      IconSize="Size.Medium" Class="mt-0"></MudTextField>
-    </ToolBarContent>
+	<ToolBarContent>
+		<MudText Typo="Typo.h6">Orders</MudText>
+		<MudSpacer />
+		<MudTextField @bind-Value="searchString"
+					  Placeholder="Search" Adornment="Adornment.Start"
+					  AdornmentIcon="@Icons.Material.Filled.Search"
+					  IconSize="Size.Medium" Class="mt-0"></MudTextField>
+	</ToolBarContent>
 
-    <HeaderContent>
+	<HeaderContent>
 
-        <MudTh>
-            <MudTableSortLabel SortBy="@(new Func<Order, object>(x=> x.Customer != null ?  x.Customer.FirstName: ""))"
-                               Style="color: var(--mud-palette-text-secondary);">
-                Customer
-            </MudTableSortLabel>
-        </MudTh>
+		<MudTh>
+			<MudTableSortLabel SortBy="@(new Func<Order, object>(x=> x.Customer != null ?  x.Customer.FirstName: ""))"
+							   Style="color: var(--mud-palette-text-secondary);">
+				Customer
+			</MudTableSortLabel>
+		</MudTh>
 
-        <MudTh>
-            <MudTableSortLabel SortBy="new Func<Order, object>(x=>x.PhoneNumber)"
-                               Style="color: var(--mud-palette-text-secondary);">
-                                   PhoneNumber
-                               </MudTableSortLabel>
-        </MudTh>
+		<MudTh>
+			<MudTableSortLabel SortBy="new Func<Order, object>(x=>x.PhoneNumber)"
+							   Style="color: var(--mud-palette-text-secondary);">
+				PhoneNumber
+			</MudTableSortLabel>
+		</MudTh>
 
-        <MudTh>
-            <MudTableSortLabel Style="color: var(--mud-palette-text-secondary);"
-                               SortBy="new Func<Order, object>(x =>
+		<MudTh>
+			<MudTableSortLabel Style="color: var(--mud-palette-text-secondary);"
+							   SortBy="new Func<Order, object>(x =>
                                 x.Address.Substring(0, x.Address.Length < 15 ? x.Address.Length: 15))">
-                Address
-            </MudTableSortLabel>
-        </MudTh>
+				Address
+			</MudTableSortLabel>
+		</MudTh>
 
-        <MudTh>
-            <MudTableSortLabel SortBy="@(new Func<Order, object>(
+		<MudTh>
+			<MudTableSortLabel SortBy="@(new Func<Order, object>(
                     x=>string.IsNullOrEmpty(x.State)?"not pay":x.State))"
-                               Style="color: var(--mud-palette-text-secondary);">
-                Status
-            </MudTableSortLabel>
-        </MudTh>
+							   Style="color: var(--mud-palette-text-secondary);">
+				Status
+			</MudTableSortLabel>
+		</MudTh>
 
-        <MudTh>
-            <MudTableSortLabel InitialDirection="SortDirection.Descending"
-                               SortBy="new Func<Order, object>(x=>x.UpdatedAt.ToLocalTime())"
-                               Style="color: var(--mud-palette-text-secondary);">
-                UpdatedAt
-            </MudTableSortLabel>
-        </MudTh>
+		<MudTh>
+			<MudTableSortLabel InitialDirection="SortDirection.Descending"
+							   SortBy="new Func<Order, object>(x=>x.UpdatedAt.ToLocalTime())"
+							   Style="color: var(--mud-palette-text-secondary);">
+				UpdatedAt
+			</MudTableSortLabel>
+		</MudTh>
 
-    </HeaderContent>
+	</HeaderContent>
 
-    <RowTemplate>
+	<RowTemplate>
 
-        <MudTd DataLabel="CustomerName">
-            @(context.Customer is null? "Unknown": context.Customer.FirstName)
-        </MudTd>
+		<MudTd DataLabel="CustomerName">
+			@(context.Customer is null ? "Unknown" : context.Customer.FirstName)
+		</MudTd>
 
-        <MudTd DataLabel="PhoneNumber">
-            @context.PhoneNumber
-        </MudTd>
+		<MudTd DataLabel="PhoneNumber">
+			@context.PhoneNumber
+		</MudTd>
 
-        <MudTd DataLabel="Address">
-            @context.Address.Substring(0, context.Address.Length < 15 ? context.Address.Length: 15)
-        </MudTd>
+		<MudTd DataLabel="Address">
+			@context.Address.Substring(0, context.Address.Length < 15 ? context.Address.Length: 15)
+		</MudTd>
 
-        <MudTd DataLabel="Status" >
-            @(string.IsNullOrEmpty(context.State) ? "not pay" : context.State)
-        </MudTd>
+		<MudTd DataLabel="Status">
+			@(string.IsNullOrEmpty(context.State) ? "not pay" : context.State)
+		</MudTd>
 
-        <MudTd DataLabel="UpdatedAt" >
-            @context.UpdatedAt
-        </MudTd>
+		<MudTd DataLabel="UpdatedAt">
+			@context.UpdatedAt
+		</MudTd>
 
-    </RowTemplate>
+	</RowTemplate>
 
-    <PagerContent>
-        <MudTablePager PageSizeOptions="new int[]{ 10, 20, 50, 100}" />
-    </PagerContent>
+	<PagerContent>
+		<MudTablePager PageSizeOptions="new int[]{ 10, 20, 50, 100}" />
+	</PagerContent>
 
 </MudTable>
 
 
 @code {
+	[CascadingParameter]
+	public AdminLayout AdminLayout { get; set; } = null!;
+	private string searchString = string.Empty;
+	private List<Order>? orders;
 
-    private bool dense = false;
-    private bool hover = true;
-    private bool striped = false;
-    private bool bordered = false;
+	protected override async Task OnInitializedAsync()
+	{
+		await LoadData();
+	}
 
-    private string searchString = string.Empty;
-    private List<Order>? orders;
+	private void RowClickEvent(TableRowClickEventArgs<Order> row)
+	{
+		Console.WriteLine(row.Item.Id);
+		OpenDialog(row.Item);
+	}
 
-    protected override async Task OnInitializedAsync()
-    {
-        await LoadData();
-    }
+	private void OpenDialog(Order model)
+	{
+		var parameters = new DialogParameters();
+		parameters.Add("model", model);
+		parameters.Add("ReloadFunc", new Func<Task>(LoadData));
 
-    private void RowClickEvent(TableRowClickEventArgs<Order> row)
-    {
-        Console.WriteLine(row.Item.Id);
-        OpenDialog(row.Item);
-    }
+		var options = new DialogOptions { CloseOnEscapeKey = false };
+		_dialogService.Show<OrderDialog>("", parameters, options);
+	}
 
-    private void OpenDialog(Order model)
-    {
-        var parameters = new DialogParameters();
-        parameters.Add("model", model);
-        parameters.Add("ReloadFunc", new Func<Task>(LoadData));
+	private bool FilterFunc1(Order category)
+	{
+		return FilterFunc(category, searchString);
+	}
 
-        var options = new DialogOptions { CloseOnEscapeKey = false };
-        _dialogService.Show<OrderDialog>("", parameters, options);
-    }
+	private bool FilterFunc(Order element, string searchString)
+	{
+		if (string.IsNullOrWhiteSpace(searchString))
+			return true;
+		if (element.PhoneNumber.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+			return true;
+		if (element.Address.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+			return true;
+		if (element.Customer != null &&
+			element.Customer.LastName.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+			return true;
+		if ("Unknown".Contains(searchString, StringComparison.OrdinalIgnoreCase))
+			return true;
+		return false;
+	}
 
-    private bool FilterFunc1(Order category)
-    {
-        return FilterFunc(category, searchString);
-    }
-
-    private bool FilterFunc(Order element, string searchString)
-    {
-        if (string.IsNullOrWhiteSpace(searchString))
-            return true;
-        if (element.PhoneNumber.Contains(searchString, StringComparison.OrdinalIgnoreCase))
-            return true;
-        return false;
-    }
-
-    private async Task LoadData()
-    {
-        try
-        {
-            orders = await _httpService.Get<List<Order>>("/Order/GetAll");
-            StateHasChanged();
-        }
-        catch (Exception ex)
-        {
-            _snackbar.Add(ex.Message, Severity.Error);
-        }
-    }
+	private async Task LoadData()
+	{
+		try
+		{
+			orders = await _httpService.Get<List<Order>>("/Order/GetAll");
+			StateHasChanged();
+		}
+		catch (Exception ex)
+		{
+			_snackbar.Add(ex.Message, Severity.Error);
+		}
+	}
 }
