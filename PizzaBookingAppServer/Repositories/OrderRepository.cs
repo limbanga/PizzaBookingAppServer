@@ -33,15 +33,16 @@ namespace PizzaBookingShared.Repositories
                 throw new RequestException("Invalid month.");
             }
 
+            // lấy ra order theo năm
             var query = _context.Order
-                .Where(o => o.UpdatedAt.Year == year && o.State == "Complete")
+                .Where(o => o.CreatedAt.Year == year && o.State == "Complete")
                 .AsQueryable();
 
             if (month == null) // by year
             {
                 var groupByMonth = await query
                     .Include(o => o.OrderLines)
-                    .GroupBy(o => o.UpdatedAt.Month)
+                    .GroupBy(o => o.CreatedAt.Month)
                     .ToListAsync();
 
                 double[] salesInMonth = Enumerable.Repeat(0.0, 12).ToArray(); ;
@@ -57,20 +58,21 @@ namespace PizzaBookingShared.Repositories
                             sale += orderLine.Quantity * orderLine.Product!.Price;
                         }
                     }
-                    salesInMonth[orders.Key] = sale;
+                    salesInMonth[orders.Key - 1] = sale;
                 }
                 return salesInMonth;
             }
-            // by month
 
-            query = query.Where(o => o.UpdatedAt.Month == month);
+            // by month
+            query = query.Where(o => o.CreatedAt.Month == month);
             int numDaysInMonth = DateTime.DaysInMonth(year, (int)month);
             double[] salesInDay = Enumerable.Repeat(0.0, numDaysInMonth).ToArray();
 
             var groupByDay = await query
-                   .Include(o => o.OrderLines)
-                   .GroupBy(o => o.UpdatedAt.Day)
+				   .Include(o => o.OrderLines)
+				   .GroupBy(o => o.CreatedAt.Day)
                    .ToListAsync();
+
             foreach (var orders in groupByDay)
             {
                 double sale = 0;
@@ -82,7 +84,7 @@ namespace PizzaBookingShared.Repositories
                         sale += orderLine.Quantity * orderLine.Product!.Price;
                     }
                 }
-                salesInDay[orders.Key] = sale;
+                salesInDay[orders.Key - 1] = sale;
             }
 
             return salesInDay;

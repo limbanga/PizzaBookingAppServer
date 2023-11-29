@@ -4,175 +4,174 @@
 <MudText Typo="Typo.h3" GutterBottom="true" Color="Color.Primary"> Category </MudText>
 
 <div class="d-flex align-center pa-4">
-    <MudSpacer/>
-    <MudButton OnClick="@(()=> OpenDialog())"
-               Variant="Variant.Filled"
-               Color="@Color.Success">
-        Create now!
-    </MudButton>
+	<MudSpacer />
+	<MudButton OnClick="@(()=> OpenDialog())"
+			   Variant="Variant.Filled"
+			   Color="@Color.Success">
+		Create now!
+	</MudButton>
 </div>
 
 
 <MudTable Items="categories"
-          SortLabel="Sort By" 
-          Elevation="0"
-          OnRowClick="RowClickEvent"
-          T="Category"
-          Dense="@AdminLayout.setting.Dense"
-          Hover="@AdminLayout.setting.Hover"
-          Bordered="@AdminLayout.setting.Bordered" 
-          Striped="@AdminLayout.setting.Striped"
-          Filter="new Func<Category,bool>(FilterFunc1)"
-          @bind-SelectedItem="selectedItem1">
+		  SortLabel="Sort By"
+		  Elevation="0"
+		  OnRowClick="RowClickEvent"
+		  T="Category"
+		  Dense="@AdminLayout.setting.Dense"
+		  Hover="@AdminLayout.setting.Hover"
+		  Bordered="@AdminLayout.setting.Bordered"
+		  Striped="@AdminLayout.setting.Striped"
+		  Filter="new Func<Category,bool>(FilterFunc1)"
+@bind-SelectedItem="selectedItem1">
 
-    <ToolBarContent>
-        <MudText Typo="Typo.h6">Categories</MudText>
-        <MudSpacer />
-        <MudTextField @bind-Value="searchString1" 
-        Placeholder="Search" Adornment="Adornment.Start" 
-        AdornmentIcon="@Icons.Material.Filled.Search" 
-        IconSize="Size.Medium" Class="mt-0"></MudTextField>
-    </ToolBarContent>
+	<ToolBarContent>
+		<MudText Typo="Typo.h6">Categories</MudText>
+		<MudSpacer />
+		<MudTextField @bind-Value="searchString1"
+					  Placeholder="Search" Adornment="Adornment.Start"
+					  AdornmentIcon="@Icons.Material.Filled.Search"
+					  IconSize="Size.Medium" Class="mt-0"></MudTextField>
+	</ToolBarContent>
 
-    <HeaderContent>
-        <MudTh>
-            <MudTableSortLabel 
-                               SortBy="new Func<Category, object>(x=>x.Name)">
-                                   Name
-            </MudTableSortLabel>
-        </MudTh>
+	<HeaderContent>
+		<MudTh>
+			<MudTableSortLabel SortBy="new Func<Category, object>(x=>x.Name)">
+				Name
+			</MudTableSortLabel>
+		</MudTh>
 
-        <MudTh>
-            <MudTableSortLabel 
-                               SortBy="new Func<Category, object>(x=>x.CreatedAt.ToLocalTime())">
-                CreatedAt
-            </MudTableSortLabel>
-        </MudTh>
+		<MudTh>
+			<MudTableSortLabel SortBy="new Func<Category, object>(x=>x.CreatedAt.ToLocalTime())">
+				CreatedAt
+			</MudTableSortLabel>
+		</MudTh>
 
-        <MudTh>
-            <MudTableSortLabel 
-                               InitialDirection="SortDirection.Descending"
-                               SortBy="new Func<Category, object>(x=>x.UpdatedAt.ToLocalTime())">
-                UpdatedAt
-            </MudTableSortLabel>
-        </MudTh>
+		<MudTh>
+			<MudTableSortLabel InitialDirection="SortDirection.Descending"
+							   SortBy="new Func<Category, object>(x=>x.UpdatedAt.ToLocalTime())">
+				UpdatedAt
+			</MudTableSortLabel>
+		</MudTh>
 
-        <MudTh>
-        </MudTh>
+		<MudTh>
+		</MudTh>
 
-    </HeaderContent>
+	</HeaderContent>
 
-    <RowTemplate>
-        <MudTd DataLabel="Name" >
-            @context.Name</MudTd>
+	<RowTemplate>
+		<MudTd DataLabel="Name">
+			@context.Name
+		</MudTd>
 
-        <MudTd DataLabel="CreatedAt" >
-            @context.CreatedAt</MudTd>
+		<MudTd DataLabel="CreatedAt">
+			@context.CreatedAt
+		</MudTd>
 
-        <MudTd DataLabel="UpdatedAt" >
-            @context.UpdatedAt</MudTd>
+		<MudTd DataLabel="UpdatedAt">
+			@context.UpdatedAt
+		</MudTd>
 
-        <MudTd>
-            <MudIconButton OnClick="@(()=>OnpenDeleteDialog(context))"
-                           Icon="@Icons.Material.Filled.DeleteOutline"
-                           Color="Color.Error" />
-        </MudTd>
+		<MudTd>
+			<MudIconButton OnClick="@(()=>OnpenDeleteDialog(context))"
+						   Icon="@Icons.Material.Filled.DeleteOutline"
+						   Color="Color.Error" />
+		</MudTd>
 
-    </RowTemplate>
+	</RowTemplate>
 
-    <PagerContent>
+	<PagerContent>
 
-        <MudTablePager 
-                       PageSizeOptions="new int[] { 10, 20, 50, 100}" />
-    </PagerContent>
+		<MudTablePager PageSizeOptions="new int[] { 10, 20, 50, 100}" />
+	</PagerContent>
 
 </MudTable>
 
 
 @code {
-    [CascadingParameter]
-    public AdminLayout AdminLayout { get; set; } = null!;
-    private string searchString1 = string.Empty;
-    private Category selectedItem1 = null!;
-    private List<Category>? categories;
+	[CascadingParameter]
+	public AdminLayout AdminLayout { get; set; } = null!;
+	private string searchString1 = string.Empty;
+	private Category selectedItem1 = null!;
+	private List<Category>? categories;
 
-    protected override async Task OnInitializedAsync()
-    {
-        await base.OnInitializedAsync();
-        await LoadData();
-    }
+	protected override async Task OnInitializedAsync()
+	{
+		await base.OnInitializedAsync();
+		await LoadData();
+	}
 
-    private void RowClickEvent(TableRowClickEventArgs<Category> row)
-    {
-        OpenDialog(row.Item);
-    }
+	private void RowClickEvent(TableRowClickEventArgs<Category> row)
+	{
+		OpenDialog(row.Item);
+	}
 
-    private void OpenDialog(Category? model = null)
-    {
-        bool isUpdate = true;
-        if (model is null)
-        {
-            model = new();
-            isUpdate = false;
-        }
+	private void OpenDialog(Category? model = null)
+	{
+		bool isUpdate = true;
+		if (model is null)
+		{
+			model = new();
+			isUpdate = false;
+		}
 
-        var parameters = new DialogParameters();
-        parameters.Add("model", model);
-        parameters.Add("isUpdate", isUpdate);
-        parameters.Add("ReloadFunc", new Func<Task>(LoadData));
+		var parameters = new DialogParameters();
+		parameters.Add("model", model);
+		parameters.Add("isUpdate", isUpdate);
+		parameters.Add("ReloadFunc", new Func<Task>(LoadData));
 
-        var options = new DialogOptions { CloseOnEscapeKey = false };
-        _dialogService.Show<CategoryDialog>("", parameters, options);
-    }
+		var options = new DialogOptions { CloseOnEscapeKey = false };
+		_dialogService.Show<CategoryDialog>("", parameters, options);
+	}
 
-    private bool FilterFunc1(Category category)
-    {
-        return FilterFunc(category, searchString1);
-    }
+	private bool FilterFunc1(Category category)
+	{
+		return FilterFunc(category, searchString1);
+	}
 
-    private bool FilterFunc(Category element, string searchString)
-    {
-        if (string.IsNullOrWhiteSpace(searchString))
-            return true;
-        if (element.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
-            return true;
-        return false;
-    }
+	private bool FilterFunc(Category element, string searchString)
+	{
+		if (string.IsNullOrWhiteSpace(searchString))
+			return true;
+		if (element.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+			return true;
+		return false;
+	}
 
-    public async Task LoadData()
-    {
-        try
-        {
-            categories = await _httpService.Get<List<Category>>("/Category/GetAll");
-            StateHasChanged();
-        }
-        catch (Exception ex)
-        {
-            _snackbar.Add(ex.Message, Severity.Error);
-        }
-    }
+	public async Task LoadData()
+	{
+		try
+		{
+			categories = await _httpService.Get<List<Category>>("/Category/GetAll");
+			StateHasChanged();
+		}
+		catch (Exception ex)
+		{
+			_snackbar.Add(ex.Message, Severity.Error);
+		}
+	}
 
-    private async Task OnpenDeleteDialog(Category category)
-    {
-        var parameters = new DialogParameters();
-        parameters.Add("Content", $"Do you want to delete {category.Name}?");
-        var options = new DialogOptions { CloseOnEscapeKey = false };
-        var result = await _dialogService.Show<ConfirmDialog>("", parameters, options).Result;
-        if (result.Cancelled)
-        {
-            Console.WriteLine("cancel delete");
-            return;
-        }
+	private async Task OnpenDeleteDialog(Category category)
+	{
+		var parameters = new DialogParameters();
+		parameters.Add("Content", $"Do you want to delete {category.Name}?");
+		var options = new DialogOptions { CloseOnEscapeKey = false };
+		var result = await _dialogService.Show<ConfirmDialog>("", parameters, options).Result;
+		if (result.Cancelled)
+		{
+			Console.WriteLine("cancel delete");
+			return;
+		}
 
-        try
-        {
-            await _httpService.DeleteAsync("/Category/Delete", category.Id.ToString());
-            _snackbar.Add("Delete category successfully.", Severity.Success);
-            await LoadData();
-        }
-        catch (Exception ex)
-        {
-            _snackbar.Add(ex.Message, Severity.Error);
-        }
-    }
+		try
+		{
+			await _httpService.DeleteAsync("/Category/Delete", category.Id.ToString());
+			_snackbar.Add("Delete category successfully.", Severity.Success);
+			await LoadData();
+		}
+		catch (Exception ex)
+		{
+			_snackbar.Add(ex.Message, Severity.Error);
+		}
+	}
 }

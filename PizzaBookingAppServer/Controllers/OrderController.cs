@@ -75,7 +75,7 @@ namespace PizzaBookingShared.Controllers
         }
 
 
-        [HttpGet("{year}/{month?}"), AllowAnonymous]
+        [HttpGet("{year}/{month?}")]
         public async Task<ActionResult<IEnumerable<double>>> ReportSale(int year, int? month = null)
         {
 			try

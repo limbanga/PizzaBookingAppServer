@@ -106,7 +106,7 @@
 	private bool isDarkTheme { get; set; } = true;
 	private MudThemeProvider _mudThemeProvider = null!;
 
-	private List<OrderLine> orderLines { get; set; } = null!;
+	public List<OrderLine> orderLines { get; set; } = null!;
 
 	protected override async Task OnAfterRenderAsync(bool firstRender)
 	{
@@ -140,7 +140,7 @@
 		PreviewTotalPrice();
 	}
 
-	private async Task LoadCart()
+	public async Task LoadCart()
 	{
 		orderLines = await _cartService.GetAsync();
 
