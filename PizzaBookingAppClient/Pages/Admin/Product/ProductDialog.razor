@@ -49,8 +49,8 @@
 
                 </MudSelect>
             }
-            
-            <InputFile OnChange="OnFileChange" id="__upload_image_product" hidden/>
+
+            <InputFile OnChange="OnFileChange" id="__upload_image_product" hidden accept="image/*" />
 
             <div class="d-flex justify-start align-end gap-1 mt-8">
 
@@ -139,6 +139,13 @@
 
     private async Task OnFileChange(InputFileChangeEventArgs e)
     {
+        long maxFileSize = 20 * 1024 * 1024; // 20MB in bytes
+        if (e.File.Size > maxFileSize)
+        {
+            _snackbar.Add("Max size is 20Mb", Severity.Error);
+            return;
+        }
+
         browserFile = e.File;
         imageTempPath = await _jSRuntime.InvokeAsync<string>("getTempURL", "__upload_image_product");
         StateHasChanged();

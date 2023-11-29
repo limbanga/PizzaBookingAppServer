@@ -36,7 +36,7 @@
 		Console.WriteLine("call api from index");
 		products = await _httpService.Get<List<Product>>
 			($"/Product/Fillter/?name={Query}&cate={CategoryQuery}");
-		pageCount = products.Count / PAGE_SIZE;
+		pageCount = (products.Count / PAGE_SIZE ) + 1;
 		HandleChangePage(1);
 	}
 

@@ -1,12 +1,36 @@
 ﻿using Microsoft.AspNetCore.Http;
+using System.Reflection;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace PizzaBookingShared.Helpers
 {
-    public static class Uploader
+    public interface IUploader
     {
-        public const string ROOT_DIR = @"D:/self_study/c_sharp/PizzaBookingAppServer/PizzaBookingAppClient/wwwroot/upload/";
-        public async static Task<string> UploadTo(IFormFile file, string directoryName ,string? newName = null)
+        Task<string> UploadTo(IFormFile file, string directoryName, string? newName = null);
+    }
+    public class Uploader : IUploader
+    {
+        private IWebHostEnvironment _hostEnvironment;
+        public Uploader(IWebHostEnvironment hostEnvironment)
         {
+            _hostEnvironment = hostEnvironment;
+        }
+
+        public async Task<string> UploadTo(IFormFile file, string directoryName, string? newName = null)
+        {
+            string currentDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly()!.Location)!;
+
+            DirectoryInfo di = new DirectoryInfo(currentDirectory);
+            for (int i = 0; i < 4; i++)
+            {
+                di = di.Parent!;
+            }
+
+            string ROOT_DIR = Path.Combine(di.FullName,
+                                "PizzaBookingAppClient",
+                                "wwwroot",
+                                "upload");
+
             if (string.IsNullOrEmpty(newName))
             {
                 newName = Guid.NewGuid().ToString();

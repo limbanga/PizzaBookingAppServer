@@ -15,14 +15,18 @@ namespace PizzaBookingShared.Controllers
 	public class ProductController : GenericController<Product>
 	{
         private readonly IProductRepository _productRepo;
+        private readonly IUploader _uploader;
+
         public ProductController(
             AppContext context,
             IProductRepository tRepo,
             IMapper mapper,
-            IProductRepository productRepo)
+            IProductRepository productRepo,
+            IUploader uploader)
             : base(context, tRepo, mapper)
         {
             _productRepo = productRepo;
+            _uploader = uploader;
         }
 
         [HttpGet, AllowAnonymous]
@@ -78,12 +82,18 @@ namespace PizzaBookingShared.Controllers
             return result;
         }
 
-        [HttpPost, Authorize(Roles ="admin")]
+        [HttpPost, AllowAnonymous]
         public async Task<ActionResult<string>> Upload(IFormFile file)
         {
+            const long maxSize = 20 * 1024 * 1024;
+            if (file.Length > maxSize)
+            {
+                return BadRequest("File too large (> 20Mb).");
+            }
+
             try
             {
-                string newFileName = await Uploader.UploadTo(file, "products");
+                string newFileName = await _uploader.UploadTo(file, "products");
                 return newFileName;
             }
             catch (Exception ex)

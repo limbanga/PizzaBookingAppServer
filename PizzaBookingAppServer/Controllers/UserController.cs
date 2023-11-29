@@ -73,12 +73,12 @@ namespace PizzaBookingShared.Controllers
                 await _repo.RegisterAsync(userModel);
 
                 // send active account link
-                //_mailService.SendMail(
-                //    new string[] { model.LoginName },
-                //    "Active your account",
-                //    $"<a href='https://localhost:7266/active={activeToken}'>" +
-                //    $"Click here to active your account.</a>",
-                //    isBodyHtml: true);
+                _mailService.SendMail(
+                    new string[] { model.LoginName },
+                    "Active your account",
+                    $"<a href='https://localhost:7266/active={activeToken}'>" +
+                    $"Click here to active your account.</a>",
+                    isBodyHtml: true);
 
                 return Ok("Register success");
             }

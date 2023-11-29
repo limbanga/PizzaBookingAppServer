@@ -27,8 +27,12 @@ public class AppContext : DbContext
             .HasOne(p => p.Category)
             .WithMany(c => c.Products)
             .OnDelete(DeleteBehavior.Cascade);
-
-	}
+        //
+        modelBuilder.Entity<OrderLine>()
+            .HasOne(p => p.Product)
+            .WithMany()
+            .OnDelete(DeleteBehavior.Cascade);
+    }
 
 	private void AddTimestamps()
     {

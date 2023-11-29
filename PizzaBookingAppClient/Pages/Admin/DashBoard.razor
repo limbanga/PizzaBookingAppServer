@@ -43,23 +43,31 @@
         Width="100%" />
 </div>
 
+<MudTable Items="@listSale" Hover="true" Breakpoint="Breakpoint.Sm" LoadingProgressColor="Color.Info">
+    <HeaderContent>
+        <MudTh>@reportBy</MudTh>
+        <MudTh>Sales</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="@(reportBy.Equals("month")? "date": "month")">@context.Key</MudTd>
+        <MudTd DataLabel="Sales">@(string.Format("${0:N2}", context.Value))</MudTd>
+    </RowTemplate>
+</MudTable>
+
 @code {
     private string reportBy = "month";
     private int year = DateTime.Now.Year;
     private int month = DateTime.Now.Month;
     private List<int> listYear = new(3);
-
-    public List<ChartSeries> Series = new List<ChartSeries>()
-    {
-        new ChartSeries() { Name = "Series 1", Data = new double[] { 90, 79, 72, 69, 62, 62, 55, 65, 70 } },
-    };
-    public string[] XAxisLabels = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep" };
+    private List<DataPointViewModel> listSale = new();
+    public List<ChartSeries> Series = new();
+    public string[] XAxisLabels = new string[0];
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
 
-        for (int i = year; i > 2020 ; i--)
+        for (int i = year; i > 2022 ; i--)
         {
             listYear.Add(i);
         }
@@ -80,31 +88,25 @@
         Console.WriteLine($"reportBy: {reportBy}, year: {year}, month: {month}");
         if (reportBy == "year")
         {
-            var listSale = await _httpService.Get<List<double>>($"/Order/ReportSale/{year}");
+            listSale = await _httpService.Get<List<DataPointViewModel>>($"/Order/ReportSale/{year}");
 
             Series = new List<ChartSeries>()
             {
-                new ChartSeries() { Name = $"Sale in {year}", Data = listSale.ToArray() }
+                new ChartSeries() { Name = $"Sale in {year}", Data = listSale.Select(l => l.Value).ToArray() }
             };
-            XAxisLabels = new string[] { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
-            StateHasChanged();
         }
         else
         {
-            var listSale = await _httpService.Get<List<double>>($"/Order/ReportSale/{year}/{month}");
+            listSale = await _httpService.Get<List<DataPointViewModel>>($"/Order/ReportSale/{year}/{month}");
 
             Series = new List<ChartSeries>()
             {
-                new ChartSeries() { Name = $"Sale in {year}-{month}", Data = listSale.ToArray() }
+                new ChartSeries() { Name = $"Sale in {year}-{month}", Data = listSale.Select(l => l.Value).ToArray() }
             };
 
-            XAxisLabels = new string[listSale.Count]; 
-            for (int i = 1; i <= listSale.Count; i++)
-            {
-                XAxisLabels[i-1] = i.ToString();    
-            }
-            StateHasChanged();
         }
+        XAxisLabels = listSale.Select(l => l.Key).ToArray();
+        StateHasChanged();
     }
 
 }

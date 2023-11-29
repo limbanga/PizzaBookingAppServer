@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using PizzaBookingAppServer.Helpers;
 using PizzaBookingAppServer.Repositories;
+using PizzaBookingShared.Helpers;
 using PizzaBookingShared.Repositories;
 using System.Configuration;
 using System.Text;
@@ -24,6 +25,8 @@ builder.Services.AddTransient<IOrderLineRepository, OrderLineRepository>();
 builder.Services.AddTransient<IProductRepository, ProductRepository>();
 builder.Services.AddTransient<IUserRepository, UserRepository>();
 builder.Services.AddTransient<IMailService, MailService>();
+builder.Services.AddTransient<IUploader, Uploader>();
+
 builder.Services.AddTransient<IAppSettingRepository, AppSettingRepository>();
 
 builder.Services.AddControllers();
