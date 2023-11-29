@@ -120,7 +120,7 @@
 
         if (isUpdate)
         {
-            Title = "Update prodduct";
+            Title = "Update product";
             var respone = await _httpClient.GetAsync($"/Category/Get/{model.CategoryId}");
             model.Category = await respone.Content.ReadFromJsonAsync<Category>();
         }

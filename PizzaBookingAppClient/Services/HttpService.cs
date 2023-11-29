@@ -14,7 +14,7 @@ namespace PizzaBookingAppClient.Services
 {
     public interface IHttpService
     {
-        Task<T> Create<T>(string uri, T model);
+        Task<T?> Create<T>(string uri, T model, bool isReturn = true);
         Task<T> Update<T>(string uri, T model);
         Task<T> Get<T>(string uri);
         Task DeleteAsync(string uri, string id);
@@ -47,34 +47,39 @@ namespace PizzaBookingAppClient.Services
 
             if (response.StatusCode.Equals(HttpStatusCode.BadRequest))
             {
-                throw new BadRequestException($"BadRequest: {errorMessage}");
+                throw new BadRequestException($"{errorMessage}");
             }
 
             if (response.StatusCode.Equals(HttpStatusCode.NotFound))
             {
-                throw new AppException($"NotFound: {errorMessage}");
+                throw new AppException($"{errorMessage}");
             }
 
             if (response.StatusCode.Equals(HttpStatusCode.Unauthorized))
             {
-                throw new UnAthorizeException($"Unauthorized: {errorMessage}");
+                throw new UnAthorizeException($"{errorMessage}");
             }
 
             if (response.StatusCode.Equals(HttpStatusCode.Forbidden))
             {
-                throw new UnAthorizeException($"Forbidden: {errorMessage}");
+                throw new UnAthorizeException($"{errorMessage}");
             }
 
             throw new AppException($"Unknown Error: {errorMessage}, HttpCode: {httpCode}");
         }
 
-        public async Task<T> Create<T>(string uri,T model)
+        public async Task<T?> Create<T>(string uri,T model, bool isReturn = true)
         {
             var respone = await _client.PostAsJsonAsync<T>(uri, model);
 
             await CheckRespone(respone);
-            T? result = await respone.Content.ReadFromJsonAsync<T>();
-            return result!;
+            
+            if (isReturn)
+            {
+                T? result = await respone.Content.ReadFromJsonAsync<T>();
+                return result;
+            }
+            return default;
         }
 
         public async Task<T> Update<T>(string uri, T model)

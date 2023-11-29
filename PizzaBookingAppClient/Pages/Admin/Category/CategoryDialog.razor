@@ -52,15 +52,11 @@
 
     protected override void OnInitialized()
     {
+        base.OnInitialized();
         if (isUpdate)
         {
-            Title = "Update prodduct";
+            Title = "Update category";
         }
-        else
-        {
-
-        }
-        base.OnInitialized();
     }
 
     void Cancel()
