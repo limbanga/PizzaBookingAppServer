@@ -70,6 +70,8 @@ PizzaBookingApp là một ứng dụng web được phát triển với mục ti
 
 ## Cách Chạy Dự Án
 
+*Xem phần demo có kèm theo hướng dẫn chạy á 😄*
+
 Để có một bản sao cục bộ và chạy được, hãy làm theo các bước đơn giản sau:
 
 ### Yêu Cầu Trước
