@@ -97,7 +97,7 @@ PizzaBookingApp là một ứng dụng web được phát triển với mục ti
 6. Chạy ứng dụng server
    1. Chuyển đến thư mục server
    ```sh
-   cd PizzaBookingAppClient
+   cd PizzaBookingAppServer
    ```
    2. Chạy ứng dụng
    ```sh
