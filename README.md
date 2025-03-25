@@ -94,11 +94,24 @@ PizzaBookingApp là một ứng dụng web được phát triển với mục ti
    dotnet restore
    ```
 5. Cập nhật chuỗi kết nối cơ sở dữ liệu trong `appsettings.json`.
-6. Chạy ứng dụng
+6. Chạy ứng dụng server
+   1. Chuyển đến thư mục server
+   ```sh
+   cd PizzaBookingAppClient
+   ```
+   2. Chạy ứng dụng
    ```sh
    dotnet run
    ```
-
+7. Chạy ứng dụng client
+   1. Chuyển đến thư mục server
+   ```sh
+   cd PizzaBookingAppClient
+   ```
+   2. Chạy ứng dụng
+   ```sh
+   dotnet run
+   ```
 ## Phần Demo
 
 Bạn có thể xem bản demo của ứng dụng tại đây: [PizzaBookingApp Demo](https://drive.google.com/drive/folders/1XgMgY8oiDnMTyJifk4VBCyoVtoyGpuJ8?usp=sharing)
